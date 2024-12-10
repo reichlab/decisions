@@ -2,20 +2,23 @@
 
 ## Context
 
-The lab currently known as "Reich Lab" does not have a centralized space for
-discussion nor does it have a method of recording project architectural
-decisions that affect projects downstream. At the moment, discussions take place
-across the GitHub repositories in both the [reichlab](https://github.com/reichlab)
-and [hubverse-org](https://github.com/hubverse-org) organizations. This has lead
-to three distinct concerns:
+There are several projects in the Reich/CASE/ASTER lab, many of which are
+interconnected. Discussions for new features in these projects take place
+across the GitHub repositories in both the
+[reichlab](https://github.com/reichlab) and
+[hubverse-org](https://github.com/hubverse-org) organizations. The current
+setup sometimes leads to challenges in communictating across the landscape of
+projects.
 
-1. lab members are not made aware of discussions until a decision is made
-2. discussion threads that do exist are lengthy and drawn out with no clear
-   conclusions (see for example [the discussion of the "target data"
-   format](https://github.com/orgs/hubverse-org/discussions/9)) or they may
-   be spread around issues in separate repositories
-3. new lab members may not be able to glean the full context for the motivation of past decisions and
-   may not be able to ascertain who is responsible for individual projects without asking others in the lab
+1. decisions from discussions with subsets of individuals are sometimes not
+   communicated clearly to a wider group
+2. discussion threads can become lengthy and drawn out with conclusions
+   difficult to find (see for example [the discussion of the "target data"
+   format](https://github.com/orgs/hubverse-org/discussions/9)) or they may be
+   spread around issues in separate repositories
+3. new lab members may not be able to glean the full context for the motivation
+   of past decisions and may not be able to ascertain who is responsible for
+   individual projects without asking others in the lab
 
 Ultimately this leads to a fragmented project landscape. A decision made
 upstream could negatively impact a downstream project maintained by another
