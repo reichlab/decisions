@@ -68,11 +68,11 @@ reichlab/decisions
       └─ reichlab-rebrand.md
 ```
 
-The `decisions/` folder contains Architecture Decision Records (see next section)
-and `project-posters/` folder contains folders for individual projects that will
-contain a [project poster](https://www.atlassian.com/software/confluence/templates/project-poster)
-that describes what the project is, who the project owners are, why we are
-doing it, and who it is for along with any associated artifacts.
+The `decisions/` folder contains [Architecture Decision
+Records](#standard-document-to-record-decisions) and the `project-posters/`
+folder contains [Project Posters](#standard-document-to-record-project-details)
+for high-level overviews of project details. Each decision may be associated
+with any number of projects and vice versa.
 
 ### Standard document to record decisions
 
@@ -85,6 +85,15 @@ to establish a standard document to record decisions with the following modifica
 2. decisions will be in two categories: 
    1. `rfc`: request for comments, which requires feedback before implementation.
    2. `ldr`: lightweight decision record, which is low-stakes and does not require feedback.
+3. Projects that are affected will be recorded in a list at the end of the document
+
+### Standard document to record project details
+
+We will use a [project
+poster](https://www.atlassian.com/software/confluence/templates/project-poster)
+for each project with associated artifcats. Each poster describes what the
+project is, who the project owners are, why we are doing it, and who it is for
+along with any associated artifacts (template forthcoming).
 
 ### Formal process to record decisions
 
@@ -120,6 +129,10 @@ Proposed
 
 ## Consequences
 
-
 Consequences as described by Nygard in [documenting architecture
 decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+
+## Projects
+
+ - None
+
