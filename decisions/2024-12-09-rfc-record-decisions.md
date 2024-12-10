@@ -14,12 +14,12 @@ to three distinct concerns:
    conclusions (see for example [the discussion of the "target data"
    format](https://github.com/orgs/hubverse-org/discussions/9)) or they may
    be spread around issues in separate repositories
-3. new lab members do not have context for the motivation of past decisions and
-   may not even be aware of who is responsible for individual projects
+3. new lab members may not be able to glean the full context for the motivation of past decisions and
+   may not be able to ascertain who is responsible for individual projects without asking others in the lab
 
 Ultimately this leads to a fragmented project landscape. A decision made
 upstream could negatively impact a downstream project maintained by another
-member of the lab with little notice.Moreover, without a clear record of
+member of the lab with little notice. Moreover, without a clear record of
 decisions, complex projects rely heavily on the [core developer's
 fully-connected mental
 model](https://carpentries.github.io/instructor-training/instructor/aio.html#building-a-mental-model),
@@ -89,7 +89,7 @@ We will use GitHub Pull Requests as a formal method to record decisions.
 Decisions that supersede old decisions will cause the old decision's status to
 be "superseded."
 
-Once a decision is recorded as accepted, only it's status may change.
+Once a decision is recorded as accepted, only its status may change.
 
 ### Central space for recording artifacts associated with decisions
 
