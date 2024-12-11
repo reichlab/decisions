@@ -16,6 +16,10 @@ This section describes the forces at play, including technological, political, s
 
 This section describes our response to these forces. It is stated in full sentences, with active voice. "We will ..."
 
+### Other Options Considered
+
+This section describes any other options that were considered, but were not chosen with a brief description of why they were not chosen.
+
 ## Status
 
 A decision may be "proposed" if the project stakeholders haven't agreed with it yet, or "accepted" once it is agreed. If a later ADR changes or reverses a decision, it may be marked as "deprecated" or "superseded" with a reference to its replacement.
