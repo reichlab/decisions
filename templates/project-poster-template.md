@@ -22,6 +22,10 @@ What does the project propose to do?
 
 What is high-level goal of this project?
 
+### What are we _not_ trying to do?
+
+Optional: What is out-of-scope for this project? This is a place where you can set up boundaries and anti-aims that will help prevent scope creep. 
+
 ### How do we judge success?
 
 A list of outcomes that should be true for the project to be considered a
