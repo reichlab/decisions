@@ -16,14 +16,15 @@ Developing a theme-able and low-maintenance dashboard for hub admins that
 will publish a Predtimechart vizualization, Evaluations, and any associated
 markdown contents when each round closes.
 
-Because hubs can be complex, we are restricting this to hubs that align with
-predtimechart's ability for vizualization: forecast hubs that have step-ahead
-quantile predictions.
+Because hubs can be complex, in our initial development push we are
+restricting this to hubs that have step-ahead quantile predictions. This
+aligns with existing functionality in predtimechart and simplifies evaluations.
 
 ### Why are we doing this?
 
 We are supporting timely communication of modeling hub results to
-decision-makers.
+decision-makers and exploration of modeling results by modelers and
+hub administrators.
 
 Many, but not all hub administrators are proficient with GitHub or static sites.
 For example, when the idea of a dashboard site was brought up to the community,
@@ -46,7 +47,7 @@ for another several momnths.
 
 ### What are we _not_ trying to do?
 
-We are _not_ trying to make a generalizable dashboard that can accomodate all
+We are _not_ trying to make a generalizable dashboard that can accommodate all
 hub types.
 
 ### How do we judge success?
@@ -54,7 +55,7 @@ hub types.
 A successful outcome is a deployable website that can:
 
  - display an up-to-date predtimechart visualization with data from a specified hub
- - dispaly an evaluation report of model outcomes from the same specified hub
+ - display an evaluation report of model outcomes from the same specified hub
  - include custom markdown pages to describe the purpose of the hub
  - be customizable wrt to theme
  - automatically be built when a modeling round closes
@@ -86,15 +87,38 @@ Each of the elements should be independent.
 
 #### 2. predtimechart vis
 
-Installable python app
+predtimechart is a javascript app that uses plotly.js to render plots.
+
+It requires the user to provide a `fetchData` function that can be used to retrieve model output data (predictive quantiles) and target data (time series format).
+
+To support that, we need:
+ - a way build these data objects
+    - installable python app
+ - a place where the data will be stored
+    - S3 bucket
+    - github pages branch of the github repo used for the dashboard
+    - Another branch on a github repo used for the dashboard
 
 #### 3. evaluations dashboard
 
-- R markdown document, quarto document, or similar that pre-computes scores and all tables/figures used to display them.
-- Two-part process:
-  1. R or python script runs at round close to compute scores and save them e.g. in an S3 bucket or on GitHub
-  2. Javascript app running in client side browser fetches data as needed and generates plots/etc
+There are two pieces to the dashboard:
+
+1. Creation of score data
+2. The website itself
+
+For score data, we will write functionality in R to compute scores after the close of each modeling round when target data become available and cache the scores for later retrieval by the process that's used to create the web app.
+
+- We will use R to compute scores because there is existing functionality for score computation in the hubverse in the hubEvals package
+- Saving score data:
+    - S3 bucket
+    - github pages branch of the github repo used for the dashboard
+    - Another branch on a github repo used for the dashboard
+
+The interactive website:
+- R markdown document, quarto document, or similar that pre-computes all tables/figures used to display scores.
+- Javascript app running in client side browser fetches data as needed and generates plots/etc. This is similar to predtimechart.
 - Web app with server-side logic to render tables and/or figures, e.g. using Shiny or Streamlit
+- webR or webpy runs R or python in the browser to dynamically create figures and tables
 
 #### 4. orchestration
 
@@ -123,6 +147,7 @@ Installable python app
  - orchestration: a GitHub app can be written with probot and hosted on glitch.io for free (up to 1000 hours per month)
 
 ### What do we need to answer?
+For orchestration, what are the trade-offs in terms of features vs engineering complexity and maintainability for solutions based on GitHub workflows distributed to hub administrators and a GitHub app that controls centralized GitHub workflows? What value do we place on these trade offs?
 
 TODO: evaluations-related.
 
