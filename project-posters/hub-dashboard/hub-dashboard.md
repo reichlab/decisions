@@ -60,7 +60,7 @@ A successful outcome is a deployable website that can:
  - be customizable wrt to theme
  - automatically be built when a modeling round closes
  - be built on demand
- - does not require knowledge of anything more than Markdown or YAML
+ - does not require knowledge of anything more than Markdown, YAML, and GitHub Workflows
  - render equations
  - be independent from a hub
 
