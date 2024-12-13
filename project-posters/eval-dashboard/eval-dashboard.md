@@ -58,26 +58,26 @@ NOTE: A detailed [writeup can be found as an HTML document in this folder](https
 
 1. R markdown document, quarto document, or similar that pre-computes all
    tables/figures used to display them.
-  - Note: we’ve tried this before for flusight evals, and were not satisfied
-    with the results: when breaking scores down by location, the eval page took
-    ~30s to load.
-  - Retrieving data based on user selections and re-rendering new content is
-    not possible using this option.
-  - This motivates the following two options, with dynamic data fetches and
-    rendering of web page elements
+   - Note: we’ve tried this before for flusight evals, and were not satisfied
+     with the results: when breaking scores down by location, the eval page took
+     ~30s to load.
+   - Retrieving data based on user selections and re-rendering new content is
+     not possible using this option.
+   - This motivates the following two options, with dynamic data fetches and
+     rendering of web page elements
 2. Front-end Javascript app running in client side browser fetches data as
    needed and generates plots/etc: similar structure to predtimechart
 3. Web app with server-side logic to render tables and/or figures, e.g. using
    Shiny or Streamlit
-  - It would likely still make sense to set up scheduled end-of-round
-    computation of scores to cache, as score computation can be too
-    time-consuming to do on the fly in the context of an interactive app.
+   - It would likely still make sense to set up scheduled end-of-round
+     computation of scores to cache, as score computation can be too
+     time-consuming to do on the fly in the context of an interactive app.
 4. webR or similar: R running in the browser
- - This may work, but when we looked in June 2024 it wasn’t ready for
-   prime-time yet.
- - https://shinylive.io/r/examples/ 
- - Shifting to using webR from a javascript app at a later date would not
-   require changing the rest of the dashboard structure as a static site.
+   - This may work, but when we looked in June 2024 it wasn’t ready for
+     prime-time yet.
+   - https://shinylive.io/r/examples/ 
+   - NOTE: Shifting to using webR from a javascript app at a later date would not
+     require changing the rest of the dashboard structure as a static site.
 
 ## ✅ Validation
 
