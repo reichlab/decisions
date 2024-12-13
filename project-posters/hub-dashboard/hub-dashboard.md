@@ -69,21 +69,23 @@ A successful outcome is a deployable website that can:
 There are four pieces that are required for success: 
 
 1. website generator,
-2. predtimechart vis,
-3. evaluations dashboard, and 
+2. predtimechart vis (or similar),
+3. evaluations dashboard, and
 4. the orchestration of these tools for continuous deployment
 
 Each of the elements should be independent.
 
 #### 1. website generator
 
- - Ship a static site generator (Hugo, Jekyll)
- - Ship a _theme_ for a static site generator
- - Readthedocs
- - Quarto
- - R Markdown website
- - Docker container
- - streamlit
+ - Static Site Generator template or theme (one of the following):
+   - Ship a static site generator (Hugo, Jekyll)
+   - Ship a _theme_ for a static site generator
+   - Readthedocs
+   - Quarto
+   - R Markdown website
+ - Docker container as a method to encapsulate a static site generator with
+   default JavaScript and CSS themes---paired with a custom template
+ - Streamlit for generating webapp dynamically
 
 #### 2. predtimechart vis
 
@@ -129,25 +131,43 @@ The interactive website:
 
 ### What do we already know?
 
- - website: this is a small site that will be generated several times per week, so build speed is not essential
- - website: there are over 400 static site generators, and they all interpret markdown a little differently
- - website: quarto has the closest markdown syntax to GitHub
- - website: readthedocs is mostly plug-and-play (no deployment workflow), but the structure is not simple.
- - website: all static site generator templates are complex in some way
- - webiste: docker can provide an abstraction for any static site generator we want
- - website: quarto documents can be easily themed
+#### Website
 
- - evaluations: R markdown documents to precompute scores and tables generate very large HTML files that take a long time to load.
- - evaluations: If we use a static website, we are unable to use a service like shiny or streamlit
+ - this is a small site that will be generated several times per week, so build speed is not essential
+ - there are over 400 static site generators, and they all interpret markdown a little differently
+ - quarto has the closest markdown syntax to GitHub
+ - readthedocs is mostly plug-and-play (no deployment workflow), but the structure is not simple.
+ - all static site generator templates are complex in some way
+ - docker can provide an abstraction for any static site generator we want
+ - quarto documents can be easily themed
 
- - orchestration: GitHub provides unlimited free workflow runs for all public repositories
- - orchestration: (example) the hubverse distributed workflows sporadically require updates from the hub administrators
+#### Evaluations
+
+ - R markdown documents to precompute scores and tables generate very large HTML files that take a long time to load.
+ - If we use a static website, we are unable to use a service like shiny or streamlit
+
+#### Orchestration
+
+ - GitHub provides unlimited free workflow runs for all public repositories
+ - GitHub allows for [re-usable workflows](https://docs.github.com/en/actions/sharing-automations/reusing-workflows) that work on a job-level.
+ - GitHub can produce artifacts from workflow runs that can be passed between jobs. 
+ - Distributed workflows have been established to work as long as administrators understand GitHub workflows
+   - (example) the hubverse distributed workflows sporadically require updates from the hub administrators
    - this requires extra communication directly with administrators
- - orchestration: (example) the r-universe is an opt-in process that requires little to no effort from package maintainers
- - orchestration: a GitHub app can be written with probot and hosted on glitch.io for free (up to 1000 hours per month)
+ - an app-based workflow can be an alternative for admins who are uncomfortable with github workflows
+   - (example) the r-universe is an opt-in process that requires little to no effort from package maintainers
+   - this requires extra maintenance of JavaScript code
+ - a GitHub app can be written with probot and hosted on glitch.io for free (up to 1000 hours per month)
 
 ### What do we need to answer?
-For orchestration, what are the trade-offs in terms of features vs engineering complexity and maintainability for solutions based on GitHub workflows distributed to hub administrators and a GitHub app that controls centralized GitHub workflows? What value do we place on these trade offs?
+
+#### Orchestration
+
+ - What are the trade-offs in terms of features vs engineering complexity and
+   maintainability for solutions based on: 
+   - GitHub workflows distributed to hub administrators and
+   - a GitHub app that controls centralized GitHub workflows?
+ - What value do we place on these trade offs?
 
 TODO: evaluations-related.
 
