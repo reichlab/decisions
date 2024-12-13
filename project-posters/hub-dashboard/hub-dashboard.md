@@ -218,4 +218,69 @@ The websites and/or data are built in two ways:
 
 ### Visualize the solution
 
-TODO: port over diagrams
+#### General Workflow
+
+The general workflow to generate the site and data looks like this.
+This can be controlled either from a centralized or distributed workflow. 
+
+```mermaid
+sequenceDiagram
+     participant GitHub
+
+     create participant dash as dashboard repository
+     GitHub-->>dash: fetch dashboard repoisotry
+     Note over GitHub: Builds static site to site/
+     GitHub-->>dash: Read hub repository name from config
+     dash->>GitHub: Hub Repository: "hub-repo"
+     create participant hub as hub repository
+     GitHub-->>hub: fetch "hub-repo"
+     Note over GitHub: Builds Predtimechart data to data/
+     GitHub->>dash: Push site/ to gh-pages
+     GitHub->>dash: Push data/ to ptc/data
+```
+
+#### Re-usable Workflows
+
+This is how reusable workflows would work, the administrator would compose a workflow 
+and reuse our reusable workflows:
+
+```mermaid
+flowchart TD
+    subgraph org1/dashboard
+    dash-work["admin-written workflows"]
+    end
+    app-workflows["control-room"]
+    workflows["re-usable workflows"]
+
+    app-workflows-->|provides|workflows
+    dash-work==>|uses|workflows
+    site1(["org1.github.io/site"])
+    workflows==>|builds site and data|org1/dashboard
+    org1/dashboard==>|deploys|site1
+```
+
+#### App-based Workflows
+
+An app-based workflow removes the responsibility from the admin by using the
+workflows inside the control-room repository. Because the app gives write
+permissions, the control room can act _as_ the dashboard repository.
+
+```mermaid
+flowchart TD
+    org1/dash["org1/dashboard"]
+    webserver{{"webserver (glitch)"}}
+
+    app{"App"}
+    app-workflows["control-room"]
+
+    org1/dash==>|"sends webhook events"|webserver
+    app-->|grants permission to|app-workflows
+    webserver==>|"triggers build (via GH API)"|app-workflows
+    app-->|runs on|webserver
+    
+    site1(["org1.github.io/site"])
+
+    app-->|installed on|org1/dash
+    app-workflows==>|builds site and data|org1/dash
+    org1/dash==>|deploys|site1
+```
