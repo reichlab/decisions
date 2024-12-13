@@ -10,7 +10,7 @@
 
 ## ❓ Problem space
 
-2024-11-13: this is summarized from [the planning document Evan created](2024-12-13-planning/Evaldashboardplanning.html)
+2024-11-13: this is summarized from [the planning document Evan created](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/64276d6cf10bffa74d27282f7e6e17054adb813d/project-posters/eval-dashboard/2024-12-13-planning/Evaldashboardplanning.html)
 
 ### What are we doing?
 
@@ -48,7 +48,7 @@ success. Be sure to focus on outcomes, not implementation details.
 
 ### What are possible solutions?
 
-NOTE: A detailed [writeup can be found as an HTML document in this folder](2024-12-13-planning/Evaldashboard.html).
+NOTE: A detailed [writeup can be found as an HTML document in this folder](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/64276d6cf10bffa74d27282f7e6e17054adb813d/project-posters/eval-dashboard/2024-12-13-planning/Evaldashboard.html).
 
 #### Score Creation
 
@@ -94,7 +94,7 @@ large due to embedded elements).
 
 ### What do we need to answer?
 
-From [Output data that we will compute](2024-12-13-planning/Evaldashboard.html#h.gdnhn91qg7og):
+From [Output data that we will compute](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/64276d6cf10bffa74d27282f7e6e17054adb813d/project-posters/eval-dashboard/2024-12-13-planning/Evaldashboard.html#h.gdnhn91qg7og):
 
  - Note, we may also need to say what output types to use to compute scores?
    E.g., for wk inc flu hosp, forecasts are submitted in both quantile and
