@@ -76,8 +76,8 @@ pages to:
 There are four pieces that are required for success: 
 
 1. website generator,
-2. (optional) predtimechart vis (or similar),
-3. (optional) evaluations dashboard, and
+2. user-optional forecast step-ahead visualization (e.g. predtimechart)
+3. user-optional evaluations dashboard, and
 4. the orchestration of these tools for continuous deployment for both scheduled
    and on-demand builds
 
@@ -95,9 +95,13 @@ Each of the elements should be independent.
    default JavaScript and CSS themes---paired with a custom template
  - Streamlit for generating webapp dynamically
 
-#### 2. predtimechart vis
+#### 2. forecast step-ahead visualisation
 
-predtimechart is a javascript app that uses plotly.js to render plots.
+##### Predtimechart
+
+predtimechart is a javascript app that uses plotly.js to render plots. This is
+the current contender because it is front-end javascript application that
+loads data on demand from external sources. 
 
 It requires the user to provide a `fetchData` function that can be used to retrieve model output data (predictive quantiles) and target data (time series format).
 
