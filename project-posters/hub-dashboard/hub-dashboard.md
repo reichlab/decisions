@@ -60,7 +60,7 @@ A successful outcome is a deployable website that can:
  - include custom markdown pages to describe the purpose of the hub
  - be customizable wrt to theme
  - automatically be built when a modeling round closes
- - be built on demand
+ - be built on demand for use cases such as data needing to be updated not on a schedule (see early season issues with Flusight in fall 2024)
  - does not require knowledge of anything more than Markdown, YAML, and GitHub Workflows
  - render equations
  - be independent from a hub
