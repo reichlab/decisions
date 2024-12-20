@@ -76,9 +76,10 @@ pages to:
 There are four pieces that are required for success: 
 
 1. website generator,
-2. predtimechart vis (or similar),
-3. evaluations dashboard, and
-4. the orchestration of these tools for continuous deployment
+2. (optional) predtimechart vis (or similar),
+3. (optional) evaluations dashboard, and
+4. the orchestration of these tools for continuous deployment for both scheduled
+   and on-demand builds
 
 Each of the elements should be independent.
 
