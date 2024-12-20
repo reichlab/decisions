@@ -12,13 +12,15 @@
 
 ### What are we doing?
 
-Developing a theme-able and low-maintenance dashboard for hub admins that
-will publish a Predtimechart vizualization, Evaluations, and any associated
-markdown contents when each round closes.
+Developing a theme-able and low-maintenance dashboard for hub admins. This
+dashboard will host a theme-able and low-maintentance website with customizable
+static content. There will be optional integrations with interactive front-end 
+JavaScript apps that include Predtimechart vizualization and Evaluations.
 
 Because hubs can be complex, in our initial development push we are
-restricting this to hubs that have step-ahead quantile predictions. This
-aligns with existing functionality in predtimechart and simplifies evaluations.
+restricting the interactive elements to hubs that have step-ahead quantile
+predictions. This aligns with existing functionality in predtimechart and
+simplifies evaluations.
 
 ### Why are we doing this?
 
@@ -47,15 +49,14 @@ for another several momnths.
 
 ### What are we _not_ trying to do?
 
-We are _not_ trying to make a generalizable dashboard that can accommodate all
-hub types.
+We are _not_ trying to make a generalizable interactive dashboard that can
+accommodate all hub types. Static content can be generalizable, but computed
+content, is restricted to hubs with quantile step-ahead predictions.
 
 ### How do we judge success?
 
 A successful outcome is a deployable website that can:
 
- - display an up-to-date predtimechart visualization with data from a specified hub
- - display an evaluation report of model outcomes from the same specified hub
  - include custom markdown pages to describe the purpose of the hub
  - be customizable wrt to theme
  - automatically be built when a modeling round closes
@@ -63,6 +64,12 @@ A successful outcome is a deployable website that can:
  - does not require knowledge of anything more than Markdown, YAML, and GitHub Workflows
  - render equations
  - be independent from a hub
+
+In addition, for hubs with quantile step-ahead predictions, it will have two
+pages to: 
+
+ - display an up-to-date predtimechart visualization with data from a specified hub
+ - display an evaluation report of model outcomes from the same specified hub
 
 ### What are possible solutions?
 
