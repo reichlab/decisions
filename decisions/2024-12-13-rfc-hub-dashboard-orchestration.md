@@ -50,11 +50,12 @@ any more workflows.
 
 ### Other Options Considered
 
-#### A set of GitHub workflows copied to individual hub dashboard repos
+#### A set of GitHub workflows copied to individual hub dashboard repos calling centrally-maintained reusable workflows
 
-Similar to current Hubverse-developed GitHub actions. Hub admins copy workflow
-and update as needed. Configured to run on a cron schedule and manually as
-needed.
+Similar to current Hubverse-developed GitHub actions, but putting most of
+the heavy lifting in centrally-maintained reusable workflows. Hub admins copy
+a (relatively small) workflow to their dashboard repo and update it as needed.
+Configured to run on a cron schedule and manually as needed.
 
 - PRO: Doesn't require a security token that has write access to a control
 room-type repository
