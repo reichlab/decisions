@@ -53,6 +53,10 @@ We are _not_ trying to make a generalizable interactive dashboard that can
 accommodate all hub types. Static content can be generalizable, but computed
 content, is restricted to hubs with quantile step-ahead predictions.
 
+We are not trying to create a new static site generator or promise support for
+any of the user-generated static content. Any user-generated static content is
+within the remet of the underlying generator we use.
+
 ### How do we judge success?
 
 A successful outcome is a deployable website that can:
