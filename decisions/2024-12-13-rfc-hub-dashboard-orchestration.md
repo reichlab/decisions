@@ -66,8 +66,8 @@ room-type repository
 #### Centralized workflows invoked by individual hub repos via PAT
 
 Hub dashboard repos have a small boilerplate workflow that invokes the control
-room workflows that perform dashboard tasks. Hub admins generate and maintain a
-personal GitHub Personal Access token with write access to the control room repo.
+room workflows that perform dashboard tasks. Hub admins are provided a
+personal GitHub Personal Access token with write access to the control room repo. Hubverse organization owners are required to maintain and rotate the token.
 
 - PRO: Centralized workflows are easier for hub devs to maintain
 - PRO: Doesn't require API/web service
