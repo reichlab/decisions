@@ -91,7 +91,7 @@ to establish a standard document to record decisions with the following modifica
 
 We will use a [project
 poster](https://www.atlassian.com/software/confluence/templates/project-poster)
-for each project with associated artifcats. Each poster describes what the
+for each project with associated artifacts. Each poster describes what the
 project is, who the project owners are, why we are doing it, and who it is for
 along with any associated artifacts (template forthcoming).
 
