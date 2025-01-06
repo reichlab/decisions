@@ -1,0 +1,197 @@
+---
+title: "Target data formats and organisation supplementary materials"
+format: html
+author: Anna Krystalli
+editor: visual
+---
+
+## Source data
+
+We'll demonstrate partitioning and reading target data using the [`example-complex-forecast`](https://github.com/hubverse-org/example-complex-forecast-hub) hub
+
+```{r}
+tmp_dir <- withr::local_tempdir()
+hub_path <- fs::path(tmp_dir, "complex-forecast-hub")
+gert::git_clone(
+    "https://github.com/hubverse-org/example-complex-forecast-hub.git", 
+    path = hub_path
+    )
+```
+
+```{r}
+library(dplyr)
+```
+
+### Create source data paths
+
+```{r}
+target_data_path <- fs::path(hub_path, "target-data")
+fs::dir_ls(target_data_path)
+timeseries_path <- fs::path(target_data_path, "time-series.csv")
+oracle_path <- fs::path(target_data_path, "oracle-output.csv")
+```
+
+# Read single file data
+```{r}
+timeseries <- readr::read_csv(timeseries_path)
+oracle <- readr::read_csv(oracle_path)
+```
+
+## Writing partitioned data
+
+### parquet datasets
+
+First lets create a partitioned folder for our oracle data
+
+```{r}
+oracle_dataset_path <- fs::path(target_data_path, "oracle-output")
+fs::dir_create(oracle_dataset_path)
+```
+
+Next let's partition our data by `target_end_date` and inspect the resulting file structure
+
+```{r}
+
+arrow::write_dataset(oracle, format = "parquet",
+                         partitioning = "target_end_date",
+                         path = oracle_dataset_path)
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+    fs::path_rel(start = hub_path)
+```
+
+Finally let's access our data and also perform some filtering on read. Notice how we do not need to explicitly define the partitioning used to write the data:
+
+```{r}
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+    dplyr::collect()
+```
+
+
+### More complex partitioning
+
+Using hive style means that, regardless of partitioning complexity, any function to access that data does not require additional configuration to extract data from partitions.
+
+In the following two examples `open_dataset()` succesfully reads differing partition data without additional configuration.
+
+#### `target` & `target_end_date` partitions
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+arrow::write_dataset(oracle, format = "parquet",
+                         partitioning = c("target", "target_end_date"),
+                         path = oracle_dataset_path)
+
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+    fs::path_rel(start = hub_path)
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+    dplyr::collect()
+```
+
+#### `output_type` & `target_end_date` partitions
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+arrow::write_dataset(oracle, format = "parquet",
+                         partitioning = c("output_type", "target_end_date"),
+                         path = oracle_dataset_path)
+
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+    fs::path_rel(start = hub_path)
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+    dplyr::collect()
+```
+
+
+### csv datasets
+
+Works on csv datasets as well:
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+arrow::write_csv_dataset(oracle, 
+                         partitioning = "target_end_date",
+                         #na = "NA",
+                         path = oracle_dataset_path)
+
+
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+    fs::path_rel(start = hub_path)
+
+arrow::open_csv_dataset(oracle_dataset_path) |>
+    dplyr::collect()
+
+```
+
+## Appending new data
+
+The approach can be successfully used to append additional new data to appropriate partitions (and overwrite corrected data if required).
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+# Split data into old and new
+new_round_id <- unique(oracle$target_end_date) |> tail(1L)
+old_data <- oracle |>
+    filter(.data[["target_end_date"]] != new_round_id)
+new_data <- oracle |>
+    filter(.data[["target_end_date"]] == new_round_id)
+
+# Write old data
+arrow::write_dataset(old_data, format = "parquet",
+                         partitioning = "target_end_date",
+                         path = oracle_dataset_path)
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+    fs::path_rel(start = hub_path) |>
+    tail(2L)
+
+# Filter on older and new round_id (latter returns 0 rows)
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+    dplyr::collect()
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == new_round_id) |>
+    dplyr::collect()
+
+
+# Write additional data
+arrow::write_dataset(new_data, format = "parquet",
+                         partitioning = "target_end_date",
+                         path = oracle_dataset_path
+                     )
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+    fs::path_rel(start = hub_path) |>
+    tail(4L)
+
+# Filter on older and new round_id
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+    dplyr::collect()
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == new_round_id) |>
+    dplyr::collect()
+```
+
+## Opening single files
+
+Finally this approach can also be used to open single files, additionally allowing for filtering only required data on read.
+
+```{r}
+arrow::open_csv_dataset(oracle_path) |>
+    dplyr::collect()
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+    dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+    dplyr::collect()
+```
+
