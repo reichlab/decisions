@@ -24,6 +24,8 @@ Our goal is to:
 2. [evaluate and choose](#evaluation-approach) the best that meets our needs, and
 3. implement that choice
 
+The scope for this poster is #1 and #2, which will lead to #3 via other means (RFC, LDR, new repo, etc.)
+
 ## Possible solutions
 
 So far we envision these possible solutions:
