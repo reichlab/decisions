@@ -19,6 +19,7 @@ This situation will only become worse in light of upcoming technical staff decre
 ## Project goal
 
 Our goal is to:
+
 1. enumerate [Possible solutions](#possible-solutions) to implementing a documented way to enumerate and manage AWS resources (ideally one that generates a log or trail of changes over time),
 2. [evaluate and choose](#evaluation-approach) the best that meets our needs, and
 3. implement that choice
@@ -28,14 +29,14 @@ Our goal is to:
 So far we envision these possible solutions:
 
 - keep using the AWS console to create and update cloud resources; create documentation about what each component is used for, including a changelog
-  - pros: already familiar with the solution
-  - cons: high learning curve for new people. not automated/reproducible. making resource changes requires updating docs
+    - pros: already familiar with the solution
+    - cons: high learning curve for new people. not automated/reproducible. making resource changes requires updating docs. no automated changelog
 - a script that creates resources via AWS CLI or API
-  - pros: simpler than a full on IaC solution 
-  - cons: script must explicitly manage things like renaming resources, deleting existing ones if script is run from scratch, etc. (a full on IaC solution does these for you)
+    - pros: lower learning curve than a full on IaC solution if the number of AWS resources is low. changelog via VCS
+    - cons: script must explicitly resources, their dependencies (including creation order), etc. (a full on IaC solution does these for you)
 - full on IaC solution such as https://www.pulumi.com/ or an AWS-based one (there seems to be many - see https://aws.amazon.com/what-is/iac/ )
-  - pros: takes care of creating, updating, tracking changes, etc. could be consistent with Hubverse-based IaC solution
-  - cons: steep learning curve. relies on third party solution. possibly expensive
+    - pros: takes care of creating, updating, tracking changes, etc. could be consistent with Hubverse-based IaC solution
+    - cons: steep learning curve. relies on third party solution. cost (but might be inexpensive for small or open source projects)
 
 ## Evaluation approach
 
@@ -52,13 +53,40 @@ After that we will implement the chosen solution by creating a working infrastru
 
 (Given that our current AWS infrastructure is undocumented, we capture it here for reference.)
 
-![aws-diagram.jpg](aws-diagram.jpg) gives an overview of the AWS resources currently used to run our models.
+Here is an overview of the AWS resources currently used to run our models:
 
-TODO: Details about each box in the diagram. Here's a partial description from slack:
-
-- **Docker image**: I've built and pushed an AWS-compatiable image to dockerhub: reichlab/flu_ar2:1.0. It implements the generalized scheme you and I discussed yesterday where the same Dockerfile and run.sh can apply to different models ( https://github.com/reichlab/operational-models ). Recall that it's parameterized via environment variables passed on the command line (local dev) or in a .env file (local dev or AWS).
-- **ECS cluster**: Configures AWS_Fargate (serverless container running) to run ECS task definitions (i.e., container images). I use this cluster for all lab task definitions. weekly-models
-- **Task definition for the flu_ar2 model**: Specifies the above Docker image, an S3 environment file for it, logging, and how to run it including cpu, memory, and OS. flu-ar2-model:3 . Looking at the JSON might be useful.
-- **Task execution role**: Permits the task to execute and to access the S3 env file. ecsTaskExecutionRole
-- **Environment file for the task**: An S3 object that's input to the above task definition. Includes all the variables required by our operational-models Dockerfile and run.sh setup. flu_ar2.env.
-- **EventBridge schedule**: A cron-style schedule for executing the task. flu-ar2-model
+```mermaid
+flowchart LR
+    subgraph app
+        operational-models
+    end
+    subgraph image
+        operational-models -->|docker build| docker-image
+        docker-image -->|docker push| hub-docker
+    end
+    subgraph AWS
+        TD["[ECS] Task Definition (2)"]
+        CW["CloudWatch log group (2)"]
+        ER["Execurtion Role (IAM)"]
+        S3["S3 .env file (2)"]
+        TD --> hub-docker
+        TD --> CW
+        TD --> S3
+        TD --> ER
+    end
+    subgraph "scheduled run"
+        EB["Event Bridge Schedule (2)"]
+        EB -->|" ECS params "| TD
+    end
+    subgraph "clustering VPC"
+        ECS["ECS Cluster"]
+        EB -->|target| ECS
+        EB --> VPC
+    end
+    subgraph "manual run"
+        RT["Task def > Deploy > Run task"]
+        RT --> TD
+        RT --> ECS
+        RT --> VPC
+    end
+```
