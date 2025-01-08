@@ -60,7 +60,7 @@ The benefit of using this approach is that:
 
 - new data can easily be added to the target data.(see [supplementary material](https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/2025-01-06-rfc-target-data-formats.html)).
 
-- arrow datasets also allow us to filter the data on read which means we don't need to read the full dataset in should only a subset be required.
+- partitioned datasets allow more efficient access by partition-aware data readers (for example, arrow, polars, DuckDB), which can filter the data on read if only a subset of it is required.
 
 - arrow datasets work for single files also so we can use the same function to read both single and partitioned target data.
 
