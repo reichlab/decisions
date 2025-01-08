@@ -82,7 +82,7 @@ Large un-partitioned data could be stored locally in a `target-data-raw` directo
 
 ### Functionality for writing, reading and validating target data
 
-As aforementioned, we propose that we access target data as arrow datasets. 
+As aforementioned, we propose that we access target data as arrow datasets using `arrow::open_dataset()`. 
 
 We can then develop functionality to:
 
