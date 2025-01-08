@@ -58,7 +58,7 @@ target-data/oracle-output/target_end_date=2022-11-05
 target-data/oracle-output/target_end_date=2022-11-05/part-0.csv
 ```
 
-_see more details on file names in the <#data-file-names> section_
+_see more details on file names in the [Date file names](#data-file-names)_
 
 Such partitioned data can be easily created using [`arrow::write_dataset()`](https://arrow.apache.org/docs/r/reference/write_dataset.html) in R or [`pyarrow.dataset.write_dataset`](https://arrow.apache.org/docs/python/generated/pyarrow.dataset.write_dataset.html) in Python and use **hive partitioning**.
 
