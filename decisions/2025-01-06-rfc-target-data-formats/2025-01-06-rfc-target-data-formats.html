@@ -72,10 +72,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#source-data" id="toc-source-data" class="nav-link active" data-scroll-target="#source-data">Source data</a>
+  <ul class="collapse">
+  <li><a href="#create-source-data-paths" id="toc-create-source-data-paths" class="nav-link" data-scroll-target="#create-source-data-paths">Create source data paths</a></li>
+  <li><a href="#read-single-file-data" id="toc-read-single-file-data" class="nav-link" data-scroll-target="#read-single-file-data">Read single file data</a></li>
+  </ul></li>
+  <li><a href="#writing-partitioned-data" id="toc-writing-partitioned-data" class="nav-link" data-scroll-target="#writing-partitioned-data">Writing partitioned data</a>
+  <ul class="collapse">
+  <li><a href="#parquet-datasets" id="toc-parquet-datasets" class="nav-link" data-scroll-target="#parquet-datasets">parquet datasets</a></li>
+  <li><a href="#more-complex-partitioning" id="toc-more-complex-partitioning" class="nav-link" data-scroll-target="#more-complex-partitioning">More complex partitioning</a></li>
+  <li><a href="#csv-datasets" id="toc-csv-datasets" class="nav-link" data-scroll-target="#csv-datasets">csv datasets</a></li>
+  </ul></li>
+  <li><a href="#appending-new-data" id="toc-appending-new-data" class="nav-link" data-scroll-target="#appending-new-data">Appending new data</a></li>
+  <li><a href="#opening-single-files" id="toc-opening-single-files" class="nav-link" data-scroll-target="#opening-single-files">Opening single files</a></li>
+  <li><a href="#applying-a-schema" id="toc-applying-a-schema" class="nav-link" data-scroll-target="#applying-a-schema">Applying a schema</a>
+  <ul class="collapse">
+  <li><a href="#applying-a-schema-to-parquet-datasets" id="toc-applying-a-schema-to-parquet-datasets" class="nav-link" data-scroll-target="#applying-a-schema-to-parquet-datasets">Applying a schema to parquet datasets</a></li>
+  <li><a href="#applying-a-schema-to-csv-datasets" id="toc-applying-a-schema-to-csv-datasets" class="nav-link" data-scroll-target="#applying-a-schema-to-csv-datasets">Applying a schema to csv datasets</a></li>
+  </ul></li>
+  <li><a href="#partitioning-that-contains-all-data-in-files" id="toc-partitioning-that-contains-all-data-in-files" class="nav-link" data-scroll-target="#partitioning-that-contains-all-data-in-files">Partitioning that contains all data in files</a></li>
+  <li><a href="#data-file-names" id="toc-data-file-names" class="nav-link" data-scroll-target="#data-file-names">Data file names</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -123,17 +150,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>target_data_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(hub_path, <span class="st">"target-data"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(target_data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpBirzQq/file46311a796e8a/complex-forecast-hub/target-data/README.md
-/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpBirzQq/file46311a796e8a/complex-forecast-hub/target-data/oracle-output.csv
-/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpBirzQq/file46311a796e8a/complex-forecast-hub/target-data/time-series.csv</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/README.md
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/oracle-output.csv
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/time-series.csv</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>timeseries_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"time-series.csv"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>oracle_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"oracle-output.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="read-single-file-data" class="level1">
-<h1>Read single file data</h1>
+<section id="read-single-file-data" class="level3">
+<h3 class="anchored" data-anchor-id="read-single-file-data">Read single file data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>timeseries <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(timeseries_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -160,6 +186,8 @@ date (1): target_end_date
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
+</section>
+</section>
 <section id="writing-partitioned-data" class="level2">
 <h2 class="anchored" data-anchor-id="writing-partitioned-data">Writing partitioned data</h2>
 <section id="parquet-datasets" class="level3">
@@ -1489,22 +1517,22 @@ target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-1
 <pre><code># A tibble: 5,724 × 6
    location output_type output_type_id oracle_value target       target_end_date
  * &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;          
- 1 US       quantile    &lt;NA&gt;                   6692 wk inc flu … 2023-01-14     
- 2 01       quantile    &lt;NA&gt;                     94 wk inc flu … 2023-01-14     
- 3 02       quantile    &lt;NA&gt;                      6 wk inc flu … 2023-01-14     
- 4 04       quantile    &lt;NA&gt;                    140 wk inc flu … 2023-01-14     
- 5 05       quantile    &lt;NA&gt;                     98 wk inc flu … 2023-01-14     
- 6 06       quantile    &lt;NA&gt;                    354 wk inc flu … 2023-01-14     
- 7 08       quantile    &lt;NA&gt;                     85 wk inc flu … 2023-01-14     
- 8 09       quantile    &lt;NA&gt;                     72 wk inc flu … 2023-01-14     
- 9 10       quantile    &lt;NA&gt;                     11 wk inc flu … 2023-01-14     
-10 11       quantile    &lt;NA&gt;                      5 wk inc flu … 2023-01-14     
+ 1 US       pmf         low                       1 wk flu hosp… 2023-01-14     
+ 2 US       pmf         moderate                  0 wk flu hosp… 2023-01-14     
+ 3 US       pmf         high                      0 wk flu hosp… 2023-01-14     
+ 4 US       pmf         very high                 0 wk flu hosp… 2023-01-14     
+ 5 01       pmf         low                       1 wk flu hosp… 2023-01-14     
+ 6 01       pmf         moderate                  0 wk flu hosp… 2023-01-14     
+ 7 01       pmf         high                      0 wk flu hosp… 2023-01-14     
+ 8 01       pmf         very high                 0 wk flu hosp… 2023-01-14     
+ 9 02       pmf         low                       1 wk flu hosp… 2023-01-14     
+10 02       pmf         moderate                  0 wk flu hosp… 2023-01-14     
 # ℹ 5,714 more rows</code></pre>
 </div>
 </div>
 </section>
-<section id="using-a-schema" class="level2">
-<h2 class="anchored" data-anchor-id="using-a-schema">Using a schema</h2>
+<section id="applying-a-schema" class="level2">
+<h2 class="anchored" data-anchor-id="applying-a-schema">Applying a schema</h2>
 <p>Here I explore ensuring that columns, especially</p>
 <p>First I create a utility function for partitioning oracle data on <code>target_end_date</code> into different formatted datasets (csv or parquet):</p>
 <div class="cell">
@@ -1630,7 +1658,7 @@ oracle_value: double</code></pre>
 <span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `compute.Dataset()`:
-! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpBirzQq/file46311a796e8a/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
+! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
 </div>
 </div>
 <p>Using the <code>col_types</code> argument instead opens the dataset but does not apply the schema to the partitioning column:</p>
@@ -1687,7 +1715,41 @@ oracle_value: double</code></pre>
 # ℹ 200,330 more rows</code></pre>
 </div>
 </div>
-<p>This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid.</p>
+<p>This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid. Having said that, we can determine the partitioning column from the directory names, it’s just more of a faff.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>partition_cols <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">type =</span> <span class="st">"directory"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">"^[^=]+"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>partitioning <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">hive_partition</span>(<span class="sc">!!!</span>purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(partition_cols),</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> schema[[.x]]<span class="sc">$</span>type</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"csv"</span>,</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> schema,</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">quoted_na =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> partitioning</span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+   &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;date&gt;         
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   2380 2022-10-22     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                    141 2022-10-22     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      3 2022-10-22     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                     22 2022-10-22     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     50 2022-10-22     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    124 2022-10-22     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     15 2022-10-22     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                      9 2022-10-22     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                      1 2022-10-22     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      8 2022-10-22     
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
 <p>There have always been issues (see <a href="https://github.com/apache/arrow/issues/34589" class="uri">https://github.com/apache/arrow/issues/34589</a> and <a href="https://github.com/apache/arrow/issues/34640" class="uri">https://github.com/apache/arrow/issues/34640</a>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved, I <a href="https://github.com/apache/arrow/issues/34640#issuecomment-2577363842">re-commented on one of the issues</a> as I don’t think that is the case. Will be interesting to hear their response.</p>
 </section>
 </section>
@@ -1697,16 +1759,16 @@ oracle_value: double</code></pre>
 <p>Because reducing redundancy is a key aspect of partitioning, this is not possible if files are partitioned by a data column into sub-directories.</p>
 <p>However, it is possible to just split files within a top level directory. This allows for all columns to be present in resulting data files and still allow data to be accessible as a dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_csv_dataset</span>(oracle,</span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path,</span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_rows_per_file =</span> <span class="dv">10000</span></span>
-<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_csv_dataset</span>(oracle,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_rows_per_file =</span> <span class="dv">10000</span></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>target-data/oracle-output/part-0.csv  target-data/oracle-output/part-1.csv  
 target-data/oracle-output/part-10.csv target-data/oracle-output/part-11.csv 
@@ -1722,8 +1784,8 @@ target-data/oracle-output/part-9.csv  </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 200,340 × 6
    location target_end_date target       output_type output_type_id oracle_value
@@ -1743,8 +1805,8 @@ target-data/oracle-output/part-9.csv  </code></pre>
 </div>
 <p>Individual files continue to contain all data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tail</span>(<span class="dv">1</span>L)</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tail</span>(<span class="dv">1</span>L)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 10000 Columns: 6
 ── Column specification ────────────────────────────────────────────────────────
@@ -1782,21 +1844,21 @@ date (1): target_end_date
 <p>In the example below, instead of writing an arrow dataset using <code>write_dataset()</code> I instead split the data by <code>target_end_date</code> and write a file for each in the root of the <code>target_data/oracle</code> directory.</p>
 <p><code>open_dataset()</code> continues to be able to open the files as a dataset successfully.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>target_dates <span class="ot">&lt;-</span> <span class="fu">unique</span>(oracle<span class="sc">$</span>target_end_date)</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  target_dates,</span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
-<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
-<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
-<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
-<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>target_dates <span class="ot">&lt;-</span> <span class="fu">unique</span>(oracle<span class="sc">$</span>target_end_date)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  target_dates,</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>target-data/oracle-output/2022-10-22.csv
 target-data/oracle-output/2022-10-29.csv
@@ -1834,8 +1896,8 @@ target-data/oracle-output/2023-06-03.csv
 target-data/oracle-output/2023-06-10.csv
 target-data/oracle-output/2023-06-17.csv</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 200,340 × 6
    location target_end_date target       output_type output_type_id oracle_value
@@ -1855,22 +1917,22 @@ target-data/oracle-output/2023-06-17.csv</code></pre>
 </div>
 <p>I also demonstrate how this approach can be used to append new <code>target_end_data</code> files, which may be closer to the situation a hub in the wild might face. Specifically I first write files for all target end dates except for the last one and check that it can be read. I then add the file for the last target end date and show that the initial as well as the updated data are now available.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
-<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create files for all but the last target end date</span></span>
-<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
-<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  target_dates[<span class="sc">-</span><span class="fu">length</span>(target_dates)],</span>
-<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
-<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
-<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
-<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
-<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a>initial <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) </span>
-<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a>initial <span class="sc">|&gt;</span></span>
-<span id="cb74-16"><a href="#cb74-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create files for all but the last target end date</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>  target_dates[<span class="sc">-</span><span class="fu">length</span>(target_dates)],</span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>initial <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path)</span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>initial <span class="sc">|&gt;</span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 194,616 × 6
    location target_end_date target       output_type output_type_id oracle_value
@@ -1887,19 +1949,19 @@ target-data/oracle-output/2023-06-17.csv</code></pre>
 10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
 # ℹ 194,606 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>initial <span class="sc">|&gt;</span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>initial <span class="sc">|&gt;</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 194616</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>initial_ted <span class="ot">&lt;-</span> initial <span class="sc">|&gt;</span></span>
-<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(target_end_date) <span class="sc">|&gt;</span></span>
-<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
-<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(target_end_date) <span class="sc">|&gt;</span> </span>
-<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>()</span>
-<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>initial_ted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>initial_ted <span class="ot">&lt;-</span> initial <span class="sc">|&gt;</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>()</span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>initial_ted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "2022-10-22" "2022-10-29" "2022-11-05" "2022-11-12" "2022-11-19"
  [6] "2022-11-26" "2022-12-03" "2022-12-10" "2022-12-17" "2022-12-24"
@@ -1911,20 +1973,20 @@ target-data/oracle-output/2023-06-17.csv</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  target_dates[<span class="fu">length</span>(target_dates)],</span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
-<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
-<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
-<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
-<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a>updated <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
-<span id="cb80-11"><a href="#cb80-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() </span>
-<span id="cb80-12"><a href="#cb80-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb80-13"><a href="#cb80-13" aria-hidden="true" tabindex="-1"></a>updated <span class="sc">|&gt;</span></span>
-<span id="cb80-14"><a href="#cb80-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  target_dates[<span class="fu">length</span>(target_dates)],</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>updated <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span>
+<span id="cb82-12"><a href="#cb82-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-13"><a href="#cb82-13" aria-hidden="true" tabindex="-1"></a>updated <span class="sc">|&gt;</span></span>
+<span id="cb82-14"><a href="#cb82-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 200,340 × 6
    location target_end_date target       output_type output_type_id oracle_value
@@ -1941,19 +2003,19 @@ target-data/oracle-output/2023-06-17.csv</code></pre>
 10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
 # ℹ 200,330 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>updated <span class="sc">|&gt;</span></span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>updated <span class="sc">|&gt;</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 200340</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>updated_ted <span class="ot">&lt;-</span> updated <span class="sc">|&gt;</span></span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(target_end_date) <span class="sc">|&gt;</span></span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(target_end_date) <span class="sc">|&gt;</span> </span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>()</span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>updated_ted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>updated_ted <span class="ot">&lt;-</span> updated <span class="sc">|&gt;</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>()</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>updated_ted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "2022-10-22" "2022-10-29" "2022-11-05" "2022-11-12" "2022-11-19"
  [6] "2022-11-26" "2022-12-03" "2022-12-10" "2022-12-17" "2022-12-24"
@@ -1964,7 +2026,6 @@ target-data/oracle-output/2023-06-17.csv</code></pre>
 [31] "2023-05-20" "2023-05-27" "2023-06-03" "2023-06-10" "2023-06-17"</code></pre>
 </div>
 </div>
-</section>
 </section>
 
 </main>

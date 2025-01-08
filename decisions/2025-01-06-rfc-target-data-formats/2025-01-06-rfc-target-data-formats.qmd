@@ -3,6 +3,7 @@ title: "Target data formats and organisation supplementary materials"
 format: html
 author: Anna Krystalli
 editor: visual
+toc: true
 ---
 
 ## Source data
@@ -31,7 +32,7 @@ timeseries_path <- fs::path(target_data_path, "time-series.csv")
 oracle_path <- fs::path(target_data_path, "oracle-output.csv")
 ```
 
-# Read single file data
+### Read single file data
 ```{r}
 timeseries <- readr::read_csv(timeseries_path)
 oracle <- readr::read_csv(oracle_path)
@@ -230,7 +231,7 @@ arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
 
 
 
-## Using a schema
+## Applying a schema
 
 Here I explore ensuring that columns, especially
 
@@ -367,10 +368,33 @@ arrow::open_dataset(oracle_dataset_path,
   dplyr::collect()
 ```
 
-This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid.
+This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid. Having said that, we can determine the partitioning column from the directory names, it's just more of a faff.
+
+
+```{r}
+partition_cols <- fs::dir_ls(oracle_dataset_path, type = "directory") |>
+  fs::path_rel(oracle_dataset_path) |>
+  stringr::str_extract("^[^=]+") |>
+  unique()
+
+partitioning <- arrow::hive_partition(!!!purrr::map(
+  purrr::set_names(partition_cols),
+  ~ schema[[.x]]$type
+))
+arrow::open_dataset(oracle_dataset_path,
+  format = "csv",
+  col_types = schema,
+  quoted_na = TRUE,
+  partitioning = partitioning
+) |>
+  dplyr::collect()
+```
 
 There have always been issues (see <https://github.com/apache/arrow/issues/34589> and <https://github.com/apache/arrow/issues/34640>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved,
 I [re-commented on one of the issues](https://github.com/apache/arrow/issues/34640#issuecomment-2577363842) as I don't think that is the case. Will be interesting to hear their response.
+
+
+
 
 ## Partitioning that contains all data in files
 
@@ -438,7 +462,7 @@ fs::dir_ls(oracle_dataset_path) |>
   fs::path_rel(start = hub_path)
 
 arrow::open_csv_dataset(oracle_dataset_path) |>
-  dplyr::collect() 
+  dplyr::collect()
 ```
 
 I also demonstrate how this approach can be used to append new `target_end_data` files, which may be closer to the situation a hub in the wild might face. Specifically I first write files for all target end dates except for the last one and check that it can be read. I then add the file for the last target end date and show that the initial as well as the updated data are now available.
@@ -457,19 +481,19 @@ purrr::walk(
     )
 )
 
-initial <- arrow::open_csv_dataset(oracle_dataset_path) 
+initial <- arrow::open_csv_dataset(oracle_dataset_path)
 initial |>
-  dplyr::collect() 
+  dplyr::collect()
 
 initial |>
   dplyr::collect() |>
-    nrow()
+  nrow()
 
 initial_ted <- initial |>
-    distinct(target_end_date) |>
-    collect() |>
-    pull(target_end_date) |> 
-    sort()
+  distinct(target_end_date) |>
+  collect() |>
+  pull(target_end_date) |>
+  sort()
 
 initial_ted
 ```
@@ -485,21 +509,20 @@ purrr::walk(
 )
 
 updated <- arrow::open_csv_dataset(oracle_dataset_path) |>
-  dplyr::collect() 
+  dplyr::collect()
 
 updated |>
-  dplyr::collect() 
+  dplyr::collect()
 
 updated |>
   dplyr::collect() |>
-    nrow()
+  nrow()
 
 updated_ted <- updated |>
-    distinct(target_end_date) |>
-    collect() |>
-    pull(target_end_date) |> 
-    sort()
+  distinct(target_end_date) |>
+  collect() |>
+  pull(target_end_date) |>
+  sort()
 
 updated_ted
 ```
-
