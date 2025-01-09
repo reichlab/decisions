@@ -6,10 +6,14 @@ The Reich Lab currently has no formalized workflow and release process for
 publishing software (for purposes of this RFC, _publishing software_ means
 publishing on a package index like PyPI or CRAN).
 
-To my knowledge, the Lab does not actively maintain any software packages on a
-package index.
+The Lab does have one application distributed via a package index
+([`pymmwr` on PyPI](https://pypi.org/project/pymmwr/)). The Lab does not
+actively maintain pymmwr (the last release was in 2018). The application also
+predates modern security practices such as publishing to PyPI via GitHub actions
+and trusted publishers.
 
-However, that will change once Cladetime is published on PyPI.
+Therefore, this RFC will not attempt to use pymmwr as a
+baseline for proposing a software release process circa 2025.
 
 ### Aims
 
@@ -42,9 +46,9 @@ relevant package index.
 
 ### Other Options Considered
 
-No other options considered. The Reich Lab has no prior art for standardizing
-branch workflows and versioning for published packages (that I'm aware of).
-Because many people in the Reich Lab also develop Hubverse software, this
+No other options considered. The age of existing, published Reich Lab packages
+make them poor candidates for using as a baseline when standardizing a release
+process. Because many people in the Lab also develop Hubverse software, this
 proposal strongly recommends following the same procedures.
 
 ## Status
