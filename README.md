@@ -14,7 +14,7 @@ kinds of decision documents in this repository:
 structured, see
 [decisions/2024-12-09-rfc-record-decisions.md](decisions/2024-12-09-rfc-record-decisions.md)**.
 
-## Proposing a Decision
+## Proposing a Decision (LDR or RFC)
 
 To propose a decision, follow these steps
 
@@ -47,7 +47,7 @@ New projects require a project poster. To create a project poster,
    files inside the `posters/<project>/` folder.
 3. follow the instructions in the template
 4. create a pull request with the format `[poster] project title`
-5. request a review from your collaborators
+5. request a review from your collaborators with a timeline (suggestion of 1 week)
 
 ## Review Process
 
