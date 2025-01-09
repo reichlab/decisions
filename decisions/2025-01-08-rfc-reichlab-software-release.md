@@ -30,8 +30,7 @@ desirable.
 
 ## Decision
 
-We will adopt the Hubverse release process as
-[defined here](https://hubverse-org.github.io/hubDevs/articles/release-process.html).
+We will adopt [The Hubverse release process](https://hubverse-org.github.io/hubDevs/articles/release-process.html).
 
 The above link contains implementation details specific to R packages, but
 we can apply the recommendations for
