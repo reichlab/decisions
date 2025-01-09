@@ -28,11 +28,13 @@ To propose a decision, follow these steps
 3. follow the instructions in the template
 4. create a pull request with the format `[TYPE] decision title` where `[TYPE]`
    is either `[RFC]` or `[LDR]`
-5. specify the timeframe you believe is required for reviews (default: 3 days
-   for LDR, 1 week for RFC)
+5. In the main comment for the pull request, specify the timeframe you believe is required for reviews
+   (default: 3 days for LDR, 1 week for RFC)
 
 Any supporting documents that are required for your decision should be placed
 in a folder under `decisions/` with the same name as your decision document.
+Note that files within the specific subfolder need not follow a specific naming strategy
+but should have descriptive names.
 
 ## Creating a Project Poster
 
