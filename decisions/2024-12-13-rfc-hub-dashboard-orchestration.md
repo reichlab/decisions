@@ -23,14 +23,16 @@ any more workflows.
 
 ### Aims
 
- - define a method for generating a hubverse dashboard website using all or a subset of the three
-   main components
+ - define a method for generating a hubverse dashboard website using all or a
+   subset of the three main components
  - define places where the outputs for each of the three components should live
  - provide a solution that does not significantly complicate the workflows of
    hub admins
  - provide a solution that does not add significant maintenance burden for the
    hubverse core team
-- Provide a solution that is secure. For instance, a solution without proper attention to security could allow bad actors to insert code that would insert malicious javascript in the dashboard websites.
+ - Provide a solution that is secure. For instance, a solution without proper
+   attention to security could allow bad actors to insert code that would
+   insert malicious javascript in the dashboard websites.
 
 ### Anti-Aims
 
@@ -48,7 +50,9 @@ any more workflows.
    optionally register their repository to build the dashboard using our
    centralized workflows.
  - We will host the App's webhook code on a free service like glitch.io
-- We will also build out a method in which each hub dashboard repo has relatively-lightweight workflows that call centrally-maintained reusable workflows
+ - We will also build out a method in which each hub dashboard repo has
+   relatively-lightweight workflows that call centrally-maintained reusable
+   workflows
 
 ### Other Options Considered
 
@@ -60,7 +64,7 @@ a (relatively small) workflow to their dashboard repo and update it as needed.
 Configured to run on a cron schedule and manually as needed.
 
 - PRO: Doesn't require a security token that has write access to a control
-room-type repository
+   room-type repository
 - PRO: Doesn't require API/web service
 - CON: Increased maintenance burden for hub admins
 - CON: Potential increased support burden for hub devs
@@ -70,7 +74,9 @@ room-type repository
 
 Hub dashboard repos have a small boilerplate workflow that invokes the control
 room workflows that perform dashboard tasks. Hub admins are provided a
-personal GitHub Personal Access token with write access to the control room repo. Hubverse organization owners are required to maintain and rotate the token.
+personal GitHub Personal Access token with write access to the control room
+repo. Hubverse organization owners are required to maintain and rotate the
+token.
 
 - PRO: Centralized workflows are easier for hub devs to maintain
 - PRO: Doesn't require API/web service
@@ -96,11 +102,12 @@ Dashboard workflows are maintained in the control room app, but some kind of
 CI/build process automatically adds (or updates) them to individual hub
 dashboard repos.
 
-- PRO: Benefits of centralized repo + sidesteps need for hub dashboard repos
-to have write access to control room app
+- PRO: Benefits of centralized repo + sidesteps need for hub dashboard repos to
+   have write access to control room app
 - PRO: Doesn't require API/web service
-- CON: In practice, keeping things synchronized between individual repos and
-a central repo is difficult because it requires careful attention to the permissions of GitHub tokens.
+- CON: In practice, keeping things synchronized between individual repos and a
+   central repo is difficult because it requires careful attention to the
+   permissions of GitHub tokens.
 - NEUTRAL: Does not use GitHub app
 
 #### Secrets vault
