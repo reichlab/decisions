@@ -51,7 +51,7 @@ that can be used by either solution.
  - We will generate artifacts from each workflow and store them as separate
    orphan branches in the dashboard repository.
  - We will create a template repository for hub admins to use as the basis for
-   their website. 
+   their website.
 
 ### GitHub App: No-code solution for Hub Admins
 
@@ -67,6 +67,9 @@ no workflow setup on behalf of the administrators.
 - PRO: does not require a new workflow to maintain for hubverse adminstrators
 - PRO: allows for a richer set of interactions via GitHub's webhooks API (i.e.
   issue comment commands)
+- PRO: new optional features are trivially added
+- CON: workflow time is run on our GitHub Account
+- NEUTRAL: GitHub provides open source repositories with unlimited run time
 - CON: requires core team maintenance of additional JavaScript code
 - CON: requires an additional service like glitch.io or AWS Lambda
 - CON: requires additional management of tokens
@@ -90,8 +93,8 @@ aim of avoiding a significant maintenance burden for the core hubverse team.
 - PRO: Doesn't require API/web service
 - CON: Increased maintenance burden for hub admins
 - CON: Potential increased support burden for hub devs
+- CON: New optional features may require workflow modifications by hub devs
 - NEUTRAL: Does not use GitHub app
-
 
 ### Other Options Considered
 
@@ -160,7 +163,11 @@ proposed
 
 ## Consequences
 
-TBD
+ - We will maintain a central repository for these workflows. This will not
+   change based on our decision.
+ - We will spin up a GitHub App and host it on an external service.
+ - We must come to a decision on the appropriate method at a future date.
+
 
 ## Projects
 
