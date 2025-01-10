@@ -17,19 +17,20 @@ This project requires two data sources:
 1. a modeling hub that contains model output data
 2. a dashboard repository that defines parameters for the site and the dashboard
 
-The admins of at least one hubverse project has expressed a desire to not manage
+The admins of at least one hubverse project have expressed a desire to not manage
 any more workflows.
 
 
 ### Aims
 
- - define a method for generating a hubverse dashboard website using the three
+ - define a method for generating a hubverse dashboard website using all or a subset of the three
    main components
  - define places where the outputs for each of the three components should live
  - provide a solution that does not significantly complicate the workflows of
    hub admins
  - provide a solution that does not add significant maintenance burden for the
    hubverse core team
+- Provide a solution that is secure. For instance, a solution without proper attention to security could allow bad actors to insert code that would insert malicious javascript in the dashboard websites.
 
 ### Anti-Aims
 
@@ -47,6 +48,7 @@ any more workflows.
    optionally register their repository to build the dashboard using our
    centralized workflows.
  - We will host the App's webhook code on a free service like glitch.io
+- We will also build out a method in which each hub dashboard repo has relatively-lightweight workflows that call centrally-maintained reusable workflows
 
 ### Other Options Considered
 
@@ -98,7 +100,7 @@ dashboard repos.
 to have write access to control room app
 - PRO: Doesn't require API/web service
 - CON: In practice, keeping things synchronized between individual repos and
-a central repo is difficult
+a central repo is difficult because it requires careful attention to the permissions of GitHub tokens.
 - NEUTRAL: Does not use GitHub app
 
 #### Secrets vault
