@@ -23,8 +23,8 @@ any more workflows.
 
 ### Aims
 
- - define a method for generating a hubverse dashboard website using all or a
-   subset of the three main components
+ - define one or more potential methods for generating a hubverse dashboard
+   website using all or a subset of the three main components
  - define places where the outputs for each of the three components should live
  - provide a solution that does not significantly complicate the workflows of
    hub admins
@@ -36,7 +36,7 @@ any more workflows.
 
 ### Anti-Aims
 
- - TBD
+ - define a single solution that we will use from now on.
 
 ## Decision
 
@@ -81,7 +81,8 @@ token.
 - PRO: Centralized workflows are easier for hub devs to maintain
 - PRO: Doesn't require API/web service
 - PRO: Less workflow boilerplate for hub admins (but not zero)
-- CON: Decentralized secrets management
+- CON: Decentralized secrets management---sharing a PAT for the central repo
+   is a security risk for that repository
 - NEUTRAL: Does not use GitHub app
 
 #### Centralized workflows invoked by individual hub repos via GitHub App token
@@ -93,7 +94,8 @@ token as repo secret and use it when invoking the control room workflows.
 - PRO: Centralized workflows are easier for hub devs to maintain
 - PRO: Doesn't require API/web service
 - PRO: Less workflow boilerplate for hub admins (but not zero)
-- CON: Sharing the GitHub App token
+- CON: Sharing the GitHub App token is a security risk for any repository that
+   installs that GitHub App
 - NEUTRAL: Uses a GitHub app
 
 #### Centralized workflows automatically copied to individual dashboard repos
@@ -121,8 +123,8 @@ Secrets Manager).
 - PRO: Doesn't require API/web service
 - PRO: Less workflow boilerplate for hub admins (but not zero)
 - CON: It replaces the API/web service moving part with a different moving part
-(albeit one that's similar to the existing onboarding process for cloud-based
-hubs)
+   (albeit one that's similar to the existing onboarding process for cloud-based
+   hubs)
 - NEUTRAL: Uses a GitHub app
    - **Not chosen because of maintenance burden for hubverse admins** (see 
      [Zhian's comment about distributed workflows](https://github.com/reichlab/decisions/pull/3#discussion_r1884480624))
