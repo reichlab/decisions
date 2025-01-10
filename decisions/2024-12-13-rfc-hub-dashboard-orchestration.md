@@ -20,7 +20,6 @@ This project requires two data sources:
 The admins of at least one hubverse project have expressed a desire to not manage
 any more workflows.
 
-
 ### Aims
 
  - define one or more potential methods for generating a hubverse dashboard
@@ -40,28 +39,51 @@ any more workflows.
 
 ## Decision
 
+### Centralized workflow
+
+The centralized workflow is a set of workflows that lives in a single repository
+that can be used by either solution.
+
  - We will use [re-useable GitHub
    workflows](https://docs.github.com/en/actions/sharing-automations/reusing-workflows#limitations)
    to orchestrate each of the build process---these workflows can be reused in
    any repository.
  - We will generate artifacts from each workflow and store them as separate
    orphan branches in the dashboard repository.
- - We will build an experimental GitHub App that allows hub admins to
-   optionally register their repository to build the dashboard using our
+ - We will create a template repository for hub admins to use as the basis for
+   their website. 
+
+### GitHub App: No-code solution for Hub Admins
+
+ - We will build an experimental GitHub App that allows hub admins
+   to optionally register their repository to build the dashboard using our
    centralized workflows.
  - We will host the App's webhook code on a free service like glitch.io
- - We will also build out a method in which each hub dashboard repo has
+
+To satisfy the aim of avoiding the addition of a siginficant maintenance burden
+on hub administrators, this potential solution uses a GitHub App, which requires
+no workflow setup on behalf of the administrators.
+
+- PRO: does not require a new workflow to maintain for hubverse adminstrators
+- PRO: allows for a richer set of interactions via GitHub's webhooks API (i.e.
+  issue comment commands)
+- CON: requires core team maintenance of additional JavaScript code
+- CON: requires an additional service like glitch.io or AWS Lambda
+- CON: requires additional management of tokens
+- NEUTRAL: uses a GitHub App
+
+### A template workflow that calls out to the centrally-maintained re-usable workflows
+
+ - We will build out a method in which each hub dashboard repo has
    relatively-lightweight workflows that call centrally-maintained reusable
-   workflows
-
-### Other Options Considered
-
-#### A set of GitHub workflows copied to individual hub dashboard repos calling centrally-maintained reusable workflows
+   workflows.
+ - We will save these workflows in a template repository.
 
 Similar to current Hubverse-developed GitHub actions, but putting most of
 the heavy lifting in centrally-maintained reusable workflows. Hub admins copy
 a (relatively small) workflow to their dashboard repo and update it as needed.
-Configured to run on a cron schedule and manually as needed.
+Configured to run on a cron schedule and manually as needed. This satisfies the
+aim of avoiding a significant maintenance burden for the core hubverse team.
 
 - PRO: Doesn't require a security token that has write access to a control
    room-type repository
@@ -69,6 +91,9 @@ Configured to run on a cron schedule and manually as needed.
 - CON: Increased maintenance burden for hub admins
 - CON: Potential increased support burden for hub devs
 - NEUTRAL: Does not use GitHub app
+
+
+### Other Options Considered
 
 #### Centralized workflows invoked by individual hub repos via PAT
 
