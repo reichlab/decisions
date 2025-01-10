@@ -35,7 +35,7 @@ Website that can be used to explore forecast performance.
 
 ### Why are we doing this?
 
-TODO: We needs
+In some form, an evaluation "leaderboard" is a key component of most hubs that are oriented around a forecasting task.  It's valuable for these evaluations to be publicly accessible, and many hubs have placed evaluations on their website.  This is a feature that several existing hubs have asked for.
 
 ### What are we _not_ trying to do?
 

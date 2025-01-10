@@ -6,7 +6,7 @@ We need to produce a dashboard for model evaluations for both the FluSight and
 COVID forecast hubs. The first decision that we need to make is the question
 about what technologies we can use to make the dashboard.
 
-We have made a promise that the dashboard would be available next year to both
+We have made a promise that the dashboard would be available in early 2025 to both
 groups.
 
 There is uncertainty with respect to the funding situation for the development
@@ -68,7 +68,7 @@ proposed
 ## Consequences
 
  - We will be able to continue movement on this project
- - The lab's "best" language is R, so this may create an additional dependency
+ - Javascript is not a familiar language to many developers in the lab, so this choice creates an additional dependency
    burden
  - Other lab members can be consulted for advice on JavaScript frontend
    applications
