@@ -150,9 +150,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>target_data_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(hub_path, <span class="st">"target-data"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(target_data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/README.md
-/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/oracle-output.csv
-/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/time-series.csv</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/README.md
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output.csv
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/time-series.csv</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>timeseries_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"time-series.csv"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>oracle_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"oracle-output.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -204,79 +204,80 @@ date (1): target_end_date
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">"target_end_date"</span>,</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/target_end_date=2022-10-22
-target-data/oracle-output/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target_end_date=2022-10-29
-target-data/oracle-output/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target_end_date=2022-11-05
-target-data/oracle-output/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target_end_date=2022-11-12
-target-data/oracle-output/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target_end_date=2022-11-19
-target-data/oracle-output/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target_end_date=2022-11-26
-target-data/oracle-output/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target_end_date=2022-12-03
-target-data/oracle-output/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target_end_date=2022-12-10
-target-data/oracle-output/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target_end_date=2022-12-17
-target-data/oracle-output/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target_end_date=2022-12-24
-target-data/oracle-output/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target_end_date=2022-12-31
-target-data/oracle-output/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target_end_date=2023-01-07
-target-data/oracle-output/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target_end_date=2023-01-14
-target-data/oracle-output/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target_end_date=2023-01-21
-target-data/oracle-output/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target_end_date=2023-01-28
-target-data/oracle-output/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target_end_date=2023-02-04
-target-data/oracle-output/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target_end_date=2023-02-11
-target-data/oracle-output/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target_end_date=2023-02-18
-target-data/oracle-output/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target_end_date=2023-02-25
-target-data/oracle-output/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target_end_date=2023-03-04
-target-data/oracle-output/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target_end_date=2023-03-11
-target-data/oracle-output/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target_end_date=2023-03-18
-target-data/oracle-output/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target_end_date=2023-03-25
-target-data/oracle-output/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target_end_date=2023-04-01
-target-data/oracle-output/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target_end_date=2023-04-08
-target-data/oracle-output/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target_end_date=2023-04-15
-target-data/oracle-output/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target_end_date=2023-04-22
-target-data/oracle-output/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target_end_date=2023-04-29
-target-data/oracle-output/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target_end_date=2023-05-06
-target-data/oracle-output/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target_end_date=2023-05-13
-target-data/oracle-output/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target_end_date=2023-05-20
-target-data/oracle-output/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target_end_date=2023-05-27
-target-data/oracle-output/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target_end_date=2023-06-03
-target-data/oracle-output/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target_end_date=2023-06-10
-target-data/oracle-output/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target_end_date=2023-06-17
-target-data/oracle-output/target_end_date=2023-06-17/part-0.parquet</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target_end_date=2022-10-22
+│   └── part-0.parquet
+├── target_end_date=2022-10-29
+│   └── part-0.parquet
+├── target_end_date=2022-11-05
+│   └── part-0.parquet
+├── target_end_date=2022-11-12
+│   └── part-0.parquet
+├── target_end_date=2022-11-19
+│   └── part-0.parquet
+├── target_end_date=2022-11-26
+│   └── part-0.parquet
+├── target_end_date=2022-12-03
+│   └── part-0.parquet
+├── target_end_date=2022-12-10
+│   └── part-0.parquet
+├── target_end_date=2022-12-17
+│   └── part-0.parquet
+├── target_end_date=2022-12-24
+│   └── part-0.parquet
+├── target_end_date=2022-12-31
+│   └── part-0.parquet
+├── target_end_date=2023-01-07
+│   └── part-0.parquet
+├── target_end_date=2023-01-14
+│   └── part-0.parquet
+├── target_end_date=2023-01-21
+│   └── part-0.parquet
+├── target_end_date=2023-01-28
+│   └── part-0.parquet
+├── target_end_date=2023-02-04
+│   └── part-0.parquet
+├── target_end_date=2023-02-11
+│   └── part-0.parquet
+├── target_end_date=2023-02-18
+│   └── part-0.parquet
+├── target_end_date=2023-02-25
+│   └── part-0.parquet
+├── target_end_date=2023-03-04
+│   └── part-0.parquet
+├── target_end_date=2023-03-11
+│   └── part-0.parquet
+├── target_end_date=2023-03-18
+│   └── part-0.parquet
+├── target_end_date=2023-03-25
+│   └── part-0.parquet
+├── target_end_date=2023-04-01
+│   └── part-0.parquet
+├── target_end_date=2023-04-08
+│   └── part-0.parquet
+├── target_end_date=2023-04-15
+│   └── part-0.parquet
+├── target_end_date=2023-04-22
+│   └── part-0.parquet
+├── target_end_date=2023-04-29
+│   └── part-0.parquet
+├── target_end_date=2023-05-06
+│   └── part-0.parquet
+├── target_end_date=2023-05-13
+│   └── part-0.parquet
+├── target_end_date=2023-05-20
+│   └── part-0.parquet
+├── target_end_date=2023-05-27
+│   └── part-0.parquet
+├── target_end_date=2023-06-03
+│   └── part-0.parquet
+├── target_end_date=2023-06-10
+│   └── part-0.parquet
+└── target_end_date=2023-06-17
+    └── part-0.parquet</code></pre>
 </div>
 </div>
 <p>Finally let’s access our data and also perform some filtering on read. Notice how we do not need to explicitly define the partitioning used to write the data:</p>
@@ -318,222 +319,222 @@ target-data/oracle-output/target_end_date=2023-06-17/part-0.parquet</code></pre>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/target=wk%20flu%20hosp%20rate
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-05
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-12
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-19
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-26
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-24
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-31
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-07
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-14
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-21
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-28
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-01
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-08
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-15
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-06
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-13
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-20
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-27
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-05
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-12
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-19
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-26
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-24
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-31
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-07
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-14
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-21
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-28
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-01
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-08
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-15
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-06
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-13
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-20
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-27
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-22
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-29
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-05
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-12
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-19
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-26
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-03
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-10
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-17
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-24
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-31
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-07
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-14
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-21
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-28
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-04
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-11
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-18
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-25
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-04
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-11
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-18
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-25
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-01
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-08
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-15
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-22
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-29
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-06
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-13
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-20
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-27
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-03
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-10
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-17
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-17/part-0.parquet</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target=wk%20flu%20hosp%20rate
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── target=wk%20flu%20hosp%20rate%20category
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+└── target=wk%20inc%20flu%20hosp
+    ├── target_end_date=2022-10-22
+    │   └── part-0.parquet
+    ├── target_end_date=2022-10-29
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-05
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-12
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-19
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-26
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-03
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-10
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-17
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-24
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-31
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-07
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-14
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-21
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-28
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-01
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-08
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-15
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-22
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-29
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-06
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-13
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-20
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-27
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-03
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-10
+    │   └── part-0.parquet
+    └── target_end_date=2023-06-17
+        └── part-0.parquet</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
@@ -568,435 +569,435 @@ target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-1
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/output_type=cdf
-target-data/oracle-output/output_type=cdf/target_end_date=2022-10-22
-target-data/oracle-output/output_type=cdf/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-10-29
-target-data/oracle-output/output_type=cdf/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-05
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-12
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-19
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-26
-target-data/oracle-output/output_type=cdf/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-03
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-10
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-17
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-24
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-31
-target-data/oracle-output/output_type=cdf/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-07
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-14
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-21
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-28
-target-data/oracle-output/output_type=cdf/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-04
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-11
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-18
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-25
-target-data/oracle-output/output_type=cdf/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-04
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-11
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-18
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-25
-target-data/oracle-output/output_type=cdf/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-01
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-08
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-15
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-22
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-29
-target-data/oracle-output/output_type=cdf/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-06
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-13
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-20
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-27
-target-data/oracle-output/output_type=cdf/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-06-03
-target-data/oracle-output/output_type=cdf/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-06-10
-target-data/oracle-output/output_type=cdf/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/output_type=cdf/target_end_date=2023-06-17
-target-data/oracle-output/output_type=cdf/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/output_type=mean
-target-data/oracle-output/output_type=mean/target_end_date=2022-10-22
-target-data/oracle-output/output_type=mean/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-10-29
-target-data/oracle-output/output_type=mean/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-05
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-12
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-19
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-26
-target-data/oracle-output/output_type=mean/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-03
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-10
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-17
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-24
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-31
-target-data/oracle-output/output_type=mean/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-07
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-14
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-21
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-28
-target-data/oracle-output/output_type=mean/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-04
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-11
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-18
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-25
-target-data/oracle-output/output_type=mean/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-04
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-11
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-18
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-25
-target-data/oracle-output/output_type=mean/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-01
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-08
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-15
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-22
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-29
-target-data/oracle-output/output_type=mean/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-06
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-13
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-20
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-27
-target-data/oracle-output/output_type=mean/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-06-03
-target-data/oracle-output/output_type=mean/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-06-10
-target-data/oracle-output/output_type=mean/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/output_type=mean/target_end_date=2023-06-17
-target-data/oracle-output/output_type=mean/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/output_type=median
-target-data/oracle-output/output_type=median/target_end_date=2022-10-22
-target-data/oracle-output/output_type=median/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-10-29
-target-data/oracle-output/output_type=median/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-11-05
-target-data/oracle-output/output_type=median/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-11-12
-target-data/oracle-output/output_type=median/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-11-19
-target-data/oracle-output/output_type=median/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-11-26
-target-data/oracle-output/output_type=median/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-12-03
-target-data/oracle-output/output_type=median/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-12-10
-target-data/oracle-output/output_type=median/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-12-17
-target-data/oracle-output/output_type=median/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-12-24
-target-data/oracle-output/output_type=median/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2022-12-31
-target-data/oracle-output/output_type=median/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-01-07
-target-data/oracle-output/output_type=median/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-01-14
-target-data/oracle-output/output_type=median/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-01-21
-target-data/oracle-output/output_type=median/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-01-28
-target-data/oracle-output/output_type=median/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-02-04
-target-data/oracle-output/output_type=median/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-02-11
-target-data/oracle-output/output_type=median/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-02-18
-target-data/oracle-output/output_type=median/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-02-25
-target-data/oracle-output/output_type=median/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-03-04
-target-data/oracle-output/output_type=median/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-03-11
-target-data/oracle-output/output_type=median/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-03-18
-target-data/oracle-output/output_type=median/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-03-25
-target-data/oracle-output/output_type=median/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-04-01
-target-data/oracle-output/output_type=median/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-04-08
-target-data/oracle-output/output_type=median/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-04-15
-target-data/oracle-output/output_type=median/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-04-22
-target-data/oracle-output/output_type=median/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-04-29
-target-data/oracle-output/output_type=median/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-05-06
-target-data/oracle-output/output_type=median/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-05-13
-target-data/oracle-output/output_type=median/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-05-20
-target-data/oracle-output/output_type=median/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-05-27
-target-data/oracle-output/output_type=median/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-06-03
-target-data/oracle-output/output_type=median/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-06-10
-target-data/oracle-output/output_type=median/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/output_type=median/target_end_date=2023-06-17
-target-data/oracle-output/output_type=median/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/output_type=pmf
-target-data/oracle-output/output_type=pmf/target_end_date=2022-10-22
-target-data/oracle-output/output_type=pmf/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-10-29
-target-data/oracle-output/output_type=pmf/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-05
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-12
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-19
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-26
-target-data/oracle-output/output_type=pmf/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-03
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-10
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-17
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-24
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-31
-target-data/oracle-output/output_type=pmf/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-07
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-14
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-21
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-28
-target-data/oracle-output/output_type=pmf/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-04
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-11
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-18
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-25
-target-data/oracle-output/output_type=pmf/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-04
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-11
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-18
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-25
-target-data/oracle-output/output_type=pmf/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-01
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-08
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-15
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-22
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-29
-target-data/oracle-output/output_type=pmf/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-06
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-13
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-20
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-27
-target-data/oracle-output/output_type=pmf/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-06-03
-target-data/oracle-output/output_type=pmf/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-06-10
-target-data/oracle-output/output_type=pmf/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/output_type=pmf/target_end_date=2023-06-17
-target-data/oracle-output/output_type=pmf/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/output_type=quantile
-target-data/oracle-output/output_type=quantile/target_end_date=2022-10-22
-target-data/oracle-output/output_type=quantile/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-10-29
-target-data/oracle-output/output_type=quantile/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-05
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-12
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-19
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-26
-target-data/oracle-output/output_type=quantile/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-03
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-10
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-17
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-24
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-31
-target-data/oracle-output/output_type=quantile/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-07
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-14
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-21
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-28
-target-data/oracle-output/output_type=quantile/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-04
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-11
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-18
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-25
-target-data/oracle-output/output_type=quantile/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-04
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-11
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-18
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-25
-target-data/oracle-output/output_type=quantile/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-01
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-08
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-15
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-22
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-29
-target-data/oracle-output/output_type=quantile/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-06
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-13
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-20
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-27
-target-data/oracle-output/output_type=quantile/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-06-03
-target-data/oracle-output/output_type=quantile/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-06-10
-target-data/oracle-output/output_type=quantile/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/output_type=quantile/target_end_date=2023-06-17
-target-data/oracle-output/output_type=quantile/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/output_type=sample
-target-data/oracle-output/output_type=sample/target_end_date=2022-10-22
-target-data/oracle-output/output_type=sample/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-10-29
-target-data/oracle-output/output_type=sample/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-05
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-12
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-19
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-26
-target-data/oracle-output/output_type=sample/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-03
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-10
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-17
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-24
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-31
-target-data/oracle-output/output_type=sample/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-07
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-14
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-21
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-28
-target-data/oracle-output/output_type=sample/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-04
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-11
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-18
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-25
-target-data/oracle-output/output_type=sample/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-04
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-11
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-18
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-25
-target-data/oracle-output/output_type=sample/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-01
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-08
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-15
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-22
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-29
-target-data/oracle-output/output_type=sample/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-06
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-13
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-20
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-27
-target-data/oracle-output/output_type=sample/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-06-03
-target-data/oracle-output/output_type=sample/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-06-10
-target-data/oracle-output/output_type=sample/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/output_type=sample/target_end_date=2023-06-17
-target-data/oracle-output/output_type=sample/target_end_date=2023-06-17/part-0.parquet</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── output_type=cdf
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=mean
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=median
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=pmf
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=quantile
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+└── output_type=sample
+    ├── target_end_date=2022-10-22
+    │   └── part-0.parquet
+    ├── target_end_date=2022-10-29
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-05
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-12
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-19
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-26
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-03
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-10
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-17
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-24
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-31
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-07
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-14
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-21
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-28
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-01
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-08
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-15
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-22
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-29
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-06
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-13
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-20
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-27
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-03
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-10
+    │   └── part-0.parquet
+    └── target_end_date=2023-06-17
+        └── part-0.parquet</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
@@ -1033,79 +1034,79 @@ target-data/oracle-output/output_type=sample/target_end_date=2023-06-17/part-0.p
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/target_end_date=2022-10-22
-target-data/oracle-output/target_end_date=2022-10-22/part-0.csv
-target-data/oracle-output/target_end_date=2022-10-29
-target-data/oracle-output/target_end_date=2022-10-29/part-0.csv
-target-data/oracle-output/target_end_date=2022-11-05
-target-data/oracle-output/target_end_date=2022-11-05/part-0.csv
-target-data/oracle-output/target_end_date=2022-11-12
-target-data/oracle-output/target_end_date=2022-11-12/part-0.csv
-target-data/oracle-output/target_end_date=2022-11-19
-target-data/oracle-output/target_end_date=2022-11-19/part-0.csv
-target-data/oracle-output/target_end_date=2022-11-26
-target-data/oracle-output/target_end_date=2022-11-26/part-0.csv
-target-data/oracle-output/target_end_date=2022-12-03
-target-data/oracle-output/target_end_date=2022-12-03/part-0.csv
-target-data/oracle-output/target_end_date=2022-12-10
-target-data/oracle-output/target_end_date=2022-12-10/part-0.csv
-target-data/oracle-output/target_end_date=2022-12-17
-target-data/oracle-output/target_end_date=2022-12-17/part-0.csv
-target-data/oracle-output/target_end_date=2022-12-24
-target-data/oracle-output/target_end_date=2022-12-24/part-0.csv
-target-data/oracle-output/target_end_date=2022-12-31
-target-data/oracle-output/target_end_date=2022-12-31/part-0.csv
-target-data/oracle-output/target_end_date=2023-01-07
-target-data/oracle-output/target_end_date=2023-01-07/part-0.csv
-target-data/oracle-output/target_end_date=2023-01-14
-target-data/oracle-output/target_end_date=2023-01-14/part-0.csv
-target-data/oracle-output/target_end_date=2023-01-21
-target-data/oracle-output/target_end_date=2023-01-21/part-0.csv
-target-data/oracle-output/target_end_date=2023-01-28
-target-data/oracle-output/target_end_date=2023-01-28/part-0.csv
-target-data/oracle-output/target_end_date=2023-02-04
-target-data/oracle-output/target_end_date=2023-02-04/part-0.csv
-target-data/oracle-output/target_end_date=2023-02-11
-target-data/oracle-output/target_end_date=2023-02-11/part-0.csv
-target-data/oracle-output/target_end_date=2023-02-18
-target-data/oracle-output/target_end_date=2023-02-18/part-0.csv
-target-data/oracle-output/target_end_date=2023-02-25
-target-data/oracle-output/target_end_date=2023-02-25/part-0.csv
-target-data/oracle-output/target_end_date=2023-03-04
-target-data/oracle-output/target_end_date=2023-03-04/part-0.csv
-target-data/oracle-output/target_end_date=2023-03-11
-target-data/oracle-output/target_end_date=2023-03-11/part-0.csv
-target-data/oracle-output/target_end_date=2023-03-18
-target-data/oracle-output/target_end_date=2023-03-18/part-0.csv
-target-data/oracle-output/target_end_date=2023-03-25
-target-data/oracle-output/target_end_date=2023-03-25/part-0.csv
-target-data/oracle-output/target_end_date=2023-04-01
-target-data/oracle-output/target_end_date=2023-04-01/part-0.csv
-target-data/oracle-output/target_end_date=2023-04-08
-target-data/oracle-output/target_end_date=2023-04-08/part-0.csv
-target-data/oracle-output/target_end_date=2023-04-15
-target-data/oracle-output/target_end_date=2023-04-15/part-0.csv
-target-data/oracle-output/target_end_date=2023-04-22
-target-data/oracle-output/target_end_date=2023-04-22/part-0.csv
-target-data/oracle-output/target_end_date=2023-04-29
-target-data/oracle-output/target_end_date=2023-04-29/part-0.csv
-target-data/oracle-output/target_end_date=2023-05-06
-target-data/oracle-output/target_end_date=2023-05-06/part-0.csv
-target-data/oracle-output/target_end_date=2023-05-13
-target-data/oracle-output/target_end_date=2023-05-13/part-0.csv
-target-data/oracle-output/target_end_date=2023-05-20
-target-data/oracle-output/target_end_date=2023-05-20/part-0.csv
-target-data/oracle-output/target_end_date=2023-05-27
-target-data/oracle-output/target_end_date=2023-05-27/part-0.csv
-target-data/oracle-output/target_end_date=2023-06-03
-target-data/oracle-output/target_end_date=2023-06-03/part-0.csv
-target-data/oracle-output/target_end_date=2023-06-10
-target-data/oracle-output/target_end_date=2023-06-10/part-0.csv
-target-data/oracle-output/target_end_date=2023-06-17
-target-data/oracle-output/target_end_date=2023-06-17/part-0.csv</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target_end_date=2022-10-22
+│   └── part-0.csv
+├── target_end_date=2022-10-29
+│   └── part-0.csv
+├── target_end_date=2022-11-05
+│   └── part-0.csv
+├── target_end_date=2022-11-12
+│   └── part-0.csv
+├── target_end_date=2022-11-19
+│   └── part-0.csv
+├── target_end_date=2022-11-26
+│   └── part-0.csv
+├── target_end_date=2022-12-03
+│   └── part-0.csv
+├── target_end_date=2022-12-10
+│   └── part-0.csv
+├── target_end_date=2022-12-17
+│   └── part-0.csv
+├── target_end_date=2022-12-24
+│   └── part-0.csv
+├── target_end_date=2022-12-31
+│   └── part-0.csv
+├── target_end_date=2023-01-07
+│   └── part-0.csv
+├── target_end_date=2023-01-14
+│   └── part-0.csv
+├── target_end_date=2023-01-21
+│   └── part-0.csv
+├── target_end_date=2023-01-28
+│   └── part-0.csv
+├── target_end_date=2023-02-04
+│   └── part-0.csv
+├── target_end_date=2023-02-11
+│   └── part-0.csv
+├── target_end_date=2023-02-18
+│   └── part-0.csv
+├── target_end_date=2023-02-25
+│   └── part-0.csv
+├── target_end_date=2023-03-04
+│   └── part-0.csv
+├── target_end_date=2023-03-11
+│   └── part-0.csv
+├── target_end_date=2023-03-18
+│   └── part-0.csv
+├── target_end_date=2023-03-25
+│   └── part-0.csv
+├── target_end_date=2023-04-01
+│   └── part-0.csv
+├── target_end_date=2023-04-08
+│   └── part-0.csv
+├── target_end_date=2023-04-15
+│   └── part-0.csv
+├── target_end_date=2023-04-22
+│   └── part-0.csv
+├── target_end_date=2023-04-29
+│   └── part-0.csv
+├── target_end_date=2023-05-06
+│   └── part-0.csv
+├── target_end_date=2023-05-13
+│   └── part-0.csv
+├── target_end_date=2023-05-20
+│   └── part-0.csv
+├── target_end_date=2023-05-27
+│   └── part-0.csv
+├── target_end_date=2023-06-03
+│   └── part-0.csv
+├── target_end_date=2023-06-10
+│   └── part-0.csv
+└── target_end_date=2023-06-17
+    └── part-0.csv</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1293,222 +1294,222 @@ target-data/oracle-output/target_end_date=2023-06-17/part-0.parquet</code></pre>
 <span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hive_style =</span> <span class="cn">TRUE</span></span>
 <span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/target=wk%20flu%20hosp%20rate
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-05
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-12
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-19
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-26
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-24
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-31
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-07
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-14
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-21
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-28
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-01
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-08
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-15
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-06
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-13
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-20
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-27
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-05
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-12
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-19
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-26
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-24
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-31
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-07
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-14
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-21
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-28
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-04
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-11
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-18
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-25
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-01
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-08
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-15
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-22
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-29
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-06
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-13
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-20
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-27
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-03
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-10
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-17
-target-data/oracle-output/target=wk%20flu%20hosp%20rate%20category/target_end_date=2023-06-17/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-22
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-22/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-29
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-10-29/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-05
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-05/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-12
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-12/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-19
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-19/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-26
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-11-26/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-03
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-03/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-10
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-10/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-17
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-17/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-24
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-24/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-31
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2022-12-31/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-07
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-07/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-14
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-14/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-21
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-21/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-28
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-01-28/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-04
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-04/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-11
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-11/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-18
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-18/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-25
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-02-25/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-04
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-04/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-11
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-11/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-18
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-18/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-25
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-03-25/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-01
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-01/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-08
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-08/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-15
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-15/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-22
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-22/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-29
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-04-29/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-06
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-06/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-13
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-13/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-20
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-20/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-27
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-05-27/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-03
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-03/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-10
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-10/part-0.parquet
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-17
-target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-17/part-0.parquet</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target=wk%20flu%20hosp%20rate
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── target=wk%20flu%20hosp%20rate%20category
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+└── target=wk%20inc%20flu%20hosp
+    ├── target_end_date=2022-10-22
+    │   └── part-0.parquet
+    ├── target_end_date=2022-10-29
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-05
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-12
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-19
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-26
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-03
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-10
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-17
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-24
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-31
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-07
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-14
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-21
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-28
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-01
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-08
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-15
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-22
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-29
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-06
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-13
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-20
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-27
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-03
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-10
+    │   └── part-0.parquet
+    └── target_end_date=2023-06-17
+        └── part-0.parquet</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
@@ -1517,16 +1518,16 @@ target-data/oracle-output/target=wk%20inc%20flu%20hosp/target_end_date=2023-06-1
 <pre><code># A tibble: 5,724 × 6
    location output_type output_type_id oracle_value target       target_end_date
  * &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;          
- 1 US       pmf         low                       1 wk flu hosp… 2023-01-14     
- 2 US       pmf         moderate                  0 wk flu hosp… 2023-01-14     
- 3 US       pmf         high                      0 wk flu hosp… 2023-01-14     
- 4 US       pmf         very high                 0 wk flu hosp… 2023-01-14     
- 5 01       pmf         low                       1 wk flu hosp… 2023-01-14     
- 6 01       pmf         moderate                  0 wk flu hosp… 2023-01-14     
- 7 01       pmf         high                      0 wk flu hosp… 2023-01-14     
- 8 01       pmf         very high                 0 wk flu hosp… 2023-01-14     
- 9 02       pmf         low                       1 wk flu hosp… 2023-01-14     
-10 02       pmf         moderate                  0 wk flu hosp… 2023-01-14     
+ 1 US       cdf         0.25                      0 wk flu hosp… 2023-01-14     
+ 2 US       cdf         0.5                       0 wk flu hosp… 2023-01-14     
+ 3 US       cdf         0.75                      0 wk flu hosp… 2023-01-14     
+ 4 US       cdf         1                         0 wk flu hosp… 2023-01-14     
+ 5 US       cdf         1.25                      0 wk flu hosp… 2023-01-14     
+ 6 US       cdf         1.5                       0 wk flu hosp… 2023-01-14     
+ 7 US       cdf         1.75                      0 wk flu hosp… 2023-01-14     
+ 8 US       cdf         2                         0 wk flu hosp… 2023-01-14     
+ 9 US       cdf         2.25                      1 wk flu hosp… 2023-01-14     
+10 US       cdf         2.5                       1 wk flu hosp… 2023-01-14     
 # ℹ 5,714 more rows</code></pre>
 </div>
 </div>
@@ -1658,7 +1659,7 @@ oracle_value: double</code></pre>
 <span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `compute.Dataset()`:
-! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
+! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
 </div>
 </div>
 <p>Using the <code>col_types</code> argument instead opens the dataset but does not apply the schema to the partitioning column:</p>
@@ -1767,20 +1768,30 @@ oracle_value: double</code></pre>
 <span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_rows_per_file =</span> <span class="dv">10000</span></span>
 <span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/part-0.csv  target-data/oracle-output/part-1.csv  
-target-data/oracle-output/part-10.csv target-data/oracle-output/part-11.csv 
-target-data/oracle-output/part-12.csv target-data/oracle-output/part-13.csv 
-target-data/oracle-output/part-14.csv target-data/oracle-output/part-15.csv 
-target-data/oracle-output/part-16.csv target-data/oracle-output/part-17.csv 
-target-data/oracle-output/part-18.csv target-data/oracle-output/part-19.csv 
-target-data/oracle-output/part-2.csv  target-data/oracle-output/part-20.csv 
-target-data/oracle-output/part-3.csv  target-data/oracle-output/part-4.csv  
-target-data/oracle-output/part-5.csv  target-data/oracle-output/part-6.csv  
-target-data/oracle-output/part-7.csv  target-data/oracle-output/part-8.csv  
-target-data/oracle-output/part-9.csv  </code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── part-0.csv
+├── part-1.csv
+├── part-10.csv
+├── part-11.csv
+├── part-12.csv
+├── part-13.csv
+├── part-14.csv
+├── part-15.csv
+├── part-16.csv
+├── part-17.csv
+├── part-18.csv
+├── part-19.csv
+├── part-2.csv
+├── part-20.csv
+├── part-3.csv
+├── part-4.csv
+├── part-5.csv
+├── part-6.csv
+├── part-7.csv
+├── part-8.csv
+└── part-9.csv</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1857,44 +1868,44 @@ date (1): target_end_date
 <span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
-<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>target-data/oracle-output/2022-10-22.csv
-target-data/oracle-output/2022-10-29.csv
-target-data/oracle-output/2022-11-05.csv
-target-data/oracle-output/2022-11-12.csv
-target-data/oracle-output/2022-11-19.csv
-target-data/oracle-output/2022-11-26.csv
-target-data/oracle-output/2022-12-03.csv
-target-data/oracle-output/2022-12-10.csv
-target-data/oracle-output/2022-12-17.csv
-target-data/oracle-output/2022-12-24.csv
-target-data/oracle-output/2022-12-31.csv
-target-data/oracle-output/2023-01-07.csv
-target-data/oracle-output/2023-01-14.csv
-target-data/oracle-output/2023-01-21.csv
-target-data/oracle-output/2023-01-28.csv
-target-data/oracle-output/2023-02-04.csv
-target-data/oracle-output/2023-02-11.csv
-target-data/oracle-output/2023-02-18.csv
-target-data/oracle-output/2023-02-25.csv
-target-data/oracle-output/2023-03-04.csv
-target-data/oracle-output/2023-03-11.csv
-target-data/oracle-output/2023-03-18.csv
-target-data/oracle-output/2023-03-25.csv
-target-data/oracle-output/2023-04-01.csv
-target-data/oracle-output/2023-04-08.csv
-target-data/oracle-output/2023-04-15.csv
-target-data/oracle-output/2023-04-22.csv
-target-data/oracle-output/2023-04-29.csv
-target-data/oracle-output/2023-05-06.csv
-target-data/oracle-output/2023-05-13.csv
-target-data/oracle-output/2023-05-20.csv
-target-data/oracle-output/2023-05-27.csv
-target-data/oracle-output/2023-06-03.csv
-target-data/oracle-output/2023-06-10.csv
-target-data/oracle-output/2023-06-17.csv</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── 2022-10-22.csv
+├── 2022-10-29.csv
+├── 2022-11-05.csv
+├── 2022-11-12.csv
+├── 2022-11-19.csv
+├── 2022-11-26.csv
+├── 2022-12-03.csv
+├── 2022-12-10.csv
+├── 2022-12-17.csv
+├── 2022-12-24.csv
+├── 2022-12-31.csv
+├── 2023-01-07.csv
+├── 2023-01-14.csv
+├── 2023-01-21.csv
+├── 2023-01-28.csv
+├── 2023-02-04.csv
+├── 2023-02-11.csv
+├── 2023-02-18.csv
+├── 2023-02-25.csv
+├── 2023-03-04.csv
+├── 2023-03-11.csv
+├── 2023-03-18.csv
+├── 2023-03-25.csv
+├── 2023-04-01.csv
+├── 2023-04-08.csv
+├── 2023-04-15.csv
+├── 2023-04-22.csv
+├── 2023-04-29.csv
+├── 2023-05-06.csv
+├── 2023-05-13.csv
+├── 2023-05-20.csv
+├── 2023-05-27.csv
+├── 2023-06-03.csv
+├── 2023-06-10.csv
+└── 2023-06-17.csv</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

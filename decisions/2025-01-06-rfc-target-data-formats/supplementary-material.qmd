@@ -58,8 +58,8 @@ arrow::write_dataset(oracle,
   partitioning = "target_end_date",
   path = oracle_dataset_path
 )
-fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
-  fs::path_rel(start = hub_path)
+
+fs::dir_tree(oracle_dataset_path)
 ```
 
 Finally let's access our data and also perform some filtering on read. Notice how we do not need to explicitly define the partitioning used to write the data:
@@ -88,8 +88,7 @@ arrow::write_dataset(oracle,
   path = oracle_dataset_path
 )
 
-fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
-  fs::path_rel(start = hub_path)
+fs::dir_tree(oracle_dataset_path)
 
 arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
@@ -108,8 +107,7 @@ arrow::write_dataset(oracle,
   path = oracle_dataset_path
 )
 
-fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
-  fs::path_rel(start = hub_path)
+fs::dir_tree(oracle_dataset_path)
 
 arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
@@ -130,8 +128,7 @@ arrow::write_csv_dataset(oracle,
 )
 
 
-fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
-  fs::path_rel(start = hub_path)
+fs::dir_tree(oracle_dataset_path)
 
 arrow::open_csv_dataset(oracle_dataset_path) |>
   dplyr::collect()
@@ -216,8 +213,7 @@ arrow::write_dataset(oracle,
   hive_style = TRUE
 )
 
-fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
-  fs::path_rel(start = hub_path)
+fs::dir_tree(oracle_dataset_path)
 
 arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
@@ -398,8 +394,7 @@ arrow::write_csv_dataset(oracle,
   max_rows_per_file = 10000
 )
 
-fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
-  fs::path_rel(start = hub_path)
+fs::dir_tree(oracle_dataset_path)
 ```
 
 ```{r}
@@ -440,8 +435,7 @@ purrr::walk(
     )
 )
 
-fs::dir_ls(oracle_dataset_path) |>
-  fs::path_rel(start = hub_path)
+fs::dir_tree(oracle_dataset_path)
 
 arrow::open_csv_dataset(oracle_dataset_path) |>
   dplyr::collect()

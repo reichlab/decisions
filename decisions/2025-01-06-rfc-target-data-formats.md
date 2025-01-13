@@ -47,15 +47,15 @@ The directory should contain the partitioned target data files and follow hive p
 
 In Apache Hive, the filename format of partitioned data depends on the partition column names and their values. The files corresponding to each partition are stored in subdirectories, and the directory names encode the partition column names and their values, e.g. `<partition_column_1>=<value_1>/<partition_column_2>=<value_2>/.../<data_files>`. This means hive style partitioned data subdirectories are self describing and can be easily read by partition-aware data readers.
 
-Here's an example of an oracle data partitioned by `target_end_date`:
+Here's an example of an oracle data in the `orale-output` directory partitioned by `target_end_date`:
 
 ```
-target-data/oracle-output/target_end_date=2022-10-22
-target-data/oracle-output/target_end_date=2022-10-22/part-0.csv
-target-data/oracle-output/target_end_date=2022-10-29
-target-data/oracle-output/target_end_date=2022-10-29/part-0.csv
-target-data/oracle-output/target_end_date=2022-11-05
-target-data/oracle-output/target_end_date=2022-11-05/part-0.csv
+├── target_end_date=2023-06-03
+│   └── part-0.parquet
+├── target_end_date=2023-06-10
+│   └── part-0.parquet
+└── target_end_date=2023-06-17
+    └── part-0.parquet
 ```
 
 _see more details on file names in the [Date file names](#data-file-names)_
