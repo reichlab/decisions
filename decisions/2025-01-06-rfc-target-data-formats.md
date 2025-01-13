@@ -122,6 +122,8 @@ The situation described in this section might be closer to the actual use case o
 
 The possibility of non-hive partitioned target data was considered but it was assessed that this would require to much additional configuration to successfully read partitioned data so to begin with, hive partitioning will be sufficient for our needs.
 
+The possibility of non-hive (i.e. [Directory partitioned](https://arrow.apache.org/docs/r/reference/Partitioning.html)) target data was considered but this would require too much additional configuration (i.e. explicit knowledge of the column name for each partition level) to successfully read Directory partitioned data.
+
 The possibility of storing target data in `csv` format was also considered but in the exploration of applying a schema on partitioned `csv` target data is **not as straightforward** as with `parquet` data:
   - there are API differences in applying a schema through `open_dataset()` between the two formats and `csv` is more complex than for `parquet` files.
   - for `csv`s partition column datatypes need to be specified explicitly through the `partitioning` argument therefore requiring knowledge of the partition column names. These can however be detected by the directory names of partitioned data but that requires an additional step.
