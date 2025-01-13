@@ -1,4 +1,4 @@
-# 2025-01-03 incoporate biobear package into Cladetime
+# 2025-01-03 incorporate biobear package into Cladetime
 
 ## Context
 
@@ -94,7 +94,7 @@ session = bb.new_session()
 ### Other Options Considered
 
 - Leave Cladetime as is (if we choose not to use biobear, this would be
-my reccommendation).
+my recommendation).
 - Since Cladetime already uses biopython, use biopython's built-in batch reader
 (discarded because it made filtering slower, see table below).
 - Roll our own reader for .fasta parsing (discarded this idea quickly, as it
@@ -126,7 +126,7 @@ total published sequences and defined as follows:
 
 ## Status
 
-proposed
+Accepted
 
 ## Consequences
 

@@ -52,7 +52,7 @@ proposal strongly recommends following the same procedures.
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 
