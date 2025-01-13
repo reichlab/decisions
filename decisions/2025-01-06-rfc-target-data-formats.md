@@ -87,6 +87,7 @@ We can then develop functionality to:
 - functionality for validating target data to ensure all columns required for downstream functionality are present. https://github.com/hubverse-org/hubUtils/issues/197
 
 - functionality for ensuring target data conforms to the correct schema, **before writing out**. This is important as join functions fail if corresponding columns are not of the same data type. We could modify [hubData::coerce_to_hub_schema](https://hubverse-org.github.io/hubData/reference/coerce_to_hub_schema.html) to coerce oracle output target data to the correct schema (substituting the datatype for `value` for the `oracle_value` column data type). (Issue needed once proposal accepted). 
+- Clear and detailed documentation on how to write out target data in the correct format.
 
 ### Exploration of applying schema to target data
 
@@ -135,6 +136,8 @@ Proposed
 The main consequence of this decision is that it introduces an arrow dependency on any package that needs to read target data. As such, thought will be required as to where these functions live as ideally, we do not want to burden `hubUtils` with an `arrow` dependency.
 
 It also means we are currently restricting the format to `parquet` which requires more specialist tools to write out than `csv` and also requires ensuring all files share the same schema. This is a restriction that hub admins will need to be aware of and will require the provision of detailed documentation and helper functions to ensure target data is in the correct format on our end.
+
+Finally, because we are not providing tooling or being prescriptive about how hub admins create target data, we will need to provide detailed and complete documentation for hub admins to ensure they succeed. So detail and specifics will be important to make our documentation helpful to hub admins.
 
 ## Projects
 
