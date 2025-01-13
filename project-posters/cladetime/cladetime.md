@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-### Onwership and status
+### Ownership and status
 
 - Date: 2024-12-11
 
@@ -10,7 +10,7 @@
 
 - Team: Becky, Ben, Evan
 
-- Status: in progress
+- Status: Accepted
 
 ## ❓ Problem space
 
@@ -75,7 +75,7 @@ via the version of the Nextclade SARS-CoV-2
 [dataset](https://docs.nextstrain.org/projects/nextclade/en/stable/user/datasets.html)
 that corresponds to the desired reference tree date.
 
-Thus, possible solutions focus on determing the best data source for the
+Thus, possible solutions focus on determining the best data source for the
 sequence data and sequence metadata.
 
 Possible solutions:
