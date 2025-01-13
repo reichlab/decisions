@@ -58,16 +58,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="2025-01-06-rfc-target-data-formats_files/libs/clipboard/clipboard.min.js"></script>
-<script src="2025-01-06-rfc-target-data-formats_files/libs/quarto-html/quarto.js"></script>
-<script src="2025-01-06-rfc-target-data-formats_files/libs/quarto-html/popper.min.js"></script>
-<script src="2025-01-06-rfc-target-data-formats_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="2025-01-06-rfc-target-data-formats_files/libs/quarto-html/anchor.min.js"></script>
-<link href="2025-01-06-rfc-target-data-formats_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="2025-01-06-rfc-target-data-formats_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="2025-01-06-rfc-target-data-formats_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="2025-01-06-rfc-target-data-formats_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="2025-01-06-rfc-target-data-formats_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="supplementary-material_files/libs/clipboard/clipboard.min.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/quarto.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/popper.min.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/anchor.min.js"></script>
+<link href="supplementary-material_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="supplementary-material_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="supplementary-material_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="supplementary-material_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="supplementary-material_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -150,9 +150,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>target_data_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(hub_path, <span class="st">"target-data"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(target_data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/README.md
-/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/oracle-output.csv
-/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/time-series.csv</code></pre>
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/README.md
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/oracle-output.csv
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/time-series.csv</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>timeseries_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"time-series.csv"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>oracle_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"oracle-output.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1658,7 +1658,7 @@ oracle_value: double</code></pre>
 <span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `compute.Dataset()`:
-! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmp9fxA0f/file57fa23ec3a07/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
+! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/RtmpRaLcqn/file151115fa5a110/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
 </div>
 </div>
 <p>Using the <code>col_types</code> argument instead opens the dataset but does not apply the schema to the partitioning column:</p>

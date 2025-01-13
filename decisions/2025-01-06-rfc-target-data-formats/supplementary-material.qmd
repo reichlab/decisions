@@ -33,6 +33,7 @@ oracle_path <- fs::path(target_data_path, "oracle-output.csv")
 ```
 
 ### Read single file data
+
 ```{r}
 timeseries <- readr::read_csv(timeseries_path)
 oracle <- readr::read_csv(oracle_path)
@@ -68,7 +69,6 @@ arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
   dplyr::collect()
 ```
-
 
 ### More complex partitioning
 
@@ -115,7 +115,6 @@ arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
   dplyr::collect()
 ```
-
 
 ### csv datasets
 
@@ -191,7 +190,6 @@ arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::collect()
 ```
 
-
 Note I would need to investigate further how this would work if the new data added did not cleanly contain new data in the column on which the dataset is being partitioned, which currently results in a new directory being added.
 
 ## Opening single files
@@ -206,8 +204,6 @@ arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
   dplyr::collect()
 ```
-
-
 
 ```{r}
 fs::dir_delete(oracle_dataset_path)
@@ -228,15 +224,11 @@ arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
   dplyr::collect()
 ```
 
-
-
-
 ## Applying a schema
 
 Here I explore ensuring that columns, especially
 
 First I create a utility function for partitioning oracle data on `target_end_date` into different formatted datasets (csv or parquet):
-
 
 ```{r}
 partition_dataset <- function(oracle_dataset_path, format = "parquet",
@@ -318,7 +310,6 @@ partition_dataset(oracle_dataset_path, format = "csv")
 schema <- create_oracle_schema(hub_path, oracle_dataset_path)
 ```
 
-
 When supplying the schema to the `schema` argument appears to apply the schema correctly:
 
 ```{r}
@@ -328,6 +319,7 @@ arrow::open_dataset(oracle_dataset_path,
   schema = schema
 )
 ```
+
 However, it annoyingly returns an error when collecting, indicating that only 5 columns are actually read and cause an error when checked against the schema:
 
 ```{r}
@@ -340,9 +332,7 @@ arrow::open_dataset(oracle_dataset_path,
   dplyr::collect()
 ```
 
-
 Using the `col_types` argument instead opens the dataset but does not apply the schema to the partitioning column:
-
 
 ```{r}
 arrow::open_dataset(oracle_dataset_path,
@@ -370,7 +360,6 @@ arrow::open_dataset(oracle_dataset_path,
 
 This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid. Having said that, we can determine the partitioning column from the directory names, it's just more of a faff.
 
-
 ```{r}
 partition_cols <- fs::dir_ls(oracle_dataset_path, type = "directory") |>
   fs::path_rel(oracle_dataset_path) |>
@@ -390,15 +379,11 @@ arrow::open_dataset(oracle_dataset_path,
   dplyr::collect()
 ```
 
-There have always been issues (see <https://github.com/apache/arrow/issues/34589> and <https://github.com/apache/arrow/issues/34640>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved,
-I [re-commented on one of the issues](https://github.com/apache/arrow/issues/34640#issuecomment-2577363842) as I don't think that is the case. Will be interesting to hear their response.
-
-
-
+There have always been issues (see <https://github.com/apache/arrow/issues/34589> and <https://github.com/apache/arrow/issues/34640>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved, I [re-commented on one of the issues](https://github.com/apache/arrow/issues/34640#issuecomment-2577363842) as I don't think that is the case. Will be interesting to hear their response.
 
 ## Partitioning that contains all data in files
 
-I also explored options for splitting up the data while retaining all columns in the resulting data files. 
+I also explored options for splitting up the data while retaining all columns in the resulting data files.
 
 Because reducing redundancy is a key aspect of partitioning, this is not possible if files are partitioned by a data column into sub-directories.
 
@@ -417,12 +402,10 @@ fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
   fs::path_rel(start = hub_path)
 ```
 
-
 ```{r}
 arrow::open_csv_dataset(oracle_dataset_path) |>
   dplyr::collect()
 ```
-
 
 Individual files continue to contain all data:
 
@@ -433,16 +416,15 @@ readr::read_csv(file)
 
 ## Data file names
 
-I also wanted to demonstrate that individual file names do not need to follow a specific filename convention. The default `part-{i}.ext` convention used in `write_dataset()` can be overriden by providing a different pattern to argument. 
+I also wanted to demonstrate that individual file names do not need to follow a specific filename convention. The default `part-{i}.ext` convention used in `write_dataset()` can be overriden by providing a different pattern to argument.
 
-More importantly it does not actually affect the opening of the dataset as no metadata are expected to be stored in arrow dataset filenames themselves. 
+More importantly it does not actually affect the opening of the dataset as no metadata are expected to be stored in arrow dataset filenames themselves.
 
 As such, additional files can be added to a target dataset using whatever filename convention we like and using other tooling also.
 
 In the example below, instead of writing an arrow dataset using `write_dataset()` I instead split the data by `target_end_date` and write a file for each in the root of the `target_data/oracle` directory.
 
 `open_dataset()` continues to be able to open the files as a dataset successfully.
-
 
 ```{r}
 target_dates <- unique(oracle$target_end_date)
