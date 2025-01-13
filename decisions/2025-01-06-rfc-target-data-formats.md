@@ -62,7 +62,7 @@ Hive partitioning is the default partitioning scheme used by `arrow::write_datas
 
 Proposing this convention is designed to allow us to **access target data as arrow datasets using `arrow::open_dataset()` in R**.  It also allows for the possibility of using `pyarrow.dataset.dataset()` in Python, should we decide to use `arrow` in `hubDataPy`.
 
-In return the benefit of using this approach are:
+In return the benefits of using this approach are:
 
 - we do not need to be prescriptive about the partitioning scheme used as long as hive partitioning is used if any data are encoded in sub-directory names. This allows hub admins to partition the data in a way that makes sense for their use case but for hubverse to be able to use the `arrow::open_dataset()` function to access the data without additional need for defining the partitioning scheme. (see [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html) for demonstration).
 
