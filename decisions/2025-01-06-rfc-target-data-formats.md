@@ -24,16 +24,12 @@ Target data are the observed data being modeled as the prediction target in a co
 
 Target data should be stored in a directory named `target-data` 
 
-### File names
-
-There two expected formats for target data:
+There two expected formats for target data are:
 - `time-series` format
 - `oracle output` format
 
-As such we will expect data associated with each format to be named either `time-series` or `oracle-output` respectively.
 
-
-### File formats
+### File formats and names
 
 Target data should stored in `parquet` format. Column data types in the `oracle-output` file(s) should be consistent with the schema defined in the config file, with the `oracle-value` column having the same data type as the `value` column in model output files.
 
