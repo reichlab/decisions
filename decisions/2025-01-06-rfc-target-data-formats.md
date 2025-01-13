@@ -66,11 +66,11 @@ Proposing this convention is designed to allow us to **access target data as arr
 
 In return the benefits of using this approach are:
 
-- we do not need to be prescriptive about the partitioning scheme used as long as hive partitioning is used if any data are encoded in sub-directory names. This allows hub admins to partition the data in a way that makes sense for their use case but for hubverse to be able to use the `arrow::open_dataset()` function to access the data without additional need for defining the partitioning scheme. (see [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html) for demonstration).
+- we do not need to be prescriptive about the partitioning scheme used as long as hive partitioning is used if any data are encoded in sub-directory names. This allows hub admins to partition the data in a way that makes sense for their use case but for hubverse to be able to use the `arrow::open_dataset()` function to access the data without additional need for defining the partitioning scheme. (see [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/main/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html) for demonstration).
 
 - `arrow::open_dataset()` supports both `csv` and `parquet` formats.
 
-- new data can easily be added to the target data. (see [supplementary material](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html)). 
+- new data can easily be added to the target data. (see [supplementary material](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/main/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html)). 
 
 - partitioned datasets allow more efficient access by partition-aware data readers (for example, arrow, polars, DuckDB), which can filter the data on read if only a subset of it is required.
 
@@ -91,18 +91,18 @@ We can then develop functionality to:
 
 ### Exploration of applying schema to target data
 
-I performed an exploration of applying schema to target data using `arrow::open_dataset()` in the [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#applying-a-schema).
+I performed an exploration of applying schema to target data using `arrow::open_dataset()` in the [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/main/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#applying-a-schema).
 
 In summary, 
 - applying a schema to partitioned target data is **straightforward** using `arrow::open_dataset()` and determining the schema from the config file **for parquet files.**
 
 ### Splitting into multiple files that retained all columns
 
-I also explored the potential for splitting data into multiple files that retained all columns using `arrow::write_dataset()` in the [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#partitioning-that-contains-all-data-in-files)
+I also explored the potential for splitting data into multiple files that retained all columns using `arrow::write_dataset()` in the [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/main/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#partitioning-that-contains-all-data-in-files)
 
 Because reducing redundancy is a key aspect of partitioning, this is not possible if files are partitioned by a data column into sub-directories.
 
-However, it is possible to just split files within a top level directory. This allows for all columns to be present in resulting data files and still allow data to be accessible as a dataset. See [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#partitioning-that-contains-all-data-in-files) for details.
+However, it is possible to just split files within a top level directory. This allows for all columns to be present in resulting data files and still allow data to be accessible as a dataset. See [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/main/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#partitioning-that-contains-all-data-in-files) for details.
 
 
 ### Data file names
@@ -111,7 +111,7 @@ I also wanted to demonstrate that individual file names do not actually need to 
 
 More importantly, filenames in the node directory do not actually affect the opening of the dataset as no metadata are expected to be stored in arrow dataset file names themselves ( metadata are only stored in directory names). `open_dataset()` continues to be able to open the files as a dataset successfully even if they deviate from the `part-{i}.ext` convention.
 
-As such, initial files can be created and additional files added to a target dataset using whatever file name convention we like and using other tooling also. See [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#data-file-names) for details.
+As such, initial files can be created and additional files added to a target dataset using whatever file name convention we like and using other tooling also. See [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/main/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html#data-file-names) for details.
 
 The situation described in this section might be closer to the actual use case of hub admins who might be using other tools to create target data files.
 
