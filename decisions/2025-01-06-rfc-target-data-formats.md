@@ -43,7 +43,7 @@ The directory should contain the partitioned target data files and follow hive p
 
 In Apache Hive, the filename format of partitioned data depends on the partition column names and their values. The files corresponding to each partition are stored in subdirectories, and the directory names encode the partition column names and their values, e.g. `<partition_column_1>=<value_1>/<partition_column_2>=<value_2>/.../<data_files>`. This means hive style partitioned data subdirectories are self describing and can be easily read by partition-aware data readers.
 
-Here's an example of an oracle data in the `orale-output` directory partitioned by `target_end_date`:
+Here's an example of an oracle data in the `target-data/orale-output` directory partitioned by `target_end_date`:
 
 ```
 ├── target_end_date=2023-06-03
