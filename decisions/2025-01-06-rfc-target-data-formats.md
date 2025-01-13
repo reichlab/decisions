@@ -27,21 +27,21 @@ Target data should be stored in a directory named `target-data`
 ### File names
 
 There two expected formats for target data:
-- `timeseries` format
+- `time-series` format
 - `oracle output` format
 
-As such we will expect data associated with each format to be named either `timeseries` or `oracle-output` respectively.
+As such we will expect data associated with each format to be named either `time-series` or `oracle-output` respectively.
 
 
 ### File formats
 
 Target data should stored in `parquet` format. Column data types in the `oracle-output` file(s) should be consistent with the schema defined in the config file, with the `oracle-value` column having the same data type as the `value` column in model output files.
 
-Single files for target data are allowed and should be named `timeseries.parquet` or `oracle-output.parquet` respectively.
+Single files for target data are allowed and should be named `time-series.parquet` or `oracle-output.parquet` respectively.
 
 ### Partitioned target data 
 
-To enable splitting up potentially large target data files, we will allow for partitioned target data. In this case, the target data should be stored in a directory named either `timeseries` or `oracle-output` respectively. 
+To enable splitting up potentially large target data files, we will allow for partitioned target data. In this case, the target data should be stored in a directory named either `time-series` or `oracle-output` respectively. 
 
 The directory should contain the partitioned target data files and follow hive partitioning naming conventions.
 
