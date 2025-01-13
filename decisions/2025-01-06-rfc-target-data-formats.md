@@ -2,7 +2,7 @@
 
 ## Context
 
-Target data are the observed data being modeled as the prediction target in a collaborative modeling exercise. We have already descibed the expectation for the contents of such in the [Target (observed) data section](https://hubverse.io/en/latest/user-guide/target-data.html#target-observed-data) of our documentation but we have yet to advise explictly on file formats, file organisation and expected file names. 
+Target data are the observed data being modeled as the prediction target in a collaborative modeling exercise. We have already descibed the expectation for the contents of such in the [Target (observed) data section](https://hubverse.io/en/latest/user-guide/target-data.html#target-observed-data) of our documentation but we have yet to advise explicitly on file formats, file organisation and expected file names. 
 
 
 
@@ -30,14 +30,14 @@ There two expected formats for target data:
 - `timeseries` format
 - `oracle output` format
 
-As such we will expect data associated with each format to be named either `time-series` or `oracle-output` respectively.
+As such we will expect data associated with each format to be named either `timeseries` or `oracle-output` respectively.
 
 
 ### File formats
 
-Target data files should be either in `csv` or `parquet` format.
+Target data should stored in `parquet` format. Column data types in the `oracle-output` file(s) should be consistent with the schema defined in the config file, with the `oracle-value` column having the same data type as the `value` column in model output files.
 
-Single files for target data are allowed and should be named `timeseries.csv/timeseries.parquet` or `oracle-output.csv|oracle-output.parquet` respectively.
+Single files for target data are allowed and should be named `timeseries.parquet` or `oracle-output.parquet` respectively.
 
 ### Partitioned target data 
 
@@ -45,7 +45,7 @@ To enable splitting up potentially large target data files, we will allow for pa
 
 The directory should contain the partitioned target data files and follow hive partitioning naming conventions.
 
-In Apache Hive, the filename format of partitioned data depends on the partition column names and their values. The files corresponding to each partition are stored in subdirectories, and the directory names encode the partition column names and their values, e.g. `<partition_column_1>=<value_1>/<partition_column_2>=<value_2>/.../<data_files>`
+In Apache Hive, the filename format of partitioned data depends on the partition column names and their values. The files corresponding to each partition are stored in subdirectories, and the directory names encode the partition column names and their values, e.g. `<partition_column_1>=<value_1>/<partition_column_2>=<value_2>/.../<data_files>`. This means hive style partitioned data subdirectories are self describing and can be easily read by partition-aware data readers.
 
 Here's an example of an oracle data partitioned by `target_end_date`:
 
@@ -60,19 +60,19 @@ target-data/oracle-output/target_end_date=2022-11-05/part-0.csv
 
 _see more details on file names in the [Date file names](#data-file-names)_
 
-Such partitioned data can be easily created using [`arrow::write_dataset()`](https://arrow.apache.org/docs/r/reference/write_dataset.html) in R or [`pyarrow.dataset.write_dataset`](https://arrow.apache.org/docs/python/generated/pyarrow.dataset.write_dataset.html) in Python and use **hive partitioning**.
+Such partitioned data can be easily created using [`arrow::write_dataset()`](https://arrow.apache.org/docs/r/reference/write_dataset.html) in R or [`pyarrow.dataset.write_dataset`](https://arrow.apache.org/docs/python/generated/pyarrow.dataset.write_dataset.html) in Python. 
 
-Hive partitioning is the default partitioning scheme used by `arrow::write_dataset()` and `pyarrow.dataset.write_dataset` so no additional configuration beyond the columns to partition by is required when writing partitioned datasets using this functions.
+Hive partitioning is the default partitioning scheme used by `arrow::write_dataset()` and `pyarrow.dataset.write_dataset` so no additional configuration beyond the columns to partition by is required when writing partitioned datasets using this functions. However, hub administrators are free to use any tool of their choice to partition the data, so long as it follows hive partitioning conventions if any data are encoded in sub-directory names.
 
-Proposing this convention is designed to allow us to **access target data as arrow datasets using `arrow::open_dataset()` in R or `pyarrow.dataset.dataset()` in Python.**
+Proposing this convention is designed to allow us to **access target data as arrow datasets using `arrow::open_dataset()` in R**.  It also allows for the possibility of using `pyarrow.dataset.dataset()` in Python, should we decide to use `arrow` in `hubDataPy`.
 
 In return the benefit of using this approach are:
 
-- we do not need to be prescriptive about the partitioning scheme used as long as hive partitioning is used. This allows hub admins to partition the data in a way that makes sense for their use case but for hubverse to be able to use open_dataset function to access the data without additional need for defining the partitioning scheme. (see [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html) for demonstration).
+- we do not need to be prescriptive about the partitioning scheme used as long as hive partitioning is used if any data are encoded in sub-directory names. This allows hub admins to partition the data in a way that makes sense for their use case but for hubverse to be able to use the `arrow::open_dataset()` function to access the data without additional need for defining the partitioning scheme. (see [supplementary materials](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html) for demonstration).
 
-- `arrow::open_dataset()` supports both `csv` and `parquet` formats and so we can support both formats for partitioned target data.
+- `arrow::open_dataset()` supports `parquet` formats.
 
-- new data can easily be added to the target data.(see [supplementary material](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html)).
+- new data can easily be added to the target data. (see [supplementary material](https://htmlpreview.github.io/?https://github.com/reichlab/decisions/blob/ak/rfc/target-data-formats/decisions/2025-01-06-rfc-target-data-formats/supplementary-materials.html)). 
 
 - partitioned datasets allow more efficient access by partition-aware data readers (for example, arrow, polars, DuckDB), which can filter the data on read if only a subset of it is required.
 
@@ -86,11 +86,11 @@ As aforementioned, we propose that we access target data as arrow datasets using
 
 We can then develop functionality to:
 
-- read target data using `arrow::open_dataset()` in R or `pyarrow.dataset.dataset()` in Python. https://github.com/hubverse-org/hubUtils/issues/196 
+- read target data using `arrow::open_dataset()` in R. https://github.com/hubverse-org/hubUtils/issues/196. This functionality is also available in Python using `pyarrow.dataset.dataset()`, should `arrow` be used in `hubDataPy`.
 
-- functionality for validating target to ensure all columns required for downstream functionality are present. https://github.com/hubverse-org/hubUtils/issues/197
+- functionality for validating target data to ensure all columns required for downstream functionality are present. https://github.com/hubverse-org/hubUtils/issues/197
 
-- functionality for ensuring target data conforms to the correct schema, ideally before writing out (especially for parquet target data). This is important as join functions fail if corresponding columns are not of the same data type. We could modify [hubData::coerce_to_hub_schema](https://hubverse-org.github.io/hubData/reference/coerce_to_hub_schema.html) to coerce oracle output target data to the correct schema (substituting the datatype for `value` for the `oracle_value` column data type). (Issue needed once proposal accepted). 
+- functionality for ensuring target data conforms to the correct schema, **before writing out**. This is important as join functions fail if corresponding columns are not of the same data type. We could modify [hubData::coerce_to_hub_schema](https://hubverse-org.github.io/hubData/reference/coerce_to_hub_schema.html) to coerce oracle output target data to the correct schema (substituting the datatype for `value` for the `oracle_value` column data type). (Issue needed once proposal accepted). 
 
 ### Exploration of applying schema to target data
 
@@ -98,11 +98,6 @@ I performed an exploration of applying schema to target data using `arrow::open_
 
 In summary, 
 - applying a schema to partitioned target data is **straightforward** using `arrow::open_dataset()` and determining the schema from the config file **for parquet files.**
-- applying a schema on partitioned csv target data is **not as straightforward** :
-  - the API differences and is more complex than for parquet files.
-  - partition column datatypes need to be specified explicitly through the `partitioning` argument therefore requiring knowledge of the partition column names. These can however be detected by the directory names of partitioned data but requires an additional step.
-  - There have generally been issues (see <https://github.com/apache/arrow/issues/34589> and <https://github.com/apache/arrow/issues/34640>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved,
-I [re-commented on one of the issues](https://github.com/apache/arrow/issues/34640#issuecomment-2577363842) as I don't think that is the case. Will be interesting to hear their response.
 
 ### Splitting into multiple files that retained all columns
 
@@ -127,6 +122,12 @@ The situation described in this section might be closer to the actual use case o
 
 The possibility of non-hive partitioned target data was considered but it was assessed that this would require to much additional configuration to successfully read partitioned data so to begin with, hive partitioning will be sufficient for our needs.
 
+The possibility of storing target data in `csv` format was also considered but in the exploration of applying a schema on partitioned `csv` target data is **not as straightforward** as with `parquet` data:
+  - there are API differences in applying a schema through `open_dataset()` between the two formats and `csv` is more complex than for `parquet` files.
+  - for `csv`s partition column datatypes need to be specified explicitly through the `partitioning` argument therefore requiring knowledge of the partition column names. These can however be detected by the directory names of partitioned data but that requires an additional step.
+  - There have generally been issues (see <https://github.com/apache/arrow/issues/34589> and <https://github.com/apache/arrow/issues/34640>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved,
+I [re-commented on one of the issues](https://github.com/apache/arrow/issues/34640#issuecomment-2577363842) as I don't think that is the case. Will be interesting to hear their response.
+
 ## Status
 
 Proposed
@@ -134,6 +135,8 @@ Proposed
 ## Consequences
 
 The main consequence of this decision is that it introduces an arrow dependency on any package that needs to read target data. As such, thought will be required as to where these functions live as ideally, we do not want to burden `hubUtils` with an `arrow` dependency.
+
+It also means we are currently restricting the format to `parquet` which requires more specialist tools to write out than `csv` and also requires ensuring all files share the same schema. This is a restriction that hub admins will need to be aware of and will require the provision of detailed documentation and helper functions to ensure target data is in the correct format on our end.
 
 ## Projects
 
