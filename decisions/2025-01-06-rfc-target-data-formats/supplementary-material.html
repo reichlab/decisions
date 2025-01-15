@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Anna Krystalli">
+
+<title>Target data formats and organisation supplementary materials</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="supplementary-material_files/libs/clipboard/clipboard.min.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/quarto.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/popper.min.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="supplementary-material_files/libs/quarto-html/anchor.min.js"></script>
+<link href="supplementary-material_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="supplementary-material_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="supplementary-material_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="supplementary-material_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="supplementary-material_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#source-data" id="toc-source-data" class="nav-link active" data-scroll-target="#source-data">Source data</a>
+  <ul class="collapse">
+  <li><a href="#create-source-data-paths" id="toc-create-source-data-paths" class="nav-link" data-scroll-target="#create-source-data-paths">Create source data paths</a></li>
+  <li><a href="#read-single-file-data" id="toc-read-single-file-data" class="nav-link" data-scroll-target="#read-single-file-data">Read single file data</a></li>
+  </ul></li>
+  <li><a href="#writing-partitioned-data" id="toc-writing-partitioned-data" class="nav-link" data-scroll-target="#writing-partitioned-data">Writing partitioned data</a>
+  <ul class="collapse">
+  <li><a href="#parquet-datasets" id="toc-parquet-datasets" class="nav-link" data-scroll-target="#parquet-datasets">parquet datasets</a></li>
+  <li><a href="#more-complex-partitioning" id="toc-more-complex-partitioning" class="nav-link" data-scroll-target="#more-complex-partitioning">More complex partitioning</a></li>
+  <li><a href="#csv-datasets" id="toc-csv-datasets" class="nav-link" data-scroll-target="#csv-datasets">csv datasets</a></li>
+  </ul></li>
+  <li><a href="#appending-new-data" id="toc-appending-new-data" class="nav-link" data-scroll-target="#appending-new-data">Appending new data</a></li>
+  <li><a href="#opening-single-files" id="toc-opening-single-files" class="nav-link" data-scroll-target="#opening-single-files">Opening single files</a></li>
+  <li><a href="#applying-a-schema" id="toc-applying-a-schema" class="nav-link" data-scroll-target="#applying-a-schema">Applying a schema</a>
+  <ul class="collapse">
+  <li><a href="#applying-a-schema-to-parquet-datasets" id="toc-applying-a-schema-to-parquet-datasets" class="nav-link" data-scroll-target="#applying-a-schema-to-parquet-datasets">Applying a schema to parquet datasets</a></li>
+  <li><a href="#applying-a-schema-to-csv-datasets" id="toc-applying-a-schema-to-csv-datasets" class="nav-link" data-scroll-target="#applying-a-schema-to-csv-datasets">Applying a schema to csv datasets</a></li>
+  </ul></li>
+  <li><a href="#partitioning-that-contains-all-data-in-files" id="toc-partitioning-that-contains-all-data-in-files" class="nav-link" data-scroll-target="#partitioning-that-contains-all-data-in-files">Partitioning that contains all data in files</a></li>
+  <li><a href="#data-file-names" id="toc-data-file-names" class="nav-link" data-scroll-target="#data-file-names">Data file names</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Target data formats and organisation supplementary materials</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Anna Krystalli </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="source-data" class="level2">
+<h2 class="anchored" data-anchor-id="source-data">Source data</h2>
+<p>We’ll demonstrate partitioning and reading target data using the <a href="https://github.com/hubverse-org/example-complex-forecast-hub"><code>example-complex-forecast</code></a> hub</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tmp_dir <span class="ot">&lt;-</span> withr<span class="sc">::</span><span class="fu">local_tempdir</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>hub_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(tmp_dir, <span class="st">"complex-forecast-hub"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>gert<span class="sc">::</span><span class="fu">git_clone</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://github.com/hubverse-org/example-complex-forecast-hub.git"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> hub_path</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="create-source-data-paths" class="level3">
+<h3 class="anchored" data-anchor-id="create-source-data-paths">Create source data paths</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>target_data_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(hub_path, <span class="st">"target-data"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(target_data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/README.md
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output.csv
+/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/time-series.csv</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>timeseries_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"time-series.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>oracle_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"oracle-output.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="read-single-file-data" class="level3">
+<h3 class="anchored" data-anchor-id="read-single-file-data">Read single file data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>timeseries <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(timeseries_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 10255 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (1): location
+dbl  (1): observation
+date (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>oracle <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(oracle_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 200340 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (4): location, target, output_type, output_type_id
+dbl  (1): oracle_value
+date (1): target_end_date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="writing-partitioned-data" class="level2">
+<h2 class="anchored" data-anchor-id="writing-partitioned-data">Writing partitioned data</h2>
+<section id="parquet-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="parquet-datasets">parquet datasets</h3>
+<p>First lets create a partitioned folder for our oracle data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>oracle_dataset_path <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path</span>(target_data_path, <span class="st">"oracle-output"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next let’s partition our data by <code>target_end_date</code> and inspect the resulting file structure</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_dataset</span>(oracle,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">"target_end_date"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target_end_date=2022-10-22
+│   └── part-0.parquet
+├── target_end_date=2022-10-29
+│   └── part-0.parquet
+├── target_end_date=2022-11-05
+│   └── part-0.parquet
+├── target_end_date=2022-11-12
+│   └── part-0.parquet
+├── target_end_date=2022-11-19
+│   └── part-0.parquet
+├── target_end_date=2022-11-26
+│   └── part-0.parquet
+├── target_end_date=2022-12-03
+│   └── part-0.parquet
+├── target_end_date=2022-12-10
+│   └── part-0.parquet
+├── target_end_date=2022-12-17
+│   └── part-0.parquet
+├── target_end_date=2022-12-24
+│   └── part-0.parquet
+├── target_end_date=2022-12-31
+│   └── part-0.parquet
+├── target_end_date=2023-01-07
+│   └── part-0.parquet
+├── target_end_date=2023-01-14
+│   └── part-0.parquet
+├── target_end_date=2023-01-21
+│   └── part-0.parquet
+├── target_end_date=2023-01-28
+│   └── part-0.parquet
+├── target_end_date=2023-02-04
+│   └── part-0.parquet
+├── target_end_date=2023-02-11
+│   └── part-0.parquet
+├── target_end_date=2023-02-18
+│   └── part-0.parquet
+├── target_end_date=2023-02-25
+│   └── part-0.parquet
+├── target_end_date=2023-03-04
+│   └── part-0.parquet
+├── target_end_date=2023-03-11
+│   └── part-0.parquet
+├── target_end_date=2023-03-18
+│   └── part-0.parquet
+├── target_end_date=2023-03-25
+│   └── part-0.parquet
+├── target_end_date=2023-04-01
+│   └── part-0.parquet
+├── target_end_date=2023-04-08
+│   └── part-0.parquet
+├── target_end_date=2023-04-15
+│   └── part-0.parquet
+├── target_end_date=2023-04-22
+│   └── part-0.parquet
+├── target_end_date=2023-04-29
+│   └── part-0.parquet
+├── target_end_date=2023-05-06
+│   └── part-0.parquet
+├── target_end_date=2023-05-13
+│   └── part-0.parquet
+├── target_end_date=2023-05-20
+│   └── part-0.parquet
+├── target_end_date=2023-05-27
+│   └── part-0.parquet
+├── target_end_date=2023-06-03
+│   └── part-0.parquet
+├── target_end_date=2023-06-10
+│   └── part-0.parquet
+└── target_end_date=2023-06-17
+    └── part-0.parquet</code></pre>
+</div>
+</div>
+<p>Finally let’s access our data and also perform some filtering on read. Notice how we do not need to explicitly define the partitioning used to write the data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   6692 2023-01-14     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                     94 2023-01-14     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      6 2023-01-14     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                    140 2023-01-14     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     98 2023-01-14     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    354 2023-01-14     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     85 2023-01-14     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                     72 2023-01-14     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                     11 2023-01-14     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      5 2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="more-complex-partitioning" class="level3">
+<h3 class="anchored" data-anchor-id="more-complex-partitioning">More complex partitioning</h3>
+<p>Using hive style means that, regardless of partitioning complexity, any function to access that data does not require additional configuration to extract data from partitions.</p>
+<p>In the following two examples <code>open_dataset()</code> succesfully reads differing partition data without additional configuration.</p>
+<section id="target-target_end_date-partitions" class="level4">
+<h4 class="anchored" data-anchor-id="target-target_end_date-partitions"><code>target</code> &amp; <code>target_end_date</code> partitions</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_dataset</span>(oracle,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="fu">c</span>(<span class="st">"target"</span>, <span class="st">"target_end_date"</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target=wk%20flu%20hosp%20rate
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── target=wk%20flu%20hosp%20rate%20category
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+└── target=wk%20inc%20flu%20hosp
+    ├── target_end_date=2022-10-22
+    │   └── part-0.parquet
+    ├── target_end_date=2022-10-29
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-05
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-12
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-19
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-26
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-03
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-10
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-17
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-24
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-31
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-07
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-14
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-21
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-28
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-01
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-08
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-15
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-22
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-29
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-06
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-13
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-20
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-27
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-03
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-10
+    │   └── part-0.parquet
+    └── target_end_date=2023-06-17
+        └── part-0.parquet</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location output_type output_type_id oracle_value target       target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;          
+ 1 US       pmf         low                       1 wk flu hosp… 2023-01-14     
+ 2 US       pmf         moderate                  0 wk flu hosp… 2023-01-14     
+ 3 US       pmf         high                      0 wk flu hosp… 2023-01-14     
+ 4 US       pmf         very high                 0 wk flu hosp… 2023-01-14     
+ 5 01       pmf         low                       1 wk flu hosp… 2023-01-14     
+ 6 01       pmf         moderate                  0 wk flu hosp… 2023-01-14     
+ 7 01       pmf         high                      0 wk flu hosp… 2023-01-14     
+ 8 01       pmf         very high                 0 wk flu hosp… 2023-01-14     
+ 9 02       pmf         low                       1 wk flu hosp… 2023-01-14     
+10 02       pmf         moderate                  0 wk flu hosp… 2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="output_type-target_end_date-partitions" class="level4">
+<h4 class="anchored" data-anchor-id="output_type-target_end_date-partitions"><code>output_type</code> &amp; <code>target_end_date</code> partitions</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_dataset</span>(oracle,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="fu">c</span>(<span class="st">"output_type"</span>, <span class="st">"target_end_date"</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── output_type=cdf
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=mean
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=median
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=pmf
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── output_type=quantile
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+└── output_type=sample
+    ├── target_end_date=2022-10-22
+    │   └── part-0.parquet
+    ├── target_end_date=2022-10-29
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-05
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-12
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-19
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-26
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-03
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-10
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-17
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-24
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-31
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-07
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-14
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-21
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-28
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-01
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-08
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-15
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-22
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-29
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-06
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-13
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-20
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-27
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-03
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-10
+    │   └── part-0.parquet
+    └── target_end_date=2023-06-17
+        └── part-0.parquet</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location target       output_type_id oracle_value output_type target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;          
+ 1 US       wk flu hosp… 0.25                      0 cdf         2023-01-14     
+ 2 US       wk flu hosp… 0.5                       0 cdf         2023-01-14     
+ 3 US       wk flu hosp… 0.75                      0 cdf         2023-01-14     
+ 4 US       wk flu hosp… 1                         0 cdf         2023-01-14     
+ 5 US       wk flu hosp… 1.25                      0 cdf         2023-01-14     
+ 6 US       wk flu hosp… 1.5                       0 cdf         2023-01-14     
+ 7 US       wk flu hosp… 1.75                      0 cdf         2023-01-14     
+ 8 US       wk flu hosp… 2                         0 cdf         2023-01-14     
+ 9 US       wk flu hosp… 2.25                      1 cdf         2023-01-14     
+10 US       wk flu hosp… 2.5                       1 cdf         2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="csv-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="csv-datasets">csv datasets</h3>
+<p>Works on csv datasets as well:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_csv_dataset</span>(oracle,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">"target_end_date"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># na = "NA",</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target_end_date=2022-10-22
+│   └── part-0.csv
+├── target_end_date=2022-10-29
+│   └── part-0.csv
+├── target_end_date=2022-11-05
+│   └── part-0.csv
+├── target_end_date=2022-11-12
+│   └── part-0.csv
+├── target_end_date=2022-11-19
+│   └── part-0.csv
+├── target_end_date=2022-11-26
+│   └── part-0.csv
+├── target_end_date=2022-12-03
+│   └── part-0.csv
+├── target_end_date=2022-12-10
+│   └── part-0.csv
+├── target_end_date=2022-12-17
+│   └── part-0.csv
+├── target_end_date=2022-12-24
+│   └── part-0.csv
+├── target_end_date=2022-12-31
+│   └── part-0.csv
+├── target_end_date=2023-01-07
+│   └── part-0.csv
+├── target_end_date=2023-01-14
+│   └── part-0.csv
+├── target_end_date=2023-01-21
+│   └── part-0.csv
+├── target_end_date=2023-01-28
+│   └── part-0.csv
+├── target_end_date=2023-02-04
+│   └── part-0.csv
+├── target_end_date=2023-02-11
+│   └── part-0.csv
+├── target_end_date=2023-02-18
+│   └── part-0.csv
+├── target_end_date=2023-02-25
+│   └── part-0.csv
+├── target_end_date=2023-03-04
+│   └── part-0.csv
+├── target_end_date=2023-03-11
+│   └── part-0.csv
+├── target_end_date=2023-03-18
+│   └── part-0.csv
+├── target_end_date=2023-03-25
+│   └── part-0.csv
+├── target_end_date=2023-04-01
+│   └── part-0.csv
+├── target_end_date=2023-04-08
+│   └── part-0.csv
+├── target_end_date=2023-04-15
+│   └── part-0.csv
+├── target_end_date=2023-04-22
+│   └── part-0.csv
+├── target_end_date=2023-04-29
+│   └── part-0.csv
+├── target_end_date=2023-05-06
+│   └── part-0.csv
+├── target_end_date=2023-05-13
+│   └── part-0.csv
+├── target_end_date=2023-05-20
+│   └── part-0.csv
+├── target_end_date=2023-05-27
+│   └── part-0.csv
+├── target_end_date=2023-06-03
+│   └── part-0.csv
+├── target_end_date=2023-06-10
+│   └── part-0.csv
+└── target_end_date=2023-06-17
+    └── part-0.csv</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+   &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;int&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   2380 2022-10-22     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                    141 2022-10-22     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      3 2022-10-22     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                     22 2022-10-22     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     50 2022-10-22     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    124 2022-10-22     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     15 2022-10-22     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                      9 2022-10-22     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                      1 2022-10-22     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      8 2022-10-22     
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="appending-new-data" class="level2">
+<h2 class="anchored" data-anchor-id="appending-new-data">Appending new data</h2>
+<p>The approach can be successfully used to append additional new data to appropriate partitions (and overwrite corrected data if required).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data into old and new</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>new_round_id <span class="ot">&lt;-</span> <span class="fu">unique</span>(oracle<span class="sc">$</span>target_end_date) <span class="sc">|&gt;</span> <span class="fu">tail</span>(<span class="dv">1</span>L)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>old_data <span class="ot">&lt;-</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">!=</span> new_round_id)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> new_round_id)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Write old data</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_dataset</span>(old_data,</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">"target_end_date"</span>,</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path) <span class="sc">|&gt;</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>(<span class="dv">2</span>L)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>target-data/oracle-output/target_end_date=2023-06-10
+target-data/oracle-output/target_end_date=2023-06-10/part-0.parquet</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter on older and new round_id (latter returns 0 rows)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   6692 2023-01-14     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                     94 2023-01-14     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      6 2023-01-14     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                    140 2023-01-14     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     98 2023-01-14     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    354 2023-01-14     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     85 2023-01-14     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                     72 2023-01-14     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                     11 2023-01-14     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      5 2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> new_round_id) <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 6
+# ℹ 6 variables: location &lt;chr&gt;, target &lt;chr&gt;, output_type &lt;chr&gt;,
+#   output_type_id &lt;chr&gt;, oracle_value &lt;dbl&gt;, target_end_date &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write additional data</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_dataset</span>(new_data,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">"target_end_date"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(<span class="at">start =</span> hub_path) <span class="sc">|&gt;</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>(<span class="dv">4</span>L)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>target-data/oracle-output/target_end_date=2023-06-10
+target-data/oracle-output/target_end_date=2023-06-10/part-0.parquet
+target-data/oracle-output/target_end_date=2023-06-17
+target-data/oracle-output/target_end_date=2023-06-17/part-0.parquet</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter on older and new round_id</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   6692 2023-01-14     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                     94 2023-01-14     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      6 2023-01-14     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                    140 2023-01-14     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     98 2023-01-14     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    354 2023-01-14     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     85 2023-01-14     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                     72 2023-01-14     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                     11 2023-01-14     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      5 2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> new_round_id) <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                    850 2023-06-17     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                      6 2023-06-17     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      5 2023-06-17     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                     47 2023-06-17     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                      4 2023-06-17     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                     35 2023-06-17     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                      5 2023-06-17     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                      6 2023-06-17     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                      0 2023-06-17     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      1 2023-06-17     
+# ℹ 5,714 more rows</code></pre>
+</div>
+</div>
+<p>Note I would need to investigate further how this would work if the new data added did not cleanly contain new data in the column on which the dataset is being partitioned, which currently results in a new directory being added.</p>
+</section>
+<section id="opening-single-files" class="level2">
+<h2 class="anchored" data-anchor-id="opening-single-files">Opening single files</h2>
+<p>Finally this approach can also be used to open single files, additionally allowing for filtering only required data on read.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_path) <span class="sc">|&gt;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target_end_date target       output_type output_type_id oracle_value
+   &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;int&gt;
+ 1 US       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                   2380
+ 2 01       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    141
+ 3 02       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      3
+ 4 04       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     22
+ 5 05       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     50
+ 6 06       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    124
+ 7 08       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     15
+ 8 09       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      9
+ 9 10       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      1
+10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
+# ℹ 200,330 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   6692 2023-01-14     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                     94 2023-01-14     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      6 2023-01-14     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                    140 2023-01-14     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     98 2023-01-14     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    354 2023-01-14     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     85 2023-01-14     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                     72 2023-01-14     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                     11 2023-01-14     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      5 2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_dataset</span>(oracle,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="fu">c</span>(<span class="st">"target"</span>, <span class="st">"target_end_date"</span>),</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hive_style =</span> <span class="cn">TRUE</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── target=wk%20flu%20hosp%20rate
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+├── target=wk%20flu%20hosp%20rate%20category
+│   ├── target_end_date=2022-10-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-10-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-05
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-12
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-19
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-11-26
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-10
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-17
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-24
+│   │   └── part-0.parquet
+│   ├── target_end_date=2022-12-31
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-07
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-14
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-21
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-01-28
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-02-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-04
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-11
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-18
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-03-25
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-01
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-08
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-15
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-22
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-04-29
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-06
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-13
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-20
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-05-27
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-03
+│   │   └── part-0.parquet
+│   ├── target_end_date=2023-06-10
+│   │   └── part-0.parquet
+│   └── target_end_date=2023-06-17
+│       └── part-0.parquet
+└── target=wk%20inc%20flu%20hosp
+    ├── target_end_date=2022-10-22
+    │   └── part-0.parquet
+    ├── target_end_date=2022-10-29
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-05
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-12
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-19
+    │   └── part-0.parquet
+    ├── target_end_date=2022-11-26
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-03
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-10
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-17
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-24
+    │   └── part-0.parquet
+    ├── target_end_date=2022-12-31
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-07
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-14
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-21
+    │   └── part-0.parquet
+    ├── target_end_date=2023-01-28
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-02-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-04
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-11
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-18
+    │   └── part-0.parquet
+    ├── target_end_date=2023-03-25
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-01
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-08
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-15
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-22
+    │   └── part-0.parquet
+    ├── target_end_date=2023-04-29
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-06
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-13
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-20
+    │   └── part-0.parquet
+    ├── target_end_date=2023-05-27
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-03
+    │   └── part-0.parquet
+    ├── target_end_date=2023-06-10
+    │   └── part-0.parquet
+    └── target_end_date=2023-06-17
+        └── part-0.parquet</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(.data[[<span class="st">"target_end_date"</span>]] <span class="sc">==</span> <span class="st">"2023-01-14"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,724 × 6
+   location output_type output_type_id oracle_value target       target_end_date
+ * &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;          
+ 1 US       cdf         0.25                      0 wk flu hosp… 2023-01-14     
+ 2 US       cdf         0.5                       0 wk flu hosp… 2023-01-14     
+ 3 US       cdf         0.75                      0 wk flu hosp… 2023-01-14     
+ 4 US       cdf         1                         0 wk flu hosp… 2023-01-14     
+ 5 US       cdf         1.25                      0 wk flu hosp… 2023-01-14     
+ 6 US       cdf         1.5                       0 wk flu hosp… 2023-01-14     
+ 7 US       cdf         1.75                      0 wk flu hosp… 2023-01-14     
+ 8 US       cdf         2                         0 wk flu hosp… 2023-01-14     
+ 9 US       cdf         2.25                      1 wk flu hosp… 2023-01-14     
+10 US       cdf         2.5                       1 wk flu hosp… 2023-01-14     
+# ℹ 5,714 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="applying-a-schema" class="level2">
+<h2 class="anchored" data-anchor-id="applying-a-schema">Applying a schema</h2>
+<p>Here I explore ensuring that columns, especially</p>
+<p>First I create a utility function for partitioning oracle data on <code>target_end_date</code> into different formatted datasets (csv or parquet):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>partition_dataset <span class="ot">&lt;-</span> <span class="cf">function</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">partitioning =</span> <span class="st">"target_end_date"</span>) {</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  arrow<span class="sc">::</span><span class="fu">write_dataset</span>(oracle,</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> format,</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">partitioning =</span> partitioning,</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">path =</span> oracle_dataset_path</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As well as a prototype functions from creating an oracle schema from a hub config file. The function also needs to access the oracle dataset itself to subset the schema to the columns present in the dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>create_oracle_schema <span class="ot">&lt;-</span> <span class="cf">function</span>(hub_path, oracle_dataset_path) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  config_tasks <span class="ot">&lt;-</span> hubUtils<span class="sc">::</span><span class="fu">read_config</span>(hub_path)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  schema <span class="ot">&lt;-</span> hubData<span class="sc">::</span><span class="fu">create_hub_schema</span>(config_tasks)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add `oracle_value` field to schema with the same datatype as the `value`</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column datatype</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  schema[[<span class="st">"oracle_value"</span>]] <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">field</span>(</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"oracle_value"</span>,</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    schema[[<span class="st">"value"</span>]]<span class="sc">$</span>type</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  is_dir <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">is_dir</span>(oracle_dataset_path)</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># If oracle path is a directory, inspect all extensions and return unique format</span></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (is_dir) {</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    format <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path,</span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> <span class="st">"file"</span>,</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">recurse =</span> <span class="cn">TRUE</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path_ext</span>() <span class="sc">|&gt;</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unique</span>()</span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: VALIDATION: throw error if more than 1 format type or not accepted</span></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># type</span></span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>    format <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">path_ext</span>(oracle_dataset_path)</span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a>  dataset_colnames <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_dataset</span>(</span>
+<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a>    oracle_dataset_path,</span>
+<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> format</span>
+<span id="cb48-31"><a href="#cb48-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb48-32"><a href="#cb48-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
+<span id="cb48-33"><a href="#cb48-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Subset schema to actual columns in oracle dataset</span></span>
+<span id="cb48-34"><a href="#cb48-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># </span><span class="al">TODO</span><span class="co">: VALIDATION: ensure all oracle columns are covered by schema</span></span>
+<span id="cb48-35"><a href="#cb48-35" aria-hidden="true" tabindex="-1"></a>  schema[<span class="fu">names</span>(schema) <span class="sc">%in%</span> dataset_colnames]</span>
+<span id="cb48-36"><a href="#cb48-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="applying-a-schema-to-parquet-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="applying-a-schema-to-parquet-datasets">Applying a schema to parquet datasets</h3>
+<p>Applying the schema to partitioned parquet datasets is smooth and straight forward.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create parquet partitioned dataset</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">partition_dataset</span>(oracle_dataset_path)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>oracle_schema <span class="ot">&lt;-</span> <span class="fu">create_oracle_schema</span>(hub_path, oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Updating superseded URL `Infectious-Disease-Modeling-hubs` to `hubverse-org`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"parquet"</span>,</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">schema =</span> oracle_schema</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   target       location target_end_date output_type output_type_id oracle_value
+   &lt;chr&gt;        &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt;
+ 1 wk inc flu … US       2022-10-22      quantile    &lt;NA&gt;                   2380
+ 2 wk inc flu … 01       2022-10-22      quantile    &lt;NA&gt;                    141
+ 3 wk inc flu … 02       2022-10-22      quantile    &lt;NA&gt;                      3
+ 4 wk inc flu … 04       2022-10-22      quantile    &lt;NA&gt;                     22
+ 5 wk inc flu … 05       2022-10-22      quantile    &lt;NA&gt;                     50
+ 6 wk inc flu … 06       2022-10-22      quantile    &lt;NA&gt;                    124
+ 7 wk inc flu … 08       2022-10-22      quantile    &lt;NA&gt;                     15
+ 8 wk inc flu … 09       2022-10-22      quantile    &lt;NA&gt;                      9
+ 9 wk inc flu … 10       2022-10-22      quantile    &lt;NA&gt;                      1
+10 wk inc flu … 11       2022-10-22      quantile    &lt;NA&gt;                      8
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="applying-a-schema-to-csv-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="applying-a-schema-to-csv-datasets">Applying a schema to csv datasets</h3>
+<p>CSV datasets on the otherhand are much more cumbersome:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">partition_dataset</span>(oracle_dataset_path, <span class="at">format =</span> <span class="st">"csv"</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>schema <span class="ot">&lt;-</span> <span class="fu">create_oracle_schema</span>(hub_path, oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Updating superseded URL `Infectious-Disease-Modeling-hubs` to `hubverse-org`</code></pre>
+</div>
+</div>
+<p>When supplying the schema to the <code>schema</code> argument appears to apply the schema correctly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"csv"</span>,</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">quoted_na =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">schema =</span> schema</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>FileSystemDataset with 35 csv files
+6 columns
+target: string
+location: string
+target_end_date: date32[day]
+output_type: string
+output_type_id: string
+oracle_value: double</code></pre>
+</div>
+</div>
+<p>However, it annoyingly returns an error when collecting, indicating that only 5 columns are actually read and cause an error when checked against the schema:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">schema =</span> schema,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"csv"</span>,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">quoted_na =</span> <span class="cn">TRUE</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `compute.Dataset()`:
+! Invalid: Could not open CSV input source '/private/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output/target_end_date=2022-10-22/part-0.csv': Invalid: CSV parse error: Row #1: Expected 6 columns, got 5: "location","target","output_type","output_type_id","oracle_value"</code></pre>
+</div>
+</div>
+<p>Using the <code>col_types</code> argument instead opens the dataset but does not apply the schema to the partitioning column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"csv"</span>,</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> schema,</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">quoted_na =</span> <span class="cn">TRUE</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+   &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   2380 2022-10-22     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                    141 2022-10-22     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      3 2022-10-22     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                     22 2022-10-22     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     50 2022-10-22     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    124 2022-10-22     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     15 2022-10-22     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                      9 2022-10-22     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                      1 2022-10-22     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      8 2022-10-22     
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+<p>Annoying the only way to correctly apply schema to the partitioning columns of csv partitioned datasets, the data type needs to be supplied explicitly through the partitioning argument</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>partitioning <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">hive_partition</span>(</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">target_end_date =</span> schema[[<span class="st">"target_end_date"</span>]]<span class="sc">$</span>type</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"csv"</span>,</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> schema,</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">quoted_na =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> partitioning</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+   &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;date&gt;         
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   2380 2022-10-22     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                    141 2022-10-22     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      3 2022-10-22     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                     22 2022-10-22     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     50 2022-10-22     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    124 2022-10-22     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     15 2022-10-22     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                      9 2022-10-22     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                      1 2022-10-22     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      8 2022-10-22     
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+<p>This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid. Having said that, we can determine the partitioning column from the directory names, it’s just more of a faff.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>partition_cols <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">type =</span> <span class="st">"directory"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  fs<span class="sc">::</span><span class="fu">path_rel</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">"^[^=]+"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>partitioning <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">hive_partition</span>(<span class="sc">!!!</span>purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(partition_cols),</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> schema[[.x]]<span class="sc">$</span>type</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_dataset</span>(oracle_dataset_path,</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">"csv"</span>,</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> schema,</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">quoted_na =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> partitioning</span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target       output_type output_type_id oracle_value target_end_date
+   &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;dbl&gt; &lt;date&gt;         
+ 1 US       wk inc flu … quantile    &lt;NA&gt;                   2380 2022-10-22     
+ 2 01       wk inc flu … quantile    &lt;NA&gt;                    141 2022-10-22     
+ 3 02       wk inc flu … quantile    &lt;NA&gt;                      3 2022-10-22     
+ 4 04       wk inc flu … quantile    &lt;NA&gt;                     22 2022-10-22     
+ 5 05       wk inc flu … quantile    &lt;NA&gt;                     50 2022-10-22     
+ 6 06       wk inc flu … quantile    &lt;NA&gt;                    124 2022-10-22     
+ 7 08       wk inc flu … quantile    &lt;NA&gt;                     15 2022-10-22     
+ 8 09       wk inc flu … quantile    &lt;NA&gt;                      9 2022-10-22     
+ 9 10       wk inc flu … quantile    &lt;NA&gt;                      1 2022-10-22     
+10 11       wk inc flu … quantile    &lt;NA&gt;                      8 2022-10-22     
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+<p>There have always been issues (see <a href="https://github.com/apache/arrow/issues/34589" class="uri">https://github.com/apache/arrow/issues/34589</a> and <a href="https://github.com/apache/arrow/issues/34640" class="uri">https://github.com/apache/arrow/issues/34640</a>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved, I <a href="https://github.com/apache/arrow/issues/34640#issuecomment-2577363842">re-commented on one of the issues</a> as I don’t think that is the case. Will be interesting to hear their response.</p>
+</section>
+</section>
+<section id="partitioning-that-contains-all-data-in-files" class="level2">
+<h2 class="anchored" data-anchor-id="partitioning-that-contains-all-data-in-files">Partitioning that contains all data in files</h2>
+<p>I also explored options for splitting up the data while retaining all columns in the resulting data files.</p>
+<p>Because reducing redundancy is a key aspect of partitioning, this is not possible if files are partitioned by a data column into sub-directories.</p>
+<p>However, it is possible to just split files within a top level directory. This allows for all columns to be present in resulting data files and still allow data to be accessible as a dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_csv_dataset</span>(oracle,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> oracle_dataset_path,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_rows_per_file =</span> <span class="dv">10000</span></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── part-0.csv
+├── part-1.csv
+├── part-10.csv
+├── part-11.csv
+├── part-12.csv
+├── part-13.csv
+├── part-14.csv
+├── part-15.csv
+├── part-16.csv
+├── part-17.csv
+├── part-18.csv
+├── part-19.csv
+├── part-2.csv
+├── part-20.csv
+├── part-3.csv
+├── part-4.csv
+├── part-5.csv
+├── part-6.csv
+├── part-7.csv
+├── part-8.csv
+└── part-9.csv</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target_end_date target       output_type output_type_id oracle_value
+   &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;int&gt;
+ 1 US       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                   2380
+ 2 01       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    141
+ 3 02       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      3
+ 4 04       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     22
+ 5 05       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     50
+ 6 06       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    124
+ 7 08       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     15
+ 8 09       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      9
+ 9 10       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      1
+10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+<p>Individual files continue to contain all data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(oracle_dataset_path, <span class="at">recurse =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tail</span>(<span class="dv">1</span>L)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 10000 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (3): location, target, output_type
+dbl  (2): output_type_id, oracle_value
+date (1): target_end_date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10,000 × 6
+   location target_end_date target       output_type output_type_id oracle_value
+   &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;        &lt;chr&gt;                &lt;dbl&gt;        &lt;dbl&gt;
+ 1 11       2023-01-28      wk flu hosp… cdf                   15.2            1
+ 2 11       2023-01-28      wk flu hosp… cdf                   15.5            1
+ 3 11       2023-01-28      wk flu hosp… cdf                   15.8            1
+ 4 11       2023-01-28      wk flu hosp… cdf                   16              1
+ 5 11       2023-01-28      wk flu hosp… cdf                   16.2            1
+ 6 11       2023-01-28      wk flu hosp… cdf                   16.5            1
+ 7 11       2023-01-28      wk flu hosp… cdf                   16.8            1
+ 8 11       2023-01-28      wk flu hosp… cdf                   17              1
+ 9 11       2023-01-28      wk flu hosp… cdf                   17.2            1
+10 11       2023-01-28      wk flu hosp… cdf                   17.5            1
+# ℹ 9,990 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="data-file-names" class="level2">
+<h2 class="anchored" data-anchor-id="data-file-names">Data file names</h2>
+<p>I also wanted to demonstrate that individual file names do not need to follow a specific filename convention. The default <code>part-{i}.ext</code> convention used in <code>write_dataset()</code> can be overriden by providing a different pattern to argument.</p>
+<p>More importantly it does not actually affect the opening of the dataset as no metadata are expected to be stored in arrow dataset filenames themselves.</p>
+<p>As such, additional files can be added to a target dataset using whatever filename convention we like and using other tooling also.</p>
+<p>In the example below, instead of writing an arrow dataset using <code>write_dataset()</code> I instead split the data by <code>target_end_date</code> and write a file for each in the root of the <code>target_data/oracle</code> directory.</p>
+<p><code>open_dataset()</code> continues to be able to open the files as a dataset successfully.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>target_dates <span class="ot">&lt;-</span> <span class="fu">unique</span>(oracle<span class="sc">$</span>target_end_date)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  target_dates,</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(oracle_dataset_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/var/folders/p2/ywqk6z3n5nq3csvhfnvwfpzh0000gp/T/Rtmpz3wtG7/file157e2151f4edd/complex-forecast-hub/target-data/oracle-output
+├── 2022-10-22.csv
+├── 2022-10-29.csv
+├── 2022-11-05.csv
+├── 2022-11-12.csv
+├── 2022-11-19.csv
+├── 2022-11-26.csv
+├── 2022-12-03.csv
+├── 2022-12-10.csv
+├── 2022-12-17.csv
+├── 2022-12-24.csv
+├── 2022-12-31.csv
+├── 2023-01-07.csv
+├── 2023-01-14.csv
+├── 2023-01-21.csv
+├── 2023-01-28.csv
+├── 2023-02-04.csv
+├── 2023-02-11.csv
+├── 2023-02-18.csv
+├── 2023-02-25.csv
+├── 2023-03-04.csv
+├── 2023-03-11.csv
+├── 2023-03-18.csv
+├── 2023-03-25.csv
+├── 2023-04-01.csv
+├── 2023-04-08.csv
+├── 2023-04-15.csv
+├── 2023-04-22.csv
+├── 2023-04-29.csv
+├── 2023-05-06.csv
+├── 2023-05-13.csv
+├── 2023-05-20.csv
+├── 2023-05-27.csv
+├── 2023-06-03.csv
+├── 2023-06-10.csv
+└── 2023-06-17.csv</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target_end_date target       output_type output_type_id oracle_value
+   &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;int&gt;
+ 1 US       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                   2380
+ 2 01       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    141
+ 3 02       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      3
+ 4 04       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     22
+ 5 05       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     50
+ 6 06       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    124
+ 7 08       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     15
+ 8 09       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      9
+ 9 10       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      1
+10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
+# ℹ 200,330 more rows</code></pre>
+</div>
+</div>
+<p>I also demonstrate how this approach can be used to append new <code>target_end_data</code> files, which may be closer to the situation a hub in the wild might face. Specifically I first write files for all target end dates except for the last one and check that it can be read. I then add the file for the last target end date and show that the initial as well as the updated data are now available.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_delete</span>(oracle_dataset_path)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_create</span>(oracle_dataset_path)</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create files for all but the last target end date</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>  target_dates[<span class="sc">-</span><span class="fu">length</span>(target_dates)],</span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>initial <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path)</span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>initial <span class="sc">|&gt;</span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 194,616 × 6
+   location target_end_date target       output_type output_type_id oracle_value
+   &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;int&gt;
+ 1 US       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                   2380
+ 2 01       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    141
+ 3 02       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      3
+ 4 04       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     22
+ 5 05       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     50
+ 6 06       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    124
+ 7 08       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     15
+ 8 09       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      9
+ 9 10       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      1
+10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
+# ℹ 194,606 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>initial <span class="sc">|&gt;</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 194616</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>initial_ted <span class="ot">&lt;-</span> initial <span class="sc">|&gt;</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>()</span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>initial_ted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "2022-10-22" "2022-10-29" "2022-11-05" "2022-11-12" "2022-11-19"
+ [6] "2022-11-26" "2022-12-03" "2022-12-10" "2022-12-17" "2022-12-24"
+[11] "2022-12-31" "2023-01-07" "2023-01-14" "2023-01-21" "2023-01-28"
+[16] "2023-02-04" "2023-02-11" "2023-02-18" "2023-02-25" "2023-03-04"
+[21] "2023-03-11" "2023-03-18" "2023-03-25" "2023-04-01" "2023-04-08"
+[26] "2023-04-15" "2023-04-22" "2023-04-29" "2023-05-06" "2023-05-13"
+[31] "2023-05-20" "2023-05-27" "2023-06-03" "2023-06-10"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  target_dates[<span class="fu">length</span>(target_dates)],</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> oracle <span class="sc">|&gt;</span></span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(target_end_date <span class="sc">==</span> .x) <span class="sc">|&gt;</span></span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">write_csv_arrow</span>(</span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>      fs<span class="sc">::</span><span class="fu">path</span>(oracle_dataset_path, .x, <span class="at">ext =</span> <span class="st">"csv"</span>)</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>updated <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">open_csv_dataset</span>(oracle_dataset_path) <span class="sc">|&gt;</span></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span>
+<span id="cb82-12"><a href="#cb82-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-13"><a href="#cb82-13" aria-hidden="true" tabindex="-1"></a>updated <span class="sc">|&gt;</span></span>
+<span id="cb82-14"><a href="#cb82-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200,340 × 6
+   location target_end_date target       output_type output_type_id oracle_value
+   &lt;chr&gt;    &lt;date&gt;          &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;                 &lt;int&gt;
+ 1 US       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                   2380
+ 2 01       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    141
+ 3 02       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      3
+ 4 04       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     22
+ 5 05       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     50
+ 6 06       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                    124
+ 7 08       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                     15
+ 8 09       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      9
+ 9 10       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      1
+10 11       2022-10-22      wk inc flu … quantile    &lt;NA&gt;                      8
+# ℹ 200,330 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>updated <span class="sc">|&gt;</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 200340</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>updated_ted <span class="ot">&lt;-</span> updated <span class="sc">|&gt;</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(target_end_date) <span class="sc">|&gt;</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>()</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>updated_ted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "2022-10-22" "2022-10-29" "2022-11-05" "2022-11-12" "2022-11-19"
+ [6] "2022-11-26" "2022-12-03" "2022-12-10" "2022-12-17" "2022-12-24"
+[11] "2022-12-31" "2023-01-07" "2023-01-14" "2023-01-21" "2023-01-28"
+[16] "2023-02-04" "2023-02-11" "2023-02-18" "2023-02-25" "2023-03-04"
+[21] "2023-03-11" "2023-03-18" "2023-03-25" "2023-04-01" "2023-04-08"
+[26] "2023-04-15" "2023-04-22" "2023-04-29" "2023-05-06" "2023-05-13"
+[31] "2023-05-20" "2023-05-27" "2023-06-03" "2023-06-10" "2023-06-17"</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

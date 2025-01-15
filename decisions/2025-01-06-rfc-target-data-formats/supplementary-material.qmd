@@ -1,0 +1,504 @@
+---
+title: "Target data formats and organisation supplementary materials"
+format: html
+author: Anna Krystalli
+editor: visual
+toc: true
+---
+
+## Source data
+
+We'll demonstrate partitioning and reading target data using the [`example-complex-forecast`](https://github.com/hubverse-org/example-complex-forecast-hub) hub
+
+```{r}
+tmp_dir <- withr::local_tempdir()
+hub_path <- fs::path(tmp_dir, "complex-forecast-hub")
+gert::git_clone(
+  "https://github.com/hubverse-org/example-complex-forecast-hub.git",
+  path = hub_path
+)
+```
+
+```{r}
+library(dplyr, warn.conflicts = FALSE)
+```
+
+### Create source data paths
+
+```{r}
+target_data_path <- fs::path(hub_path, "target-data")
+fs::dir_ls(target_data_path)
+timeseries_path <- fs::path(target_data_path, "time-series.csv")
+oracle_path <- fs::path(target_data_path, "oracle-output.csv")
+```
+
+### Read single file data
+
+```{r}
+timeseries <- readr::read_csv(timeseries_path)
+oracle <- readr::read_csv(oracle_path)
+```
+
+## Writing partitioned data
+
+### parquet datasets
+
+First lets create a partitioned folder for our oracle data
+
+```{r}
+oracle_dataset_path <- fs::path(target_data_path, "oracle-output")
+fs::dir_create(oracle_dataset_path)
+```
+
+Next let's partition our data by `target_end_date` and inspect the resulting file structure
+
+```{r}
+arrow::write_dataset(oracle,
+  format = "parquet",
+  partitioning = "target_end_date",
+  path = oracle_dataset_path
+)
+
+fs::dir_tree(oracle_dataset_path)
+```
+
+Finally let's access our data and also perform some filtering on read. Notice how we do not need to explicitly define the partitioning used to write the data:
+
+```{r}
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+```
+
+### More complex partitioning
+
+Using hive style means that, regardless of partitioning complexity, any function to access that data does not require additional configuration to extract data from partitions.
+
+In the following two examples `open_dataset()` succesfully reads differing partition data without additional configuration.
+
+#### `target` & `target_end_date` partitions
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+arrow::write_dataset(oracle,
+  format = "parquet",
+  partitioning = c("target", "target_end_date"),
+  path = oracle_dataset_path
+)
+
+fs::dir_tree(oracle_dataset_path)
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+```
+
+#### `output_type` & `target_end_date` partitions
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+arrow::write_dataset(oracle,
+  format = "parquet",
+  partitioning = c("output_type", "target_end_date"),
+  path = oracle_dataset_path
+)
+
+fs::dir_tree(oracle_dataset_path)
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+```
+
+### csv datasets
+
+Works on csv datasets as well:
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+arrow::write_csv_dataset(oracle,
+  partitioning = "target_end_date",
+  # na = "NA",
+  path = oracle_dataset_path
+)
+
+
+fs::dir_tree(oracle_dataset_path)
+
+arrow::open_csv_dataset(oracle_dataset_path) |>
+  dplyr::collect()
+```
+
+## Appending new data
+
+The approach can be successfully used to append additional new data to appropriate partitions (and overwrite corrected data if required).
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+# Split data into old and new
+new_round_id <- unique(oracle$target_end_date) |> tail(1L)
+old_data <- oracle |>
+  filter(.data[["target_end_date"]] != new_round_id)
+new_data <- oracle |>
+  filter(.data[["target_end_date"]] == new_round_id)
+
+# Write old data
+arrow::write_dataset(old_data,
+  format = "parquet",
+  partitioning = "target_end_date",
+  path = oracle_dataset_path
+)
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+  fs::path_rel(start = hub_path) |>
+  tail(2L)
+
+# Filter on older and new round_id (latter returns 0 rows)
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == new_round_id) |>
+  dplyr::collect()
+
+
+# Write additional data
+arrow::write_dataset(new_data,
+  format = "parquet",
+  partitioning = "target_end_date",
+  path = oracle_dataset_path
+)
+fs::dir_ls(oracle_dataset_path, recurse = TRUE) |>
+  fs::path_rel(start = hub_path) |>
+  tail(4L)
+
+# Filter on older and new round_id
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == new_round_id) |>
+  dplyr::collect()
+```
+
+Note I would need to investigate further how this would work if the new data added did not cleanly contain new data in the column on which the dataset is being partitioned, which currently results in a new directory being added.
+
+## Opening single files
+
+Finally this approach can also be used to open single files, additionally allowing for filtering only required data on read.
+
+```{r}
+arrow::open_csv_dataset(oracle_path) |>
+  dplyr::collect()
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+```
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+arrow::write_dataset(oracle,
+  format = "parquet",
+  partitioning = c("target", "target_end_date"),
+  path = oracle_dataset_path,
+  hive_style = TRUE
+)
+
+fs::dir_tree(oracle_dataset_path)
+
+arrow::open_dataset(oracle_dataset_path, format = "parquet") |>
+  dplyr::filter(.data[["target_end_date"]] == "2023-01-14") |>
+  dplyr::collect()
+```
+
+## Applying a schema
+
+Here I explore ensuring that columns, especially
+
+First I create a utility function for partitioning oracle data on `target_end_date` into different formatted datasets (csv or parquet):
+
+```{r}
+partition_dataset <- function(oracle_dataset_path, format = "parquet",
+                              partitioning = "target_end_date") {
+  fs::dir_delete(oracle_dataset_path)
+  fs::dir_create(oracle_dataset_path)
+
+  arrow::write_dataset(oracle,
+    format = format,
+    partitioning = partitioning,
+    path = oracle_dataset_path
+  )
+}
+```
+
+As well as a prototype functions from creating an oracle schema from a hub config file. The function also needs to access the oracle dataset itself to subset the schema to the columns present in the dataset:
+
+```{r}
+create_oracle_schema <- function(hub_path, oracle_dataset_path) {
+  config_tasks <- hubUtils::read_config(hub_path)
+  schema <- hubData::create_hub_schema(config_tasks)
+
+  # Add `oracle_value` field to schema with the same datatype as the `value`
+  # column datatype
+  schema[["oracle_value"]] <- arrow::field(
+    "oracle_value",
+    schema[["value"]]$type
+  )
+
+  is_dir <- fs::is_dir(oracle_dataset_path)
+
+  # If oracle path is a directory, inspect all extensions and return unique format
+  if (is_dir) {
+    format <- fs::dir_ls(oracle_dataset_path,
+      type = "file",
+      recurse = TRUE
+    ) |>
+      fs::path_ext() |>
+      unique()
+    # TODO: VALIDATION: throw error if more than 1 format type or not accepted
+    # type
+  } else {
+    format <- fs::path_ext(oracle_dataset_path)
+  }
+
+  dataset_colnames <- arrow::open_dataset(
+    oracle_dataset_path,
+    format = format
+  ) |>
+    names()
+  # Subset schema to actual columns in oracle dataset
+  # TODO: VALIDATION: ensure all oracle columns are covered by schema
+  schema[names(schema) %in% dataset_colnames]
+}
+```
+
+### Applying a schema to parquet datasets
+
+Applying the schema to partitioned parquet datasets is smooth and straight forward.
+
+```{r}
+# Create parquet partitioned dataset
+partition_dataset(oracle_dataset_path)
+oracle_schema <- create_oracle_schema(hub_path, oracle_dataset_path)
+
+arrow::open_dataset(oracle_dataset_path,
+  format = "parquet",
+  schema = oracle_schema
+) |>
+  dplyr::collect()
+```
+
+### Applying a schema to csv datasets
+
+CSV datasets on the otherhand are much more cumbersome:
+
+```{r}
+partition_dataset(oracle_dataset_path, format = "csv")
+schema <- create_oracle_schema(hub_path, oracle_dataset_path)
+```
+
+When supplying the schema to the `schema` argument appears to apply the schema correctly:
+
+```{r}
+arrow::open_dataset(oracle_dataset_path,
+  format = "csv",
+  quoted_na = TRUE,
+  schema = schema
+)
+```
+
+However, it annoyingly returns an error when collecting, indicating that only 5 columns are actually read and cause an error when checked against the schema:
+
+```{r}
+#| error: true
+arrow::open_dataset(oracle_dataset_path,
+  schema = schema,
+  format = "csv",
+  quoted_na = TRUE
+) |>
+  dplyr::collect()
+```
+
+Using the `col_types` argument instead opens the dataset but does not apply the schema to the partitioning column:
+
+```{r}
+arrow::open_dataset(oracle_dataset_path,
+  format = "csv",
+  col_types = schema,
+  quoted_na = TRUE
+) |>
+  dplyr::collect()
+```
+
+Annoying the only way to correctly apply schema to the partitioning columns of csv partitioned datasets, the data type needs to be supplied explicitly through the partitioning argument
+
+```{r}
+partitioning <- arrow::hive_partition(
+  target_end_date = schema[["target_end_date"]]$type
+)
+arrow::open_dataset(oracle_dataset_path,
+  format = "csv",
+  col_types = schema,
+  quoted_na = TRUE,
+  partitioning = partitioning
+) |>
+  dplyr::collect()
+```
+
+This is a really annoying and awkward deviation in API between the two data formats and more importantly requires knowledge of the partitioning column which is ideally something we want to avoid. Having said that, we can determine the partitioning column from the directory names, it's just more of a faff.
+
+```{r}
+partition_cols <- fs::dir_ls(oracle_dataset_path, type = "directory") |>
+  fs::path_rel(oracle_dataset_path) |>
+  stringr::str_extract("^[^=]+") |>
+  unique()
+
+partitioning <- arrow::hive_partition(!!!purrr::map(
+  purrr::set_names(partition_cols),
+  ~ schema[[.x]]$type
+))
+arrow::open_dataset(oracle_dataset_path,
+  format = "csv",
+  col_types = schema,
+  quoted_na = TRUE,
+  partitioning = partitioning
+) |>
+  dplyr::collect()
+```
+
+There have always been issues (see <https://github.com/apache/arrow/issues/34589> and <https://github.com/apache/arrow/issues/34640>) with applying schema to partitioning columns in CSV datasets. Although they have been closed as resolved, I [re-commented on one of the issues](https://github.com/apache/arrow/issues/34640#issuecomment-2577363842) as I don't think that is the case. Will be interesting to hear their response.
+
+## Partitioning that contains all data in files
+
+I also explored options for splitting up the data while retaining all columns in the resulting data files.
+
+Because reducing redundancy is a key aspect of partitioning, this is not possible if files are partitioned by a data column into sub-directories.
+
+However, it is possible to just split files within a top level directory. This allows for all columns to be present in resulting data files and still allow data to be accessible as a dataset.
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+arrow::write_csv_dataset(oracle,
+  path = oracle_dataset_path,
+  max_rows_per_file = 10000
+)
+
+fs::dir_tree(oracle_dataset_path)
+```
+
+```{r}
+arrow::open_csv_dataset(oracle_dataset_path) |>
+  dplyr::collect()
+```
+
+Individual files continue to contain all data:
+
+```{r}
+file <- fs::dir_ls(oracle_dataset_path, recurse = TRUE) |> tail(1L)
+readr::read_csv(file)
+```
+
+## Data file names
+
+I also wanted to demonstrate that individual file names do not need to follow a specific filename convention. The default `part-{i}.ext` convention used in `write_dataset()` can be overriden by providing a different pattern to argument.
+
+More importantly it does not actually affect the opening of the dataset as no metadata are expected to be stored in arrow dataset filenames themselves.
+
+As such, additional files can be added to a target dataset using whatever filename convention we like and using other tooling also.
+
+In the example below, instead of writing an arrow dataset using `write_dataset()` I instead split the data by `target_end_date` and write a file for each in the root of the `target_data/oracle` directory.
+
+`open_dataset()` continues to be able to open the files as a dataset successfully.
+
+```{r}
+target_dates <- unique(oracle$target_end_date)
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+purrr::walk(
+  target_dates,
+  ~ oracle |>
+    filter(target_end_date == .x) |>
+    arrow::write_csv_arrow(
+      fs::path(oracle_dataset_path, .x, ext = "csv")
+    )
+)
+
+fs::dir_tree(oracle_dataset_path)
+
+arrow::open_csv_dataset(oracle_dataset_path) |>
+  dplyr::collect()
+```
+
+I also demonstrate how this approach can be used to append new `target_end_data` files, which may be closer to the situation a hub in the wild might face. Specifically I first write files for all target end dates except for the last one and check that it can be read. I then add the file for the last target end date and show that the initial as well as the updated data are now available.
+
+```{r}
+fs::dir_delete(oracle_dataset_path)
+fs::dir_create(oracle_dataset_path)
+
+# Create files for all but the last target end date
+purrr::walk(
+  target_dates[-length(target_dates)],
+  ~ oracle |>
+    filter(target_end_date == .x) |>
+    arrow::write_csv_arrow(
+      fs::path(oracle_dataset_path, .x, ext = "csv")
+    )
+)
+
+initial <- arrow::open_csv_dataset(oracle_dataset_path)
+initial |>
+  dplyr::collect()
+
+initial |>
+  dplyr::collect() |>
+  nrow()
+
+initial_ted <- initial |>
+  distinct(target_end_date) |>
+  collect() |>
+  pull(target_end_date) |>
+  sort()
+
+initial_ted
+```
+
+```{r}
+purrr::walk(
+  target_dates[length(target_dates)],
+  ~ oracle |>
+    filter(target_end_date == .x) |>
+    arrow::write_csv_arrow(
+      fs::path(oracle_dataset_path, .x, ext = "csv")
+    )
+)
+
+updated <- arrow::open_csv_dataset(oracle_dataset_path) |>
+  dplyr::collect()
+
+updated |>
+  dplyr::collect()
+
+updated |>
+  dplyr::collect() |>
+  nrow()
+
+updated_ted <- updated |>
+  distinct(target_end_date) |>
+  collect() |>
+  pull(target_end_date) |>
+  sort()
+
+updated_ted
+```
