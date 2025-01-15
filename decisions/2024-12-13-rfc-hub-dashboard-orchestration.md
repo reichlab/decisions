@@ -159,7 +159,7 @@ Secrets Manager).
 
 ## Status
 
-proposed
+ACCEPTED
 
 ## Consequences
 
