@@ -63,8 +63,7 @@ predtimechart to align with the current status of the hub dashboard project.
 
 ## Status
 
-proposed
-
+ACCEPTED
 ## Consequences
 
  - We will be able to continue movement on this project
