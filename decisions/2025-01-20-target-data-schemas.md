@@ -3,23 +3,17 @@
 ## Context
 
 - All hubs need to provide target data for modelers and downstream evaluations.
-
 - Many hubs have a script that is manually run to obtain new target time series
   data from raw data sources.
-
 - Few hubs have oracle output data.
-
 - As highlighted in
   [hubverse-org/hubDocs#230](https://github.com/hubverse-org/hubDocs/issues/230),
   there is no current standard or recommendations for the contents of target
   data.
-
 - As described in [RFC
   2025-01-06-target-data-formats](2025-01-06-target-data-formats.md), we have
   established a structure for target data file organization.
-
 - Visualizations and evaluations rely on being able to read in target data.
-
 - Current solutions for visualizations and evaluations require explicit
   knowledge of the target data structure in the hub.
   - Example: both the [evaluations dashboard pilot][hubPredevalsData]
@@ -32,7 +26,6 @@
     > `target_data_file_name` field in the hub's `predtimechart-config.yml`
     > file. We expect the file has these columns: `date`, `value`, and
     > `location`.
-
 - Feeback from the hubverse developer meeting is that obtaining historical data
   from hubs is difficult.
 
