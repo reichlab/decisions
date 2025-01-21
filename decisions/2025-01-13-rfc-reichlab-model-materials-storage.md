@@ -52,7 +52,7 @@ reichlab/operational-models
    └─ renv.lock
 ```
 
-Depending on the complexity of the model, there may be one or more scripts used in concert to generate the results for a single weekly model run. However, `main.R` will be the main script that calls upon the others to obtain the model output submission file and plots to be sent to Slack for review.
+Depending on the complexity of the model, there may be one or more scripts used in concert to generate the results for a single weekly model run. However, `main` (in this example, `main.py` or `main.R`) will be the main script that calls upon the others to obtain the model output submission file and plots to be sent to Slack for review.
 
 ### 3 Target Modeling Hub Repository (fork)
 
