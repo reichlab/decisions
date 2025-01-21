@@ -2,24 +2,42 @@
 
 ## Context
 
-All hubs need to provide target data for modelers and downstream evaluations.
+- All hubs need to provide target data for modelers and downstream evaluations.
 
-Many hubs have a script that is manually run to obtain new target time series
-data from raw data sources.
+- Many hubs have a script that is manually run to obtain new target time series
+  data from raw data sources.
 
-Few hubs have oracle output data.
+- Few hubs have oracle output data.
 
-There is no current standard for the contents of target data.
+- As highlighted in
+  [hubverse-org/hubDocs#230](https://github.com/hubverse-org/hubDocs/issues/230),
+  there is no current standard or recommendations for the contents of target
+  data.
 
-As described in [RFC 2025-01-06-target-data-formats]("2025-01-06-target-data-formats.md"),
-we have established a structured format for target data files.
+- As described in [RFC
+  2025-01-06-target-data-formats](2025-01-06-target-data-formats.md), we have
+  established a structure for target data file organization.
 
-Visualizations and evaluations rely on being able to read in target data.
+- Visualizations and evaluations rely on being able to read in target data.
 
-Current solutions for the dashboard require explicit knowledge of the target
-data structure in the hub.
+- Current solutions for visualizations and evaluations require explicit
+  knowledge of the target data structure in the hub.
+  - Example: both the [evaluations dashboard pilot][hubPredevalsData]
+    and [forecast dashboard pilot][hub-dashboard-predtimechart] depend on
+    specific assumptions of the target data as specified in the
+    hub-dashboard-predtimechart README:
+    > Target data generation: The app `generate_target_json_files.py` is
+    > limited to hubs that store their target data as a `.csv` file in the
+    > `target-data` subdirectory. That file is specified via the
+    > `target_data_file_name` field in the hub's `predtimechart-config.yml`
+    > file. We expect the file has these columns: `date`, `value`, and
+    > `location`.
 
-Obtaining historical data from hubs is difficult.
+- Feeback from the hubverse developer meeting is that obtaining historical data
+  from hubs is difficult.
+
+[hubPredEvalsData]: https://github.com/elray1/flusight-dashboard/blob/d98e01e132c5705a72ed374fe6168e0888103714/create-oracle-data.R
+[hub-dashboard-predtimechart]: https://github.com/hubverse-org/hub-dashboard-predtimechart/blob/1dc5f3e431e13d3a40f9d8fed5bcc7c74ce776e8/src/hub_predtimechart/app/generate_target_json_files.py#L101
 
 ### Aims
 
