@@ -11,7 +11,7 @@
   there is no current standard or recommendations for the contents of target
   data.
 - As described in [RFC
-  2025-01-06-target-data-formats](2025-01-06-target-data-formats.md), we have
+  2025-01-06-target-data-formats](2025-01-06-rfc-target-data-formats.md), we have
   established a structure for target data file organization.
 - Visualizations and evaluations rely on being able to read in target data.
 - Current solutions for visualizations and evaluations require explicit
