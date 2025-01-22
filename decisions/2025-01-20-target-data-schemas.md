@@ -28,6 +28,9 @@
     > `location`.
 - Feeback from the hubverse developer meeting is that obtaining historical data
   from hubs is difficult.
+- Knowledge of the statistical type of data (ordinal, nominal, etc) is necessary
+  for visualizations (i.e. a line chart is often inappropriate with nominal
+  categories along the independent axis).
 
 [hubPredEvalsData]: https://github.com/elray1/flusight-dashboard/blob/d98e01e132c5705a72ed374fe6168e0888103714/create-oracle-data.R
 [hub-dashboard-predtimechart]: https://github.com/hubverse-org/hub-dashboard-predtimechart/blob/1dc5f3e431e13d3a40f9d8fed5bcc7c74ce776e8/src/hub_predtimechart/app/generate_target_json_files.py#L101
@@ -54,11 +57,46 @@
 
 ## Decision
 
-TBD!
+- We will establish the standard that target time series data must be
+  disaggregated by all observable non-dependent task IDs (i.e. `date` and
+  `location`, but not `horizon`) including all optional values.
+- We will establish a `targets.json` config file that provides the following
+  information:
+  - the name of the time series file
+  - the name of the oracle outputs file
+  - For each column across the files:
+    - a boolean to indicate if it corresponds to a task ID
+    - the task ID or it corresponds to
+    - the data type: (nominal, ordinal, etc)
+- We will establish a new `targets-schema.json` to validate the `targets.json`
+  file.
+
+### Rationale
+
+TBC
 
 ### Other Options Considered
 
-This section describes any other options that were considered, but were not chosen with a brief description of why they were not chosen.
+#### Mandate specific names for target time series data
+
+This would mandate that target time series data follow the following column
+recommendations... TBC
+
+
+#### New targets.json config file in hubs validated against new targets-schema.json
+
+This would be a file that lives in `hub-config/` and would specify the
+relationship between 
+
+PRO: json schemas can be validated
+PRO: can version along with other schemas
+CON: will require a new schema version
+CON: json config files are not particularly easy to write for non-coders
+
+
+### 
+
+
 
 ## Status
 
