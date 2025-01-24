@@ -127,8 +127,8 @@ and a low-cost requirement to impose.
 This might help support hubs that have a more complex evaluation set up, as
 in the variant hub where the reference trees are changing.
 
-PRO: might not disrupt validation too much, and would accomodate other hubs
-CON: it might break the pred/evals downstream tooling
+- PRO: might not disrupt validation too much, and would accomodate other hubs
+- CON: it might break the pred/evals downstream tooling
 
 
 #### New targets.json config file in hubs validated against new targets-schema.json
@@ -136,10 +136,10 @@ CON: it might break the pred/evals downstream tooling
 This would be a file that lives in `hub-config/` and would specify the
 relationship between 
 
-PRO: json schemas can be validated
-PRO: can version along with other schemas
-CON: will require a new schema version
-CON: json config files are not particularly easy to write for non-coders
+- PRO: json schemas can be validated
+- PRO: can version along with other schemas
+- CON: will require a new schema version
+- CON: json config files are not particularly easy to write for non-coders
 
 
 
