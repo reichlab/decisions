@@ -103,6 +103,8 @@ If the model in question is an ensemble, additional directories containing code,
 
 Archived submission files could be stored in a separate repository from the evaluations and experiments materials. We prefer keeping them in a single, combined repository given that the evaluations or experiments code may be used on the archived submission data.
 
+Operational code (such as model requirements, parameters, run incantations, and various scripts) for single model runs could alternatively be stored in the evaluations and experiments materials repository. This would be a shift from our current practices. Also note that we do not want to maintain identical code in multiple places.
+
 ## Status
 
 Proposed
