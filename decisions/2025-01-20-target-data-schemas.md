@@ -48,7 +48,7 @@
      language (both programming and human) over another.
  - define target data column name formats that enable standard interfacing with 
    hubverse eval tooling (hubEvals + dashboard packages) and hubverse viz
-   tooling (hubVix + dashboard packages).
+   tooling (hubVis + dashboard packages).
 
 ### Anti-Aims
 
