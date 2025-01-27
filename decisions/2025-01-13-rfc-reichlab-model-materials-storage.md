@@ -4,7 +4,7 @@
 
 The Reich Lab currently has no formalized structure for organizing how forecasting model materials (e.g. general modeling code, weekly model runs, evaluations and experiments) are stored.
 
-Currently, the Lab usually has one or more repositories dedicated to storing each of the three categories of materials described above for each model. Flusion currently uses (1) [a Python package repo](https://github.com/reichlab/flusion), (2) a folder in [operational-models](https://github.com/reichlab/operational-models) (and a [fork of FluSight-forecast-hub](https://github.com/elray1/FluSight-forecast-hub)), and (3) [a separate experimental repo](https://github.com/reichlab/flusion-experiments/tree/main) (that also stores an archive of weekly model outputs/plots). This seems like a reasonable organizational structure to emulate, with a few adjustments.
+Currently, the Lab usually has one or more repositories dedicated to storing each of the three categories of materials described above for each model. Flusion currently uses (1) [a Python package repo with general model implementations](https://github.com/reichlab/idmodels), (2) a folder in [operational-models](https://github.com/reichlab/operational-models) (and a [fork of FluSight-forecast-hub](https://github.com/elray1/FluSight-forecast-hub)), and (3) [a separate experimental repo](https://github.com/reichlab/flusion-experiments/tree/main) (that also stores an archive of weekly model outputs/plots). This seems like a reasonable organizational structure to emulate, with a few adjustments.
 
 Following this structure is not required for models that are not being shared publicly.
 
