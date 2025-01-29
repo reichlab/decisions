@@ -37,7 +37,7 @@
 
 ### Aims
 
- - define a strategy that will standardize column names for target data that
+ - define a strategy that will standardize column names for target time series data that
    should conform to the following principles:
    - well-defined: the time series data should have clear mappings to the task IDs in the hub 
    - clear: these data should be easy for a hub administrator to write and store
@@ -46,15 +46,14 @@
      write bespoke code for a given hub.
    - language-agnostic: the format of the metadata should not prefer one
      language (both programming and human) over another.
- - define target data column name formats that enable standard interfacing with 
-   hubverse eval tooling (hubEvals + dashboard packages) and hubverse viz
-   tooling (hubVis + dashboard packages).
+ - define target time series data column name formats that enable standard interfacing with 
+   hubverse viz tooling (hubVis + dashboard packages).
 
 ### Anti-Aims
 
  - enforce the use of specific terms for all target time series columns
- - define a standard for target-data that will always be suitable for use by
-   modelers
+ - define a standard for target-data that will be universally suitable for all
+   modeling scenarios.
  - define a standard for target data that will generalize to all kinds of hubs. 
    For example, hubs that have a multi-layer process to determining "truth",
    one setting being the variant hub with changing reference trees that 
@@ -71,12 +70,10 @@
 - We introduce the concept of a unique "observable unit" distinct from a unique 
   "modeling task". The distinction here is that two modeling tasks can point 
   to the same observed unit. For example a two week ahead prediction made at 
-  time t and a one week ahead prediction made at time t+1 are predicting the same
+  time $t$ and a one week ahead prediction made at time $t+1$ are predicting the same
   observable unit. 
 - We establish the standard that a time-series file should have the subset of
-  task-id columns (assuming a flat file structure, but this should be 
-  generalized to accommodate data provided in a partition) that uniquely identify
-  a single observable unit.
+  task-id columns that uniquely identify a single observable unit.
   - An example from a relatively simple forecast hub might be that the task
     id variables are:
     - `reference_date`
