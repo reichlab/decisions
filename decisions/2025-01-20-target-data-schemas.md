@@ -8,7 +8,7 @@
 - Few hubs have oracle output data.
 - As highlighted in
   [hubverse-org/hubDocs#230](https://github.com/hubverse-org/hubDocs/issues/230),
-  the current standards or recommendations for the contents of target
+  the current standards or recommendations for the contents of target time series
   data files are not as specific as they could be.
 - As described in [RFC
   2025-01-06-target-data-formats](2025-01-06-rfc-target-data-formats.md), we have
