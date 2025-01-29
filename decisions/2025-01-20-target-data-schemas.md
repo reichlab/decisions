@@ -54,12 +54,7 @@
  - enforce the use of specific terms for all target time series columns
  - define a standard for target-data that will be universally suitable for all
    modeling scenarios.
- - define a standard for target data that will generalize to all kinds of hubs. 
-   For example, hubs that have a multi-layer process to determining "truth",
-   one setting being the variant hub with changing reference trees that 
-   subsequently change the labels/variants assigned to individual cases over time,
-   will not necessarily be supported by the proposed set-up as it currently 
-   is defined.
+ - define a standard for target data that will generalize to all kinds of hubs.
  - provide any methods or recommendations for producing time series data from
    raw data sources
  - provide any methods or recommendations for oracle output data generation from
@@ -69,7 +64,7 @@
 
 - We introduce the concept of a unique "observable unit" distinct from a unique 
   "modeling task". The distinction here is that two modeling tasks can point 
-  to the same observed unit. For example a two week ahead prediction made at 
+  to the same observed unit. For example, a two week ahead prediction made at 
   time $t$ and a one week ahead prediction made at time $t+1$ are predicting the same
   observable unit. 
 - We establish the standard that a time-series file should have the subset of
@@ -86,14 +81,15 @@
     observable unit, so these two columns might be a natural choice for
     task-id column names for the time-series file.
 - We will establish the standard that target time-series data can include
-  versions of data through the inclusion of an `as_of` column which is 
+  versions of data through the inclusion of an `version` column which is 
   expected to be in a ISO date format. Note that we are not providing
   flexibility in this column name or data format. However it is optional to
-  include this `as_of` column
+  include this `version` column. Note that this is based on the versioned
+  data formats implemented by the [`epiprocess` R package](https://cmu-delphi.github.io/epiprocess/articles/epi_archive.html).
 - Validations would then be:
   - Validation of column names
     - there must be a `observation` column
-    - there may be a `as_of` column
+    - there may be a `version` column
     - all other columns present need to be valid task-id variable names
     - there should be at least one task-id variable column.
   - Validation of data types
@@ -106,6 +102,10 @@
     by binning "raw" numeric time series data
   - the time series data would not include values of seasonal targets that
     summarize the raw numeric time series data over many weeks
+- When versions of data are collected, updates of observations need not be
+  included in updated versions unless they have changed. That is to say that
+  downstream tooling will do something like: "group by all task-id variables
+  and then find the value from the most recent `version`". 
 
 ### Rationale
 
@@ -127,10 +127,9 @@ and a low-cost requirement to impose.
 
 #### More flexibility on allowing other columns to be included in the data
 
-This might help support hubs that have a more complex evaluation set up, as
-in the variant hub where the reference trees are changing.
+This might help support hubs that have a more complex evaluation set up.
 
-- PRO: might not disrupt validation too much, and would accomodate other hubs
+- PRO: might not disrupt validation too much, and would accommodate other hubs
 - CON: it might break the pred/evals downstream tooling
 
 
@@ -139,10 +138,24 @@ in the variant hub where the reference trees are changing.
 This would be a file that lives in `hub-config/` and would specify the
 relationship between column names in time-series files and model-output.
 
+As an example of how this could be useful:
+Right now, both `hub-dashboard-predtimechart` and `hubPredEvalsData` require
+individual config files that define everything the tool needs to know, which
+includes some duplicated information. Any tool that's built on top of this will also
+require info duplication because it relies on knowledge of the task ID columns
+and what they mean in relation to each other.
+
+Note that target data configurations are different from the model output
+configrations because downstream tools need to know more information about the
+columns of target data (sort order, display text, data type, dependent or
+independent axis, hierarchy, etc.) in order to reliably do something with them.
+
 - PRO: json schemas can be validated
-- PRO: can version along with other schemas
+- PRO: Could provide versions of target-data formats if things change
+- PRO: existing hubs could be grandfathered in via this schema.
 - CON: will require a new schema version
 - CON: json config files are not particularly easy to write for non-coders
+- CON: introduces more structure to a place where we aren't yet sure if it is needed.
 
 
 ## Status
