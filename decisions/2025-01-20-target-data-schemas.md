@@ -81,8 +81,7 @@
     - `horizon` 
     - `location`
   - In this setting, the set of `target_end_date`, `horizon`, and `location` 
-    is enough to uniquely identify a modeling task (without the derived task
-    id of `reference date`)
+    is enough to uniquely identify a modeling task.
   - However, you only need `target_end_date` and `location` to identify an 
     observable unit, so these two columns might be a natural choice for
     task-id column names for the time-series file.
