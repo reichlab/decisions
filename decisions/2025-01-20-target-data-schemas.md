@@ -100,6 +100,13 @@
   - Validation of data types
     - data types in the time-series target data file must match those specified
       in the hub schema file
+- The idea is that the time series file will include only the "foundational"
+  time series data, and the time series file will not include anything that is
+  calculated from the foundational time series data. For examples:
+  - the time series data would not include categorical values that are obtained
+    by binning "raw" numeric time series data
+  - the time series data would not include values of seasonal targets that
+    summarize the raw numeric time series data over many weeks
 
 ### Rationale
 
@@ -131,7 +138,7 @@ in the variant hub where the reference trees are changing.
 #### New targets.json config file in hubs validated against new targets-schema.json
 
 This would be a file that lives in `hub-config/` and would specify the
-relationship between 
+relationship between column names in time-series files and model-output.
 
 - PRO: json schemas can be validated
 - PRO: can version along with other schemas
@@ -139,14 +146,23 @@ relationship between
 - CON: json config files are not particularly easy to write for non-coders
 
 
-
 ## Status
 
-proposed.
+accepted (via PR review).
 
 ## Consequences
 
 This will create a clear promise of target-data format for downstream tools.
+
+However, some hubs that already have systems for target-data may as a result
+now be "out of compliance" with the new standards. Either they will not
+be able to use the tools or they would have to spend time to bring their data 
+into compliance. 
+
+Relatedly, we may want to update some of the other hubverse functions that were
+written prior to this fixed standard for target time series data, e.g. 
+`hubVis::plot_step_ahead_model_output()` has separate arguments to specify the
+names of the date column for the target data and model output.
 
 ## Projects
 
