@@ -30,7 +30,7 @@ We will use a standard code package repository ([R package](https://r-pkgs.org/S
 
 ### 2 `operational-models` repository
 
-We will use [`operational-models`](https://github.com/reichlab/operational-models) to store scripts containing code to run a model once, for routine weekly submissions (including the creation of some plots). This repository will contain such scripts for ALL of the Lab's models submitting to a forecast hub, separated into model-specific directories following the naming convention `disease_modelname`.
+We will use [`operational-models`](https://github.com/reichlab/operational-models) to store scripts containing code to run a model once, for routine weekly submissions (including the creation of some plots) by calling the model's package from the Package Repository. The `operational-models` repository will contain such scripts for ALL of the Lab's models submitting to a forecast hub, separated into model-specific directories following the naming convention `disease_modelname`.
 
 ```
 reichlab/operational-models
@@ -66,7 +66,7 @@ We will use this repository to store materials that fall under the following pur
 
 Archived submission files include the actual model outputs we submit to the target hub repo (with any invalid or particularly poor predictions removed), the raw version of those model outputs (with no predictions removed), and the associated plots of the raw model outputs (which are also sent to Slack for review).
 
-Evaluations and experiments include code to run a model repeatedly (i.e., several past weeks) as part of a retrospective evaluation, model outputs for multiple retrospective model runs, code to systematically evaluate model outputs, and results of running code to evaluate model outputs, e.g. plots and scores.
+Evaluations and experiments include code to run a model repeatedly (i.e., several past weeks) using the package from the Package Repository as part of a retrospective evaluation; model outputs for multiple retrospective model runs; code to systematically evaluate model outputs; and results of running code to evaluate model outputs, e.g. plots and scores. Note that the code from retrospective model runs is meant to *generate submissions for multiple rounds simultaneously*, which is the key difference from the scripts stored in the `operational-models` repo even if there are similarities between the two code bases.
 
 The archived submission files and results of retrospective model runs may be stored in toy modeling hubs in individual directories within the repository. These should be formatted like the target modeling hub and contain relevant auxiliary data, config files, and (optionally) target data. Evaluation or experiment code can be stored in its own directory.
 
