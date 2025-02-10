@@ -107,7 +107,7 @@ Operational code (such as model requirements, parameters, run incantations, and 
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 
