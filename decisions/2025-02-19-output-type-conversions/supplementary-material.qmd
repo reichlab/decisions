@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 library(hubExamples)
 library(hubUtils)
 library(hubData)
-
+library(idforecastutils)
 library(dplyr)
 library(ggplot2)
 
-devtools::load_all()
+source("convert_output_types.R")
 theme_set(theme_bw())
 options(width = 500)
 ```
@@ -301,5 +301,5 @@ quantile_levels <- rbind(
   )
 ) |>
   dplyr::arrange(target)
-head(quantile_levels, n = 10)
+head(quantile_levels, n = 15)
 ```
