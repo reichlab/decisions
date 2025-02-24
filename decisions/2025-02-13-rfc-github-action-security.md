@@ -133,6 +133,8 @@ This RFC proposes to focus on the following in the short term:
 
     - all hubverse packages (things we publish for Hubverse users)
     - hubDocs (at this time, serves as the Hubverse website)
+    - hub-dashboard-control-room (publishes registered hubverse dashboards)
+    - hub-dashboard-template (templates for new hubverse dashboards)
     - hubverse-actions (templates we provide for Hubverse users)
     - hubverse-developer-actions (template we provide for Hubverse devs)
     - hubverse-infrastructure (manages Hubverse AWS resources)
