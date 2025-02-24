@@ -46,7 +46,7 @@ GitHub actions for the following:
 
 ### Actions we use
 
-While there are some security pracitces that apply to all actions
+While there are some security practices that apply to all actions
 (*e.g.*, setting permissions), there are many that are specific to third-party
 actions. For reference, these are the third-party actions we as of
 February 2025:
