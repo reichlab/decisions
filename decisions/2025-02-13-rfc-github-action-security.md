@@ -86,7 +86,7 @@ February 2025:
 - This RFC will not suggest mitigations for every single GiHub action security risk. It's intended to get a
   consensus on a security posture that makes sense for the Hubverse (_i.e._, a small team with many members who
   volunteer their time).
-- This RFC does not propose to block our standard workflow when potenetial security issues are detected
+- This RFC does not propose to block our standard workflow when potential security issues are detected
   (with the exception of scans that detect security keys in the code base).
 - Specific changes to existing actions (*e.g.*, switching to Github's deploy pages action) are out of scope, as the focus
   is on more general practices.
