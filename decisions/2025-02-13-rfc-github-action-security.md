@@ -184,8 +184,10 @@ maintained by a large team we trust. For example:
 - We will prefer the following methods when authenticating to external cloud services (*e.g.*, AWS, Netlify), ordered
   here from most to least preferred:
     - [OIDC tokens](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#benefits-of-using-oidc)
-    - organization/team tokens stored as repository secrets (to ensure that multiple people can
-      rotate the token as needed)
+    - organization/team-level tokens provided by an external cloud service,
+    stored as repository secrets (for example Pulumi offers
+    [organization access tokens](https://www.pulumi.com/docs/pulumi-cloud/access-management/access-tokens/#organization-access-tokens)
+    to Enterprise users)
     - individual tokens stored as repository secrets.
 
 ### Other Options Considered
