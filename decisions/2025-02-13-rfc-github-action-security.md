@@ -48,7 +48,7 @@ GitHub actions for the following:
 
 While there are some security practices that apply to all actions
 (*e.g.*, setting permissions), there are many that are specific to third-party
-actions. For reference, these are the third-party actions we as of
+actions. For reference, these are the third-party actions we use as of
 February 2025:
 
 | Action | Publisher | Verified | Purpose | Job Permissions/Secrets | Semantic Versioning
