@@ -114,7 +114,7 @@ security settings for all current and future repos.
     - [GitHub docs for applying default security configurations](https://docs.github.com/en/enterprise-cloud@latest/code-security/securing-your-organization/enabling-security-features-in-your-organization/applying-the-github-recommended-security-configuration-in-your-organization)
     - Edit the GitHub default security config, updating the policy section to apply the config to new repositories
     - The default security recommendations are managed by GitHub (they include things like secrets scanning,
-      code scanning, and dependabot alerts). Org admnins can view the specifics.
+      code scanning, and dependabot alerts). Org admins can view the specifics.
 - Update the hubverse-org action permissions to allow actions created by GitHub, actions created by verified publishers,
   and actions that are currently in use by the Hubverse.
 
