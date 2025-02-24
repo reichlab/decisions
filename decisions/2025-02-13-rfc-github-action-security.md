@@ -194,7 +194,7 @@ maintained by a large team we trust. For example:
   needed. This method ensures that we control the updates and would allow us to continue pinning version tags instead
   of switching to hash commits.
   Creating forks gives us another maintenance chore, so the proposal prefers pinning commit hashes with the
-  assumption that Depndabot will alert us to updates.
+  assumption that Dependabot will alert us to updates.
 
 - An abbreviated version of this proposal would be to apply the
   [organization-level settings](#organization-level) and address the issues flagged by the code and dependency
