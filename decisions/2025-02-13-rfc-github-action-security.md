@@ -41,7 +41,7 @@ GitHub actions for the following:
     - [cache-hubval-deps](https://github.com/hubverse-org/hubverse-actions/blob/main/cache-hubval-deps/cache-hubval-deps.yaml)
     - [validate-config](https://github.com/hubverse-org/hubverse-actions/blob/main/validate-config/validate-config.yaml)
     - [validate-submission](https://github.com/hubverse-org/hubverse-actions/blob/main/validate-submission/validate-submission.yaml)
-- Hubverse are sometimes run on forked repos.
+- Hubverse actions are sometimes run on forked repos.
 - No workflows in the Hubverse currently use the `pull-request-target` trigger.
 
 ### Actions we use
