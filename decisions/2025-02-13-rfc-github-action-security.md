@@ -51,29 +51,30 @@ While there are some security practices that apply to all actions
 actions. For reference, these are the third-party actions we use as of
 February 2025:
 
-| Action | Publisher | Verified | Purpose | Job Permissions/Secrets | Semantic Versioning
-|--------|---------|-----------|-----------| ---------------------- | -------------------
-| [astral-sh/setup-uv](https://github.com/marketplace/actions/astral-sh-setup-uv) | astral | ✅ | setup uv | no | ✅
-| [aws-actions/configure-aws-credentials](https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions) | aws | ✅ | get AWS creds | OIDC, id-token: write | ✅
-| [carpentries/actions/comment-diff](https://github.com/carpentries/actions/tree/main/comment-diff) | carpentries | ⛔️ | comment on PRs with diff | pull-request: write | ✅
-| [codecov/codecov-action](https://github.com/marketplace/actions/codecov) | codecov | ✅ | coverage reports | CODECOV_TOKEN | ✅
-| [docker/build-push-action](https://github.com/docker/build-push-action) | docker | ✅ | build and push Docker images | packages: write
-| [docker/login-action](https://github.com/marketplace/actions/docker-login) | docker | ✅ | login to Docker Hub | github_token | ✅
-| [docker/metadata-action](https://github.com/marketplace/actions/docker-metadata-action) | docker | ✅ | get metadata for Docker images |
-| [JamesIves/github-pages-deploy-action](https://github.com/marketplace/actions/deploy-to-github-pages) | JamesIves | ⛔️ | deploy to github pages | contents: write, no secrets | ✅
-| [limitusus/json-syntax-check](https://github.com/marketplace/actions/json-syntax-check) | limitusus | ⛔️ | check JSON syntax | contents: read?
-| [nwtgck/actions-netlify](https://github.com/marketplace/actions/netlify-actions) | nwtgck | ⛔️ | deploy to Netlify for doc preview | github token, contents: write, pull-requests: write | ✅
-| [pulumi/actions](https://github.com/marketplace/actions/pulumi-cli-action) | pulumi | ✅ | preview and deploy infrastructure changes | pull-requests: write, pulumi access token | ✅
-| [pypa/gh-action-pypi-publish](https://github.com/marketplace/actions/pypi-publish) | pypa | ✅ | publish to PyPI | OIDC, id-token: write | ✅
-| [quarto-dev/quarto-actions/setup](https://github.com/quarto-dev/quarto-actions/tree/main/setup) | quarto | ⛔️ | setup Quarto | ? (looks like no write access needed) | ✅
-| [r-lib/actions/setup-r](https://github.com/r-lib/actions/tree/v2-branch/setup-r) | tidyverse? | ⛔️ | setup R on runner | no | ✅
-| [r-lib/actions/setup-r-dependencies](https://github.com/r-lib/actions/tree/v2-branch/setup-r-dependencies) | tidyverse? | ⛔️ | install R dependencies | no | ✅
-| [r-lib/actions/setup-tinytex](https://github.com/r-lib/actions/tree/v2-branch/setup-tinytex) | tidyverse? | ⛔️ | install TinyTex | no | ✅
-| [r-lib/actions/setup-pandoc](https://github.com/r-lib/actions/tree/v2-branch/setup-pandoc) | tidyverse? | ⛔️ | install pandoc | no | ✅
-| [r-lib/actions/pr-push](https://github.com/r-lib/actions/tree/v2-branch/pr-push) | tidyverse? | ⛔️ | push changes to PR branch | github_token | ✅
-| [r-lib/actions/pr-fetch](https://github.com/r-lib/actions/tree/v2-branch/pr-fetch) | tidyverse? | ⛔️ | checkout PR | github_token | ✅
-| [r-lib/actions/check-r-package](https://github.com/r-lib/actions/tree/v2-branch/check-r-package)| tidyverse? | ⛔️ | run rcmdcheck | ? | ✅
-| [sigstore/gh-action-sigstore-python](https://github.com/marketplace/actions/gh-action-sigstore-python) | sigstore | ✅ | signs Python artifacts for GitHub  releases | id-token: write | ✅
+| Action | Publisher | Verified | Purpose | Job Permissions/Secrets | Semantic Versioning | Feature Branch or workflow_dispatch
+|--------|---------|-----------|-----------| ---------------------- | ------------------- | -------------------
+| [astral-sh/setup-uv](https://github.com/marketplace/actions/astral-sh-setup-uv) | astral | ✅ | setup uv | no | ✅ | ✅
+| [aws-actions/configure-aws-credentials](https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions) | aws | ✅ | get AWS creds | OIDC, id-token: write | ✅ | ⛔️
+| [carpentries/actions/comment-diff](https://github.com/carpentries/actions/tree/main/comment-diff) | carpentries | ⛔️ | comment on PRs with diff | pull-request: write | ✅ | ✅
+| [codecov/codecov-action](https://github.com/marketplace/actions/codecov) | codecov | ✅ | coverage reports | CODECOV_TOKEN | ✅ | ✅
+| [docker/build-push-action](https://github.com/docker/build-push-action) | docker | ✅ | build and push Docker images | packages: write | ✅ | ✅
+| [docker/login-action](https://github.com/marketplace/actions/docker-login) | docker | ✅ | login to Docker Hub | github_token | ✅ | ✅
+| [docker/metadata-action](https://github.com/marketplace/actions/docker-metadata-action) | docker | ✅ | get metadata for Docker images | ? | ✅ | ✅
+| [JamesIves/github-pages-deploy-action](https://github.com/marketplace/actions/deploy-to-github-pages) | JamesIves | ⛔️ | deploy to github pages | contents: write, no secrets | ✅ | gh-pages branch
+| [limitusus/json-syntax-check](https://github.com/marketplace/actions/json-syntax-check) | limitusus | ⛔️ | check JSON syntax | contents: read? | ✅ | ✅
+| [nwtgck/actions-netlify](https://github.com/marketplace/actions/netlify-actions) | nwtgck | ⛔️ | deploy to Netlify for doc preview | github token, contents: write, pull-requests: write | ✅ | ✅
+| [pulumi/actions (preview)](https://github.com/marketplace/actions/pulumi-cli-action) | pulumi | ✅ | preview and deploy infrastructure changes | pull-requests: write, pulumi access token | ✅ | ✅
+| [pulumi/actions (up)](https://github.com/marketplace/actions/pulumi-cli-action) | pulumi | ✅ | preview and deploy infrastructure changes | pull-requests: write, pulumi access token | ✅ | ⛔️
+| [pypa/gh-action-pypi-publish](https://github.com/marketplace/actions/pypi-publish) | pypa | ✅ | publish to PyPI | OIDC, id-token: write | ✅ | ⛔️ (version tag)
+| [quarto-dev/quarto-actions/setup](https://github.com/quarto-dev/quarto-actions/tree/main/setup) | quarto | ⛔️ | setup Quarto | ? (looks like no write access needed) | ✅ | ✅
+| [r-lib/actions/setup-r](https://github.com/r-lib/actions/tree/v2-branch/setup-r) | tidyverse? | ⛔️ | setup R on runner | no | ✅ | ✅
+| [r-lib/actions/setup-r-dependencies](https://github.com/r-lib/actions/tree/v2-branch/setup-r-dependencies) | tidyverse? | ⛔️ | install R dependencies | no | ✅ | ✅
+| [r-lib/actions/setup-tinytex](https://github.com/r-lib/actions/tree/v2-branch/setup-tinytex) | tidyverse? | ⛔️ | install TinyTex | no | ✅ | ✅
+| [r-lib/actions/setup-pandoc](https://github.com/r-lib/actions/tree/v2-branch/setup-pandoc) | tidyverse? | ⛔️ | install pandoc | no | ✅ | ✅
+| [r-lib/actions/pr-push](https://github.com/r-lib/actions/tree/v2-branch/pr-push) | tidyverse? | ⛔️ | push changes to PR branch | github_token | ✅ | ⛔️
+| [r-lib/actions/pr-fetch](https://github.com/r-lib/actions/tree/v2-branch/pr-fetch) | tidyverse? | ⛔️ | checkout PR | github_token | ✅ | ⛔️
+| [r-lib/actions/check-r-package](https://github.com/r-lib/actions/tree/v2-branch/check-r-package)| tidyverse? | ⛔️ | run rcmdcheck | ? | ✅ | ✅
+| [sigstore/gh-action-sigstore-python](https://github.com/marketplace/actions/gh-action-sigstore-python) | sigstore | ✅ | signs Python artifacts for GitHub  releases | id-token: write | ✅ | ⛔️ (version tag)
 
 ### Aims
 
@@ -190,6 +191,16 @@ maintained by a large team we trust. For example:
     to Enterprise users)
     - individual tokens stored as repository secrets.
 
+- Where possible, we will use separate jobs for steps that require different
+  GITHUB_TOKEN permissions. For example, a workflow that builds a website and
+  then deploys it to GitHub pages should contain the build in one job (with
+  `content: read permission`) and the deploy in another job (with
+  `packages: write` permission).
+
+  **Note:** In this scenario, the build job would upload its output as a
+  github artifact, and the deploy job would download that artifact and push it
+  to GitHub pages.
+
 ### Other Options Considered
 
 - An alternate way to secure unverified, third-party GitHub actions is using forked versions that we can update as
@@ -204,6 +215,14 @@ maintained by a large team we trust. For example:
   We would still want to apply best practices in our individual actions, so in practice the item we'd omit in this
   case is the CODEOWNERS files. Because adding that file to our repos is easy, it's included in the
   proposed changes.
+
+- For additional protection wrt write-access GitHub actions that have a
+  `workflow_dispatch` trigger or that run against feature branches, we could
+  force a manual approval step before they run (by using
+  [GitHub environments](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment).
+  This is a reasonable precaution for actions that meaningfully change an
+  artifact (*e.g.*, push a Docker image or update a website)), but it's a lot of
+  friction to add for a small team.
 
 ## Status
 
