@@ -2,7 +2,7 @@
 
 ## Context
 
-We have discussed the utility of being able to convert predictions of one output type to another, and there are scattered attempts to implement this functionality in various states of completeness, but we have yet to unify these attempts or fully commit to a concrete plan we implement this output type conversion.
+We have discussed the utility of being able to convert predictions of one output type to another, and there are scattered attempts to implement this functionality in various states of completeness, but we have yet to unify these attempts or fully commit to a concrete plan to implement this output type conversion.
 
 Specifically, we are interested in looking into implementation of conversions from samples to other output types. The sample output type is only partially supported by hubverse infrastructure, meaning that converting it to another output type would allow for users to utilize more of our tooling.
 
