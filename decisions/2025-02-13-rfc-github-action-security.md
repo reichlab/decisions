@@ -25,7 +25,7 @@ For example, the Hubverse (and individual hubs such as the Reich Lab's
 [variant-nowcast-hub](https://github.com/reichlab/variant-nowcast-hub)) uses
 GitHub actions for the following:
 
-- Continuous integration (*e.g.*, testing codee)
+- Continuous integration (*e.g.*, testing code)
 - Continuous deployment (*e.g.*, pushing updated sites to ReadTheDocs, Netlify,
   or GitHub Pages)
 - A user interface for hub admins and contributors (*e.g.*, validating
