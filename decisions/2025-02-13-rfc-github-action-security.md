@@ -121,7 +121,7 @@ security settings for all current and future repos.
 
     [example (from a different org)](./2025-02-13-github-action-security/action-permissions.png)
 
-- We will create a new team in the hubverse-io org and add active Hubverse developers (referred to as `hubverse-core`
+- We will create a new team in the `hubverse-org` organisation and add active Hubverse developers (referred to as `hubverse-core`
   in this document):
     - We will assign this new team to the [all-repository admin role](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/repository-roles-for-an-organization).
     - We'll use this new team to assign CODEOWNERs to Hubverse github actions (see [below](#repository-level)).
