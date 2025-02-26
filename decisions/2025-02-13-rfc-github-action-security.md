@@ -107,7 +107,7 @@ as we touch them.
 
 ### organization level
 
-This section outlines some hubverse-io settings we can change to improve security. Despite GitHub's
+This section outlines some hubverse-org settings we can change to improve security. Despite GitHub's
 bad UI and constant nagging about upgrading to "advanced security," it *is* possible to turn on their recommended
 security settings for all current and future repos.
 
