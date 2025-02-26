@@ -128,7 +128,7 @@ security settings for all current and future repos.
 
 ### repository level
 
-The [hubverse-io GitHub organization](https://github.com/hubverse-org) has too many repositories to update all at once.
+The [hubverse-org GitHub organization](https://github.com/hubverse-org) has too many repositories to update all at once.
 This RFC proposes to focus on the following in the short term:
 
     - all hubverse packages (things we publish for Hubverse users)
