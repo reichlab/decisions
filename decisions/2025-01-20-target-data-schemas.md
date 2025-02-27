@@ -1,11 +1,11 @@
-# 2025-01-20 Target Data Schema Proposal
+# 2025-01-20 Target Data Time-series File Contents Proposal
 
 ## Context
 
-- All hubs need to provide target data for modelers and downstream evaluations.
+- Many hubs will want to provide target data for modelers, analysts, and 
+  hub admins (to support, e.g. visualization and evaluation).
 - Many hubs have a script that is manually run to obtain new target time series
   data from raw data sources.
-- Few hubs have oracle output data.
 - As highlighted in
   [hubverse-org/hubDocs#230](https://github.com/hubverse-org/hubDocs/issues/230),
   the current standards or recommendations for the contents of target time series
@@ -13,6 +13,8 @@
 - As described in [RFC
   2025-01-06-target-data-formats](2025-01-06-rfc-target-data-formats.md), we have
   established a structure for target data file organization.
+- There exists substantial metadata about targets and modeling tasks in the
+  hubverse `tasks.config` file already. 
 - Visualizations and evaluations rely on being able to read in target data.
 - Current solutions for visualizations and evaluations require explicit
   knowledge of the target data structure in the hub.
@@ -27,7 +29,7 @@
     > file. We expect the file has these columns: `date`, `value`, and
     > `location`.
 - Feedback from the hubverse developer meeting is that obtaining historical data
-  from hubs is difficult.
+  from hubs about what data was available when is difficult.
 - Knowledge of the statistical type of data (ordinal, nominal, etc) is necessary
   for visualizations (i.e. a line chart is often inappropriate with nominal
   categories along the independent axis).
@@ -37,15 +39,18 @@
 
 ### Aims
 
- - define a strategy that will standardize column names for target time series data that
-   should conform to the following principles:
+ - define a strategy that will standardize column names for target time series data.
+ - The guidelines here will apply to targets that have `"is_step_ahead": true` in 
+   their `model_tasks` > `target_metadata` array in a hub config file. 
+ - The guidelines here will apply to hubs that are configured such that the
+   task-id variables do not change across rounds.
+ - In general the data should conform to the following principles:
    - well-defined: the time series data should have clear mappings to the task IDs in the hub 
    - clear: these data should be easy for a hub administrator to write and store
    - general: anyone with access to a hub should be able to extract and operate
-     on the timeseries data and oracle output data without requiring them to
-     write bespoke code for a given hub.
+     on the timeseries data without requiring them to write bespoke code for a given hub.
    - language-agnostic: the format of the metadata should not prefer one
-     language (both programming and human) over another.
+     programming language over another.
  - define target time series data column name formats that enable standard interfacing with 
    hubverse viz tooling (hubVis + dashboard packages).
 
@@ -62,6 +67,13 @@
 
 ## Decision
 
+### Defining scope to time-series or step-ahead targets
+- The idea is that a time-series file will include only time series data for
+  step-ahead targets. For example, the time series data would not include 
+  values of seasonal targets that summarize the raw numeric time series data
+  over many weeks. This is not a step-ahead target.
+
+### Observable units
 - We introduce the concept of a unique "observable unit" distinct from a unique 
   "modeling task". The distinction here is that two modeling tasks can point 
   to the same observed unit. For example, a two week ahead prediction made at 
@@ -80,12 +92,34 @@
   - However, you only need `target_end_date` and `location` to identify an 
     observable unit, so these two columns might be a natural choice for
     task-id column names for the time-series file.
+  - Although it is out of scope for this proposal, we suggest that at a future
+    schema iteration, including the ability to specify which task-ids variables
+    are part of the observable unit would be nice.
+
+### Time-series target data file structure
+
+#### Time-series target data file names
+- Although this was also discussed in earlier RFC, time-series files should 
+  have the `"target_id"` from the `"target_metadata"` array in the filename.
+  As, for example, `time-series_[target-id].csv`.
+
+#### Hubs with one step-ahead target
+- The task-id variables that are part of the observational unit are required to
+  be present as columns in the time-series file.
+- A simple setting is that there is just **one step-ahead target** in the hub configuration. This might be because there is just one round definition (with `"round_id_from_variable": true`) and there is only one step-ahead target in the model-tasks array, similar to FluSight. Or there might be multiple similar rounds with the same step-ahead target defined in each one (e.g., Variant Nowcast Hub).
+  - In settings with one step-ahead target, the subset of columns that define the observable unit must be present in the time-series target data file.
+  
+#### Hubs with more than one step-ahead target
+
+### Versioning
 - We will establish the standard that target time-series data can include
   versions of data through the inclusion of an `version` column which is 
   expected to be in a ISO date format. Note that we are not providing
   flexibility in this column name or data format. However it is optional to
   include this `version` column. Note that this is based on the versioned
   data formats implemented by the [`epiprocess` R package](https://cmu-delphi.github.io/epiprocess/articles/epi_archive.html).
+  
+### Validation
 - Validations would then be:
   - Validation of column names
     - there must be a `observation` column
@@ -95,13 +129,6 @@
   - Validation of data types
     - data types in the time-series target data file must match those specified
       in the hub schema file
-- The idea is that the time series file will include only the "foundational"
-  time series data, and the time series file will not include anything that is
-  calculated from the foundational time series data. For examples:
-  - the time series data would not include categorical values that are obtained
-    by binning "raw" numeric time series data
-  - the time series data would not include values of seasonal targets that
-    summarize the raw numeric time series data over many weeks
 - When versions of data are collected, updates of observations need not be
   included in updated versions unless they have changed. That is to say that
   downstream tooling will do something like: "group by all task-id variables
