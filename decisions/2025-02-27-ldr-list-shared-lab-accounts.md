@@ -23,7 +23,12 @@ In anticipation of possibly adopting a centralized tool for managing these accou
 
 ## Decision
 
-We will create a "shared accounts" Google Sheet under the [Reich Lab > devteam Google Drive folder](https://drive.google.com/drive/folders/1PYeur8BbX5YL_ZRmnfXM61S6fTrJZmTk) with columns TBD that capture basic information about each site. There will be one row per account (multiple accounts for the same site will each be on separate rows).
+We will create a "shared accounts" Google Sheet under the [Reich Lab > devteam Google Drive folder](https://drive.google.com/drive/folders/1PYeur8BbX5YL_ZRmnfXM61S6fTrJZmTk) with columns that capture basic information about each site. There will be one row per account (multiple accounts for the same site will each be on separate rows). Possible information to capture:
+
+- site name
+- site URL
+- how used within lab (purpose, app/system, etc.)
+- _TBD other information_
 
 ## Status
 
