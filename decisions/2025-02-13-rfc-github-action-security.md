@@ -186,12 +186,17 @@ maintained by a large team we trust. For example:
 
 - We will prefer the following methods when authenticating to external cloud services (*e.g.*, AWS, Netlify), ordered
   here from most to least preferred:
-    - [OIDC tokens](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#benefits-of-using-oidc)
+    - [OIDC-based authentication](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#benefits-of-using-oidc)
+    - organization/team-level tokens provided by an external cloud service, stored as hubverse-org GitHub organization
+    secrets (for example Pulumi offers
+    [organization access tokens](https://www.pulumi.com/docs/pulumi-cloud/access-management/access-tokens/#organization-access-tokens)
+    to Enterprise users)
     - organization/team-level tokens provided by an external cloud service,
     stored as repository secrets (for example Pulumi offers
     [organization access tokens](https://www.pulumi.com/docs/pulumi-cloud/access-management/access-tokens/#organization-access-tokens)
     to Enterprise users)
-    - individual tokens stored as repository secrets.
+    - individual tokens stored as hubverse-org GitHub organization secrets
+    - individual tokens stored as repository secrets
 
 - Where possible, we will use separate jobs for steps that require different
   GITHUB_TOKEN permissions. For example, a workflow that builds a website and
