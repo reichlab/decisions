@@ -233,7 +233,7 @@ maintained by a large team we trust. For example:
 
 ## Status
 
-proposed
+approved
 
 ## Consequences
 
