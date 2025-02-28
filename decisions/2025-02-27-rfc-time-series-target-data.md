@@ -3,7 +3,7 @@
 ## General idea/Aims/Requirements
 
 * Prescribe a file-location and \-format for time-series target data that can be validated and used to support dashboard visualization and potentially could be used for other purposes, such as modeling.
-* The format for time-series target data will apply to targets that are defined as “step-ahead” targets in the target-metadata and have a numeric data type. \[Note: other data, including time-series data, could be stored in target-data but all files whose name or path starts with “time-series\*” (or possibly “oracle-output\*”, depending on how we end up setting that up) will be subject to validation.\]
+* The format for time-series target data will apply to targets that are defined as “step-ahead” targets in the target-metadata and where the target\_type metadata field is one of “continuous” “discrete” “binary” or “compositional” (i.e. the observation is numeric). \[Note: other data, including time-series data, could be stored in target-data but all files whose name or path starts with “time-series\*” (or possibly “oracle-output\*”, depending on how we end up setting that up) will be subject to validation.\]
 * We will support single files and hive-style partitions where the partition is based on the as\_of date. Any time data are versioned using as “as\_of” partition or column, the full version must be made available, no support for “diffs” from previous versions will be supported.
 * All time-series target data files must either be .csv or .parquet. No mixing of file types will be allowed.
 * Validations are enforced based on properties of the target that can be read from the tasks.json file.
@@ -76,7 +76,7 @@ target\_metadata: \[
 
 A file hub/target-data/time-series.csv (or .parquet, referred to below as .csv for simplicity) is valid if
 
-1. all model-task blocks in tasks.json \> rounds with the named target-id in target-metadata have
+1. all model-task blocks in the rounds property of the tasks.json file with the named target-id in target-metadata have
    1. is\_step\_ahead: true
    2. target\_type metadata field is one of “continuous” “discrete” “binary” or “compositional”
    3. the same task-id variable names
