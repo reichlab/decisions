@@ -4,14 +4,14 @@
 
 * Prescribe a file-location and \-format for time-series target data that can be validated and used to support dashboard visualization and potentially could be used for other purposes, such as modeling.
 * The format for time-series target data will apply to targets that are defined as “step-ahead” targets in the target-metadata and where the target\_type metadata field is one of “continuous” “discrete” “binary” or “compositional” (i.e. the observation is numeric). \[Note: other data, including time-series data, could be stored in target-data but all files whose name or path starts with “time-series\*” (or possibly “oracle-output\*”, depending on how we end up setting that up) will be subject to validation.\]
-* We will support single files and hive-style partitions where the partition is based on the as\_of date. Any time data are versioned using as “as\_of” partition or column, the full version must be made available, no support for “diffs” from previous versions will be supported.
+* We define a time-series target-data standard for single files and hive-style partitions where the top-level partition is based on the as\_of date. In any situation where data are versioned using an “as\_of” partition or column, the full version must be made available, no support for “diffs” from previous versions will be supported.
 * All time-series target data files must either be .csv or .parquet. No mixing of file types will be allowed.
 * Validations are enforced based on properties of the target that can be read from the tasks.json file.
 * A target can be represented in a time-series file as long as the definition of that target-id is consistent across all rounds/tasks. For example, as long as the names of the task-id variables are the same across all rounds, then it is easy to understand which columns should be present in a time-series file. If those column names change, then it becomes more complicated to support.
 
 ## Summary of the proposal
 
-- One time-series.csv (or .parquet) file or partitioned data set contains all of the validatable time-series target data for numeric variables in the hub.
+- One time-series.csv (or .parquet) file or partitioned data set contains all of the time-series target data that can be validated for numeric variables in the hub.
 - This file has the following columns:
   - “as\_of”: optional, an ISO date that says when the data were available
   - \[a subset of task-id variables\]
@@ -53,7 +53,7 @@
 
 Then the time-series.csv would look like this
 
-| version | target | date | location | observation |
+| as_of | target | date | location | observation |
 | :---- | :---- | :---- | :---- | :---- |
 |  | cases |  |  |  |
 |  | cases |  |  |  |
@@ -85,10 +85,10 @@ A file hub/target-data/time-series.csv (or .parquet, referred to below as .csv f
    1. “observation”
    2. The task-id column names that define the observable unit
       1. in our initial implementation, these are defined by the hub admin and not validatable other than that they are task id variable names listed in the hub's `tasks.json` file. At a future time, we could implement a metadata field to capture these so it is validatable.
-   3. (optionally) “version”
+   3. (optionally) “as_of”
 3. The [data types](https://hubverse.io/en/latest/user-guide/tasks.html#details) within each column are readable as a consistent data type.
    1. For “observation” column: readable as numeric
-   2. For “version” column: ISO date
+   2. For “as_of” column: ISO date
    3. For other task-id columns: the same data type as the task id variable defined in the tasks.json file.
 4. Values in each task-id column are valid values per the model task definition
    1. Note that some hubs may have different allowable values for different rounds/tasks that have the same target-id. This is ok, and the options here are (1) to have the union of all possible optional/required values be valid values here, or (2) do something more specific based on round-specific values.
@@ -121,7 +121,7 @@ This hub’s [tasks.json](https://github.com/cdcepi/FluSight-forecast-hub/blob/m
 So then valid target data would look like
 
 - target-data/time-series.csv (or .parquet)
-  - “version” (optional)
+  - “as_of” (optional)
   - “target\_end\_date”
   - “location”
   - “target” (this is optional since only one target would be included, but might be good to be explicit)
@@ -150,7 +150,7 @@ This hub’s [tasks.json](https://github.com/reichlab/variant-nowcast-hub/blob/m
 So then valid target data would look like
 
 - target-data/time-series\_clade-prop.csv (or .parquet)
-  - “version” (optional)
+  - “as_of” (optional)
   - “date” (or “target\_end\_date”, depending on whether we can implement a column mapping)
   - “location”
   - “clade”
@@ -179,15 +179,20 @@ This is something that we would like to do at some point, but doesn’t feel ess
 
 ### Allowing for additional partition structure
 
-It has been suggested that allowing for partitioning time-series target data by target might also be reasonable. One possible justification for this is operational: some targets come from different data sources and are updated at different times.
+It has been suggested that allowing for partitioning time-series target data by target, and/or allowing for multiple single files to store data might also be reasonable. One possible justification for this is operational: some targets come from different data sources and are updated at different times.
 
-This is also something that we could consider explicitly supporting at a future date. It is possible that this would “just work” using the initial implementation and open-dataset.
+This is also something that we could consider explicitly guaranteeing support for across all hubverse tools at a future date. It is possible that from a technical perspective, any file structure supported by an `arrow::open_dataset()` read operation will allow for validation and reading in of target data with the current implementation. However, we decided for accessibility purposes we would start with only explicit guaranteed support (not just for reading data in, but also for the dashboard tools) for the formats described above (single file, and hive-style partition on `as_of` column).
 
-But some counterpoints were
+Some arguments against adding additional structure are
 
 - partitions are unfamiliar to some and are harder to interact with (nested folders with single files). adding a second layer would make this even harder.
 - it might add development/documentation complexity and we are trying to avoid that in the short-term.
+- code for the visualization dashboard currently is custom python code and adding support for multiple different structures might add complexity.
+
+## Using "version" as the column name instead of "as_of"
+
+We are following the Delphi group's standards about using "version" to refer to data that may not contain all of the observations (like "diffs) and "as_of" to refer to a complete dataset. More detail in [their vignette on archives of data](https://cmu-delphi.github.io/epiprocess/articles/archive.html).
 
 ## Status
-Finalized.
+Approved, with minor modifications that have been made to this version.
 This proposal has been discussed extensively, including in [this PR](https://github.com/reichlab/decisions/pull/18), and in numerous synchronous meetings. It is the product of many of these discussions.
