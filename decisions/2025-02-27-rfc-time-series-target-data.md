@@ -84,7 +84,7 @@ A file hub/target-data/time-series.csv (or .parquet, referred to below as .csv f
 2. The column names of time-series.csv are
    1. “observation”
    2. The task-id column names that define the observable unit
-      1. in our initial implementation, these are defined by the hub admin and not validatable. At a future time, we could implement a metadata field to capture these so it is validatable.
+      1. in our initial implementation, these are defined by the hub admin and not validatable other than that they are task id variable names listed in the hub's `tasks.json` file. At a future time, we could implement a metadata field to capture these so it is validatable.
    3. (optionally) “version”
 3. The [data types](https://hubverse.io/en/latest/user-guide/tasks.html#details) within each column are readable as a consistent data type.
    1. For “observation” column: readable as numeric
