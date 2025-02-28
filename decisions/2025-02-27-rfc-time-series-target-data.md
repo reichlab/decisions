@@ -21,11 +21,6 @@
     - they must be readable as the data type for the task-id variable in the schema
   - “observation”: a numeric observed value for the unit
 
-## Key justifications
-
-- We are preparing for a time when the dev team is smaller and therefore are trying to simplify the hub admin user experience. It has been noted that hub admin experience with hive partitions is limited and documentation for these partitions, even for the initiated, are complex.
-- By focusing our support on several key use-cases (e.g. only numeric target observations), we make it easier to support single-file target data. One possible simplification is that mandating a single file gets us out of schema mismatch issues later on (e.g. reading partition when observation column is interpolated as different data types).
--
 
 ## Some background and an example
 
