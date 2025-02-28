@@ -11,7 +11,7 @@
 
 ## Summary of the proposal
 
-- One time-series.csv (or .parquet) file or partition contains all of the validatable time-series target data for numeric variables in the hub.
+- One time-series.csv (or .parquet) file or partitioned data set contains all of the validatable time-series target data for numeric variables in the hub.
 - This file has the following columns:
   - “as\_of”: optional, an ISO date that says when the data were available
   - \[a subset of task-id variables\]
