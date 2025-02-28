@@ -19,7 +19,7 @@ Specifically, we are interested in looking into implementation of conversions fr
 
 ## Decision
 
-We will begin by implementing output type conversions from initial output type "sample" to terminal output types "quantile" and "median" and "mean", then "PMF" and "CDF". This prioritizes the simple conversions first, with each subsequent conversion increasing in complexity. Although output types like "quantile" and "median" could be implemented very simply using the `quantile()` function (and likewise quotes mean with the `mean()` function), we are interested in building the first pass at this function with an eye ahead to expanding support to the case of output type IDs depending on task ID variables and building.
+We will begin by implementing output type conversions from initial output type "sample" to terminal output types "quantile" and "median" and "mean", then "PMF" and "CDF". This prioritizes the simple conversions first, with each subsequent conversion increasing in complexity. Although output types like "quantile" and "median" could be implemented very simply using the `quantile()` function (and likewise "mean" with the `mean()` function), we are interested in building the first pass at this function with an eye ahead to expanding support to the case of output type IDs depending on task ID variables and building.
 
 ### Other Options Considered
 
