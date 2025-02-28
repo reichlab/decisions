@@ -11,12 +11,12 @@
 
 ## Summary of the proposal
 
-- One time-series.csv (or .parquet) file or partition contains all of the validatable time-series target data for numeric variables in the hub.
+- One time-series.csv (or .parquet) file or partitioned data set contains all of the validatable time-series target data for numeric variables in the hub.
 - This file has the following columns:
   - “as\_of”: optional, an ISO date that says when the data were available
   - \[a subset of task-id variables\]
     - these variables define the unit of observation for each observed value
-    - one task-id variable must be an ISO date
+    - one task-id variable must be an ISO date, corresponding to the date of the observed event
     - initially, they just need to be task-id variables, and we will later implement a metadata field/validation about which task-id variables these are.
     - they must be readable as the data type for the task-id variable in the schema
   - “observation”: a numeric observed value for the unit
@@ -84,7 +84,7 @@ A file hub/target-data/time-series.csv (or .parquet, referred to below as .csv f
 2. The column names of time-series.csv are
    1. “observation”
    2. The task-id column names that define the observable unit
-      1. in our initial implementation, these are defined by the hub admin and not validatable. At a future time, we could implement a metadata field to capture these so it is validatable.
+      1. in our initial implementation, these are defined by the hub admin and not validatable other than that they are task id variable names listed in the hub's `tasks.json` file. At a future time, we could implement a metadata field to capture these so it is validatable.
    3. (optionally) “version”
 3. The [data types](https://hubverse.io/en/latest/user-guide/tasks.html#details) within each column are readable as a consistent data type.
    1. For “observation” column: readable as numeric
