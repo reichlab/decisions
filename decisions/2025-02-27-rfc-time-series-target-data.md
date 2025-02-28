@@ -16,7 +16,7 @@
   - “as\_of”: optional, an ISO date that says when the data were available
   - \[a subset of task-id variables\]
     - these variables define the unit of observation for each observed value
-    - one task-id variable must be an ISO date
+    - one task-id variable must be an ISO date, corresponding to the date of the observed event
     - initially, they just need to be task-id variables, and we will later implement a metadata field/validation about which task-id variables these are.
     - they must be readable as the data type for the task-id variable in the schema
   - “observation”: a numeric observed value for the unit
