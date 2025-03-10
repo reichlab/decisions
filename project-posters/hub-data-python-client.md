@@ -73,7 +73,7 @@ This practice is not ideal, nor is it sustainable:
 - This iteration of a Python hubData client will not target API design or feature parity with the `hubData` R client.
 - *We will focus on implementing features that are needed by existing Python tools in the Hubverse*.
 - This iteration of Python hubData will not be released to PyPI. We will start by dogfooding it internally and adding
-- it to Hubverse documentation when ready.
+  it to Hubverse documentation when ready.
 
 ### How do we judge success?
 
