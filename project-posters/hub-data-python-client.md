@@ -22,7 +22,9 @@ concrete proposal for starting that work.
 ### What are we doing?
 
 Creating a Hubverse-maintained Python client for interacting with hub data. The proposal is to start small and create
-a Python package focused on the *hub data functions that are required for our current internal work*.
+a Python package focused on the *hub data functions that are required for our current internal work*. Throughout this
+document, *users* refers to Hubverse devs, since they are the target users for this iteration of the Python
+client.
 
 ### Why are we doing this?
 
@@ -39,7 +41,7 @@ That work includes Python functionality that maps to functionality in the R hubD
   [parses hub config files](https://github.com/hubverse-org/hub-dashboard-predtimechart/blob/main/src/hub_predtimechart/hub_config.py#L15)
   (reads hub config files to generate a predtimechart options object)
 - hub-dashboard-predtimechart reads model-ouput files to generate .json data for predtimechart
-- there are plans to update hub-dashboard-predtimechart with code that can read Hubverse-formatted target data files
+- hub-dashboard-predtimechart reads Hubverse-formatted target data to generate .json files for predtimechart
 
 Some of the above code is specific to the dashboard work, but some of it is more generic hub data and config access
 that could benefit other hubverse users if we package it separately.
@@ -61,12 +63,8 @@ we'd use an explicit schema, generated via a hub's config, when transforming hub
 The absence of a Hubverse Python client means no explicit guidance for Python users. Currently, we've written some
 ad-hoc Python-based code samples and added them to hub READMEs (these examples are specific to hubs that use S3).
 
-This practice is not ideal, nor is it sustainable:
-
-- As the sample code evolves, there will be outdated versions of it scattered around. With an official client, we
+This practice is not ideal, nor is it sustainable. As the sample code evolves, there will be outdated versions of it scattered around. With an official client, we
   have a central place for Python-specific documentation that can evolve as needed.
-- Because we have no official Python client, the team may find itself supporting Python users who have brought
-  their own tooling.
 
 ### What are we *not* trying to do?
 
@@ -92,6 +90,17 @@ This practice is not ideal, nor is it sustainable:
     - We use an [AWS Lambda function](https://aws.amazon.com/lambda/) to mirror hub data to S3 buckets. There is no
       "out of the box" AWS Lambda R runtime. While it's possible to create one, we chose Python for `hubverse-transform`
       because it's officially supported and because there's a lot of documentation about Python-based Lambda functions.
+- Continue current practices. Keep writing Python as needed, but don't consolidate Python code into a central client.
+  Ruled this out because:
+    - At the time of this writing, we have multiple Python programmers who can tackle an MVP, which will benefit
+      a future team with fewer Python programmers (*e.g.*, support future work on the Hubverse dashboard, have a single
+      place for making code updates that reflect schema changes, have a single place for testing and documentating
+      Python functionality)
+    - The longer we wait to create a Python client, the harder it will be to rip out ad-hoc Python code and replace it
+- Create a fully-featured Python client that contains the same features as hubData. Ruled this out because:
+    - We're concerned about the team's Python bandwidth, so it's better to start with functionality we need internally
+    - Starting with a public-facing client gives us less room to iterate and make breaking changes as we build
+      alongside of other quickly-evolving projects like the dashboard.
 
 ## ✅ Validation
 
@@ -119,12 +128,13 @@ to validate at this time.
 ### Proposed solution
 
 - Python package with the following features:
-    - works with local and S3-based hub data
-    - can operate at the hub level but not directly on the model-output folder (*i.e.*, users will need access to an
-      entire hub, either locally or on S3)
-    - produces an Arrow schema for a specified hub
-    - can read a hub's target data and return a lazy-style dataframe
-    - can read a hub's model-output data and return a lazy-style dataframe
+    - Works with local and S3-based hub data
+    - The package can operate at the hub level but not directly on the model-output folder (*i.e.*, users will
+      need access to an entire hub, either locally or on S3). This restriction allows an MVP to operate under
+	  the assumption that it will always have a way to access the hub's config files.
+    - Produces a schema for a specified hub
+    - Can read a hub's target data and return a lazy-style dataframe
+    - Can read a hub's model-output data and return a lazy-style dataframe
 
 ### Scale and scope
 
