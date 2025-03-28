@@ -233,7 +233,7 @@ maintained by a large team we trust. For example:
 
 ## Status
 
-approved
+superseded by [2025-03-27 GitHub Action Security](./2025-03-27-rfc-github-action-security.md)
 
 ## Consequences
 
