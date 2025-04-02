@@ -56,7 +56,7 @@ Not applicable.
 
 ## Status
 
-pending
+approved
 
 ## Consequences
 
