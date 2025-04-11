@@ -30,7 +30,7 @@
     - `"target_keys": { <name of task id variable> : <task id variable value> }`
   - Example for a hub that tracks covid cases, hospitalizations, and deaths, recorded via the "target" task id variable:
     EXAMPLE 1: multiple targets:
-    ```json
+    ```
     target_metadata: [
         {
             "target_id": "cases",
@@ -66,7 +66,7 @@ Then the time-series.csv would look like this
 
 EXAMPLE 2: one target, with `target_keys: null`
 
-```json
+```
 target_metadata: [
     {
         "target_id": "cases",
