@@ -29,6 +29,7 @@
   - Within each of those entries, there is a block that has the form
     - `"target_keys": { <name of task id variable> : <task id variable value> }`
   - Example for a hub that tracks covid cases, hospitalizations, and deaths, recorded via the "target" task id variable:
+    
     EXAMPLE 1: multiple targets:
     ```
     target_metadata: [
@@ -52,30 +53,30 @@
         }
     ]
     ```
+    
+    Then the time-series.csv would look like this
 
-Then the time-series.csv would look like this
-
-| as_of | target | date | location | observation |
-| :---- | :---- | :---- | :---- | :---- |
-|  | cases |  |  |  |
-|  | cases |  |  |  |
-|  | … |  |  |  |
-|  | deaths |  |  |  |
-|  | deaths |  |  |  |
-|  | … |  |  |  |
-
-EXAMPLE 2: one target, with `target_keys: null`
-
-```
-target_metadata: [
-    {
-        "target_id": "cases",
-         …,
-        "target_keys": null
-        …
-    }
-]
-```
+    | as_of | target | date | location | observation |
+    | :---- | :---- | :---- | :---- | :---- |
+    |  | cases |  |  |  |
+    |  | cases |  |  |  |
+    |  | … |  |  |  |
+    |  | deaths |  |  |  |
+    |  | deaths |  |  |  |
+    |  | … |  |  |  |
+    
+    EXAMPLE 2: one target, with `target_keys: null`
+    
+    ```
+    target_metadata: [
+        {
+            "target_id": "cases",
+             …,
+            "target_keys": null
+            …
+        }
+    ]
+    ```
 
 ## Validations
 
