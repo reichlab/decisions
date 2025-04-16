@@ -52,7 +52,7 @@ it doesn't impact existing hubs, is ideal timing.
 
 ## Status
 
-Proposed
+Approved
 
 ## Consequences
 
