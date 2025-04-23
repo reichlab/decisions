@@ -46,7 +46,7 @@ create extra work to validate time series data.
 
 ## Status
 
-PROPOSED
+ACCEPTED
 
 ## Consequences
 
