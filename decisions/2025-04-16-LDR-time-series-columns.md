@@ -7,7 +7,7 @@
 - There is no guidance for additional colums that a time series file MAY have.
 - The FluSight hub currently has additional target data columns that add information and transformations of the data such as a human-readable location name and a calculated rate from the target count data
 - The hub-dashboard-predevals code currently filters target data based on task ID variables
-- The function to read target data in hubUtils (development version) currently reads in all the columns of target data successfully
+- The function to read target data in hubData (development version) currently reads in all the columns of target data successfully
 - The validation of target data is currently being written.
 
 ### Aims
@@ -23,7 +23,7 @@
 We will allow additional columns to exist in target data with the following conditions
 
 1. additional column names MUST NOT be identical to existing task ID names, or
-   one of "value", "output_type", "output_type_id", or "oracle_output"
+   one of "value", "output_type", "output_type_id", or "oracle_value"
 2. content of additional columns MUST NOT result in duplication of rows in the
    required task ID columns---that is, the additional columns should not
    represent a dependent subset of another column.
