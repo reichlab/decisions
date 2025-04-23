@@ -22,7 +22,8 @@
 
 We will allow additional columns to exist in target data with the following conditions
 
-1. additional column names MUST NOT be identical to existing task ID names, or
+1. additional column names (i.e. for columns that do not correspond to
+   existing task IDs) MUST NOT be identical to existing task ID names, or
    one of "value", "output_type", "output_type_id", or "oracle_value"
 2. content of additional columns MUST NOT result in duplication of rows in the
    required task ID columns---that is, the additional columns should not
