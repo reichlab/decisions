@@ -1,0 +1,23 @@
+{
+    "target_data_metadata": {
+        "time-series": {
+            "observable_unit": [
+                "location",
+                "clade",
+                "target_date",
+                "nowcast_date"
+
+            ],
+            "non_task_id_schema": {"as_of": "Date"}
+        },
+        "oracle-output": {
+            "observable_unit": [
+                "location",
+                "clade",
+                "target_date",
+                "nowcast_date"
+            ]
+        }
+
+    }
+}

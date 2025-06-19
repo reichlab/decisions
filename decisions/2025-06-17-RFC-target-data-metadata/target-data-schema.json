@@ -1,0 +1,72 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/hubverse-org/schemas/main/v6.0.0/target-data-schema.json",
+    "title": "Schema for Modeling Hub target data definitions",
+    "description": "This is the schema of the target-data.json configuration file that defines metadata about target data used to visualise and evaluate modeling hub model outputs.",
+    "type": "object",
+    "description": "Target data metadata.",
+    "properties": {
+        "target_data_metadata": {
+            "type": "object",
+            "properties": {
+                "time-series": {
+                    "type": "object",
+                    "properties": {
+                        "observable_unit": {
+                            "description": "Names of columns whose unique value combinations define an observable unit in time-series data. Each combination of values must be unique across `as_of` data versions. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extra_task_ids": {
+                            "description": "Names of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.",
+                            "type": ["array", "null"],
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "non_task_id_schema": {
+                            "type": "object",
+                            "uniqueItems": true,
+                            "additionalProperties": {
+                                "type": "string",
+                                "enum": ["character", "double", "integer","logical", "Date"],
+                                "description": "Non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
+                            }
+                        }
+                    },
+                    "required": ["observable_unit"],
+                    "additionalProperties": false
+                },
+                "oracle-output": {
+                    "type": "object",
+                    "properties": {
+                        "observable_unit": {
+                            "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs.",
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extra_task_ids": {
+                            "description": "Names of task IDs that are not part of the observable unit but are present in the oracle-output data. These task IDs may be used for additional context or filtering (e.g. some derived task IDs).",
+                            "type": ["array", "null"],
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                    },
+                    "required": ["observable_unit"],
+                    "additionalProperties": false
+                }
+            },
+            "required": ["time-series", "oracle-output"],
+            "additionalProperties": false
+        }
+    }
+}
