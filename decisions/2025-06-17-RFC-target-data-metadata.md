@@ -123,6 +123,7 @@ In addition to basic JSON validation against the schema described above, the fol
 
 - `time-series`: 
     - Any columns listed in the `observable_unit` that are not task IDs must have a data type defined in the `non_task_id_schema` property.
+    - If the hub has a target column specified in target_metadata, the `observable_unit` must include that column.
     - The `extra_task_ids` property, if present, must not contain any columns that are already part of the `observable_unit`.
     - The `non_task_id_schema` property must not contain any task IDs.
 - `oracle-output`: 
