@@ -46,7 +46,7 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
                     "type": "object",
                     "properties": {
                         "observable_unit": {
-                            "description": "Names of columns whose unique value combinations define an observable unit in time-series data. Each combination of values must be unique across `as_of` data versions. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
+                            "description": "Names of columns whose unique value combinations define an observable unit in time-series data. Each combination of values must be unique. If multiple values available for the same time point they should be unique across `as_of` data versions. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
                             "type": "array",
                             "uniqueItems": true,
                             "items": {
