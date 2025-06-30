@@ -64,10 +64,19 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
                         "non_task_id_schema": {
                             "type": "object",
                             "uniqueItems": true,
+                            "examples": [
+                                {
+                                    "as_of": "Date",
+                                    "location_name": "character"
+                                },{
+                                    "as_of": "Date",
+                                    "date": "Date"
+                                }
+                            ],
                             "additionalProperties": {
                                 "type": "string",
                                 "enum": ["character", "double", "integer","logical", "Date"],
-                                "description": "Non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
+                                "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
                             }
                         }
                     },
