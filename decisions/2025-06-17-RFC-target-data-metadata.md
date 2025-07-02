@@ -17,7 +17,7 @@ Decide on metadata structure and the associated schema and validation rules of p
 
 ### Anti-Aims
 
-We will not discuss any other aspect of schema updating that does not relate to time-series target data schema. 
+We will not discuss any other aspect of schema updating that does not relate to target data schema. 
 
 ## Decision
 
@@ -42,17 +42,27 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
         "target_data_metadata": {
             "type": "object",
             "properties": {
+                "observable_unit": {
+                            "description": "Names of columns whose unique value combinations define the minimum observable unit in time-series data. Each combination of values must be unique across `as_of` data versions if applicable. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                "date_col": {
+                    "description": "Default name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
+                    "type": ["string", "null"],
+                    "default": null
+                },
+                "versioned": {
+                    "description": "Indicates whether target data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
+                    "type": "boolean",
+                    "default": false
+                },
                 "time-series": {
                     "type": "object",
                     "properties": {
-                        "observable_unit": {
-                            "description": "Names of columns whose unique value combinations define an observable unit in time-series data. Each combination of values must be unique. If multiple values are available for the same time point they should be unique across `as_of` data versions. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
-                            "type": "array",
-                            "uniqueItems": true,
-                            "items": {
-                                "type": "string"
-                            }
-                        },
                         "extra_task_ids": {
                             "description": "Names of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.",
                             "type": ["array", "null"],
@@ -66,10 +76,8 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
                             "uniqueItems": true,
                             "examples": [
                                 {
-                                    "as_of": "Date",
                                     "location_name": "character"
                                 },{
-                                    "as_of": "Date",
                                     "date": "Date"
                                 }
                             ],
@@ -78,52 +86,68 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
                                 "enum": ["character", "double", "integer","logical", "Date"],
                                 "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
                             }
-                        }
+                        },
+                        "date_col": {
+                            "description": "Default name of the date column in time-series data. This is the column that stores the date on which observed data actually occured.",
+                            "type": ["string", "null"],
+                            "default": null
+                        },
                     },
-                    "required": ["observable_unit"],
                     "additionalProperties": false
                 },
                 "oracle-output": {
                     "type": "object",
                     "properties": {
+                        "output_type": {
+                            "type": "boolean",
+                            "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
+                        },
                         "observable_unit": {
-                            "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs.",
+                            "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Can be used to override default observable units in situations where some output types require additional task ID value to map onto target data.",
                             "type": "array",
                             "uniqueItems": true,
                             "items": {
                                 "type": "string"
                             }
                         },
-                        "extra_task_ids": {
-                            "description": "Names of task IDs that are not part of the observable unit but are present in the oracle-output data. These task IDs may be used for additional context or filtering (e.g. some derived task IDs).",
-                            "type": ["array", "null"],
-                            "uniqueItems": true,
-                            "items": {
-                                "type": "string"
-                            }
+                        "date_col": {
+                            "description": "Default name of the date column in oracle-output data. This is the column that stores the date on which observed data actually occured.",
+                            "type": ["string", "null"],
+                            "default": null
                         },
                     },
-                    "required": ["observable_unit"],
+                    "required": ["output_type"],
                     "additionalProperties": false
                 }
             },
-            "required": ["time-series", "oracle-output"],
+            "required": ["observable_unit", "date_col"],
             "additionalProperties": false
         }
     }
 }
+
 ```
 
-To summarise, the `target-data.json` file will contain a `target_data_metadata` object with two main properties: `time-series` and `oracle-output`. Each property will define metadata about the respective target data type.
+To summarise, the `target-data.json` file will contain a `target_data_metadata` object.
 
-- **`time-series`**: This object contains three main main properties:
-    - `observable_unit`: An array of columns whose unique value combinations define an observable unit in time-series data. Each combination of values must be unique across `as_of` data versions. In time-series data, this typically includes task IDs that uniquely identify a specific observation at a given point in time but might include columns that do not directly correspond to task ID names (e.g. a more general `date` column).
-    - `extra_task_ids`: An optional array of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.
+The top level of the object will contain properties that define the target data default settings across all target data types and even relate to expectations of model-output column names.
+
+These are:
+- `observable_unit`: An array of task id column names whose unique value combinations define the minimum observable unit required to match observed values in a time-series dataset to model-output data.  Columns in the observable unit must match valid modeling task IDs and uniquely identify a specific observation at a given point in time. Each combination of values must be unique across the observable unit and date column. If data are versioned, each combination of values must additionally be unique across `as_of` data versions.
+- `date_col`: A string that defines the default name of the date column across hub data (time-series, oracle-output and model output). This is the column in each dataset that stores the date on which modeled data were predicted or observed data actually occurred. This column in each dataset stores the date when a prediction was made or when the observed data actually occurred. Ideally this should be the same across all datasets in a hub. If not, `date_col` can also be configured separately for each target type (see below). The date column is expected to be of type `Date` and should not be included in the observable unit. If not specified, it defaults to `null`.
+- `versioned`: A boolean that indicates whether all target datasets are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of the data. Defaults to `false`.
+
+What follows are two properties reserved for configuring settings according to target data type: `time-series` and `oracle-output`. Each property will define metadata about the respective target data type.
+
+- **`time-series`**: The time-series dataset is the only target dataset where additional columns beyond the observable unit and date column are allowed.  This object contains three main main properties:
+    - `date_col`: An optional string that defines the name of the date column in the `time-series` dataset. This column stores the date when the observed data actually occurred.
+    - `extra_task_ids`: An optional array of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering. Defaults to `null` if not specified.
     - `non_task_id_schema`: An object that defines the schema for non-task ID columns in the time-series data. Each property in this object represents a non-task ID column name, and its value is the data type of that column. The data types represent R data types can be one of the following: `character`, `double`, `integer`, `logical`, or `Date`. This will allow for the inclusion of additional columns in the time-series data that do not correspond directly to task IDs. Note that the standard column `observation` DOES NOT need defining/including as will always be cast as `double`. It is also never part of the observable unit.
-- **`oracle-output`**: This object contains two main properties:
-    - `observable_unit`: An array of task ID names whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Note that for `oracle-output` target data, the observable unit always consists of task IDs. `output_type` and `output_type_id` if present is always part of the observable unit in practice but does need defining in this property.
-    - `extra_task_ids`: An optional array of task IDs that are not part of the observable unit but are present in the oracle-output data. These task IDs may be used for additional context or filtering (e.g. some derived task IDs).
-    - Note again that the standard `oracle_value` column does not be defined anywhere and will be cast to `double` by default.
+- **`oracle-output`**: 
+   - `date_col`: An optional string that defines the name of the date column in the `oracle-output` dataset. This column stores the date when the observed data actually occurred.
+   - `versioned`: A boolean that indicates whether the oracle-output dataset is versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of the data. In oracle-output datasets usually only the latest version is stored so rows should be unique across the observable_unit subset, data. Defaults to `false`.
+- **`model-output`**: 
+   - `date_col`: An optional string that defines the name of the date column in the `model-output` dataset. This column stores the date when a prediction was made.
 
 
 ### Validations
@@ -131,13 +155,12 @@ To summarise, the `target-data.json` file will contain a `target_data_metadata` 
 In addition to basic JSON validation against the schema described above, the following additional dynamic validations will be performed during `validate_config()`:
 
 - `time-series`: 
-    - Any columns listed in the `observable_unit` that are not task IDs must have a data type defined in the `non_task_id_schema` property.
-    - If the hub has a target column specified in target_metadata, the `observable_unit` must include that column.
     - The `extra_task_ids` property, if present, must not contain any columns that are already part of the `observable_unit`.
+    - Rows must be unique across the `observable_unit` and `date_col` columns.
     - The `non_task_id_schema` property must not contain any task IDs.
 - `oracle-output`: 
-    - All columns listed in the `observable_unit` must be task IDs.
-    - The `extra_task_ids` property, if present, must not contain any columns that are already part of the `observable_unit`.
+    - The `observable_unit` property must not contain any columns that are already part of the `extra_task_ids` property.
+    - The `observable_unit` property must not contain any task IDs.
     
 ### Example `target-data.json` config files
 

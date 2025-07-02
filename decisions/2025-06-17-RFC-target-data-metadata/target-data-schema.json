@@ -9,17 +9,27 @@
         "target_data_metadata": {
             "type": "object",
             "properties": {
+                "observable_unit": {
+                            "description": "Names of columns whose unique value combinations define the minimum observable unit in time-series data. Each combination of values must be unique across `as_of` data versions if applicable. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                "date_col": {
+                    "description": "Default name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
+                    "type": ["string", "null"],
+                    "default": null
+                },
+                "versioned": {
+                    "description": "Indicates whether target data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
+                    "type": "boolean",
+                    "default": false
+                },
                 "time-series": {
                     "type": "object",
                     "properties": {
-                        "observable_unit": {
-                            "description": "Names of columns whose unique value combinations define an observable unit in time-series data. Each combination of values must be unique across `as_of` data versions. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
-                            "type": "array",
-                            "uniqueItems": true,
-                            "items": {
-                                "type": "string"
-                            }
-                        },
                         "extra_task_ids": {
                             "description": "Names of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.",
                             "type": ["array", "null"],
@@ -33,10 +43,8 @@
                             "uniqueItems": true,
                             "examples": [
                                 {
-                                    "as_of": "Date",
                                     "location_name": "character"
                                 },{
-                                    "as_of": "Date",
                                     "date": "Date"
                                 }
                             ],
@@ -45,36 +53,41 @@
                                 "enum": ["character", "double", "integer","logical", "Date"],
                                 "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
                             }
-                        }
+                        },
+                        "date_col": {
+                            "description": "Default name of the date column in time-series data. This is the column that stores the date on which observed data actually occured.",
+                            "type": ["string", "null"],
+                            "default": null
+                        },
                     },
-                    "required": ["observable_unit"],
                     "additionalProperties": false
                 },
                 "oracle-output": {
                     "type": "object",
                     "properties": {
+                        "output_type": {
+                            "type": "boolean",
+                            "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
+                        },
                         "observable_unit": {
-                            "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs.",
+                            "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Can be used to override default observable units in situations where some output types require additional task ID value to map onto target data.",
                             "type": "array",
                             "uniqueItems": true,
                             "items": {
                                 "type": "string"
                             }
                         },
-                        "extra_task_ids": {
-                            "description": "Names of task IDs that are not part of the observable unit but are present in the oracle-output data. These task IDs may be used for additional context or filtering (e.g. some derived task IDs).",
-                            "type": ["array", "null"],
-                            "uniqueItems": true,
-                            "items": {
-                                "type": "string"
-                            }
+                        "date_col": {
+                            "description": "Default name of the date column in oracle-output data. This is the column that stores the date on which observed data actually occured.",
+                            "type": ["string", "null"],
+                            "default": null
                         },
                     },
-                    "required": ["observable_unit"],
+                    "required": ["output_type"],
                     "additionalProperties": false
                 }
             },
-            "required": ["time-series", "oracle-output"],
+            "required": ["observable_unit", "date_col"],
             "additionalProperties": false
         }
     }
