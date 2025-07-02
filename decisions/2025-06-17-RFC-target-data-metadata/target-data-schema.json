@@ -83,7 +83,6 @@
                             "default": null
                         },
                     },
-                    "required": ["output_type"],
                     "additionalProperties": false
                 }
             },
