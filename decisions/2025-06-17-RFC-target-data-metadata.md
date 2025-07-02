@@ -2,33 +2,39 @@
 
 ## Context
 
-While moving forward with validation tests for target data, we have identified the need for a structured metadata schema that can be used to validate time-series target data schema deterministically. In particular, a combination of our allowance of inclusion of non-task ID columns in time-series data and supporting of hive-partitioned datasets has so far required the opening of target time-series data to extract the default schema for such non-task ID columns when creating a time-series schema. This has uncovered a number of challenges/limitations:
-1. What schema to compare incoming files to. Currently we have settled on the schema of the first file in a multi-file dataset but this could in rare circumstances become issue (i.e. post-hoc changes to the first file). It also continues to require  opening the dataset to extract the schema, which itself involves an additional call to cloud hubs and introduces performance consideration: https://github.com/hubverse-org/hubData/issues/87#issuecomment-2901055075 
-2. Problems arising from hive partitioning on columns that also are contained in the data e.g. the nowcast hub which is partitioned on a date type column. The parquet files contain the correct data type (date) for that column but the default dataset behaviour when opening datasets without an explicit schema is to cast all partition variables as character. This causes a conflict during the attempt to open the dataset resulting in the dataset not being able to be opened without an explicit schema defined. Because of this, such datasets cannot currently be opened with our current `hubData` functions https://github.com/hubverse-org/hubData/issues/89 
+As we expand validation tests for target data, we've identified the need for a structured metadata schema to support **deterministic schema validation** for time-series datasets.
 
-Creating new metadata fields that admins can use to define the schema for such non-task ID columns will allow the definition of a time-series dataset schema deterministically and would alleviate the issues described above.
+Currently, the inclusion of non–task ID columns in time-series data requires opening the actual dataset to infer these columns and their types—an approach that introduces several limitations:
 
-In addition to the above considerations, an outstanding piece of information required by hubs involves knowledge of the columns which make up the observable unit in both time-series and oracle-output data (see for example the [discussion about validations in a previous RFC](https://github.com/reichlab/decisions/blob/main/decisions/2025-02-27-rfc-time-series-target-data.md#validations). The observable unit consists of the columns in a target dataset whose values uniquely identify a single observation in the dataset at a specific point in time. Knowledge of this information is important in ensuring there are no duplicate observations in any of the target datasets.
+1. **Unstable reference schema**: We currently default to using the schema from the first file in a multi-file dataset. This is fragile, especially if the first file is updated post hoc. It also introduces performance costs since the dataset must be opened to extract the schema, which can involve cloud access calls ([relevant issue](https://github.com/hubverse-org/hubData/issues/87#issuecomment-2901055075)).
 
+2. **Partition column conflicts**: Some hubs (e.g. the nowcast hub) are partitioned on variables that are also present in the dataset itself—such as a `date` column. While the Parquet files correctly store this column as a `Date`, Arrow defaults to reading all partition variables as `character` unless an explicit schema is provided. This causes a conflict during dataset loading and prevents it from being opened without a defined schema ([see issue](https://github.com/hubverse-org/hubData/issues/89)).
 
-### Aims
+To address these problems, we propose introducing new metadata fields that allow hub admins to explicitly define the schema for all non–task ID columns. This will enable deterministic construction of a time-series schema without inspecting dataset contents.
 
-Decide on metadata structure and the associated schema and validation rules of properties that will enable a deterministic creation of schema for time-series target data. We will also consider the requested property to describe the task IDs that make up an observational unit.
+In addition, hubs need a way to define the **observable unit** of a dataset—the set of columns whose values uniquely identify a single observation at a point in time. This is essential for verifying data integrity and preventing duplicates, especially in versioned or oracle-output data ([see RFC discussion](https://github.com/reichlab/decisions/blob/main/decisions/2025-02-27-rfc-time-series-target-data.md#validations)).
 
-### Anti-Aims
+I'm also proposing to allow an `as_of` column in oracle-output to support traceability. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
 
-We will not discuss any other aspect of schema updating that does not relate to target data schema. 
+## Aims
+
+* Define a metadata structure, validation schema, and rules for deterministic schema creation for time-series target data.
+* Support explicit definition of task IDs and other columns that form the observable unit.
+
+## Anti-Aims
+
+* This RFC does not address schema management outside of target data.
 
 ## Decision
 
-We will accept a new config file named `target-data.json` file that will be used to define the schema for time-series target data. This can be achieved by a combination of:
-- listing any columns in the target data type that correspond to task ID variables (whose data types are already defined via `tasks.json`)
-- listing any non-task ID columns along with their data types that are present in the time-series data. 
+We will adopt a new configuration file named `target-data.json` to define the schema for time-series target data. This file will:
 
+* List columns that correspond to task IDs (whose data types are already defined via `tasks.json`);
+* List non–task ID columns along with their data types.
 
+The schema of this configuration file is defined in the following JSON Schema:
 
-The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-data-schema.json) file describing the properties of the a `target-data.json` config file will be as follows:
-
+### `target-data-schema.json`
 
 ```json
 {
@@ -101,7 +107,7 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
                         "output_type": {
                             "type": "boolean",
                             "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
-                        },
+                            "default": false},
                         "observable_unit": {
                             "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Can be used to override default observable units in situations where some output types require additional task ID value to map onto target data.",
                             "type": "array",
@@ -125,137 +131,51 @@ The [**target-data-schema.json**](./2025-06-17-RFC-target-data-metadata/target-d
         }
     }
 }
-
 ```
 
-To summarise, the `target-data.json` file will contain a `target_data_metadata` object.
+## Summary of `target-data.json` Structure
 
-The top level of the object will contain properties that define the target data default settings across all target data types and even relate to expectations of model-output column names.
+The `target-data.json` file defines a `target_data_metadata` object with top-level properties that describe expectations across target datasets.
 
-These are:
-- `observable_unit`: An array of task id column names whose unique value combinations define the minimum observable unit required to match observed values in a time-series dataset to model-output data.  Columns in the observable unit must match valid modeling task IDs and uniquely identify a specific observation at a given point in time. Each combination of values must be unique across the observable unit and date column. If data are versioned, each combination of values must additionally be unique across `as_of` data versions.
-- `date_col`: A string that defines the default name of the date column across hub data (time-series, oracle-output and model output). This is the column in each dataset that stores the date on which modeled data were predicted or observed data actually occurred. This column in each dataset stores the date when a prediction was made or when the observed data actually occurred. Ideally this should be the same across all datasets in a hub. If not, `date_col` can also be configured separately for each target type (see below). The date column is expected to be of type `Date` and should not be included in the observable unit. If not specified, it defaults to `null`.
-- `versioned`: A boolean that indicates whether all target datasets are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of the data. Defaults to `false`.
+### Top-Level Properties
 
-What follows are two properties reserved for configuring settings according to target data type: `time-series` and `oracle-output`. Each property will define metadata about the respective target data type.
+* `observable_unit`: An array of column names whose unique value combinations define the minimum observable unit. Must be task IDs or defined in the `date_col` property. Combinations must include the `date_col` (and `as_of` if versioned). `as_of` is never included in the observable unit as it is not a task ID but a versioning column. This property is required.
+* `date_col`: The default date column across time-series, oracle-output, and model-output datasets. Expected to be of type `Date`.
+* `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`.
 
-- **`time-series`**: The time-series dataset is the only target dataset where additional columns beyond the observable unit and date column are allowed.  This object contains three main main properties:
-    - `date_col`: An optional string that defines the name of the date column in the `time-series` dataset. This column stores the date when the observed data actually occurred.
-    - `extra_task_ids`: An optional array of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering. Defaults to `null` if not specified.
-    - `non_task_id_schema`: An object that defines the schema for non-task ID columns in the time-series data. Each property in this object represents a non-task ID column name, and its value is the data type of that column. The data types represent R data types can be one of the following: `character`, `double`, `integer`, `logical`, or `Date`. This will allow for the inclusion of additional columns in the time-series data that do not correspond directly to task IDs. Note that the standard column `observation` DOES NOT need defining/including as will always be cast as `double`. It is also never part of the observable unit.
-- **`oracle-output`**: 
-   - `date_col`: An optional string that defines the name of the date column in the `oracle-output` dataset. This column stores the date when the observed data actually occurred.
-   - `versioned`: A boolean that indicates whether the oracle-output dataset is versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of the data. In oracle-output datasets usually only the latest version is stored so rows should be unique across the observable_unit subset, data. Defaults to `false`.
-- **`model-output`**: 
-   - `date_col`: An optional string that defines the name of the date column in the `model-output` dataset. This column stores the date when a prediction was made.
+### Target-Type Specific Configuration
+
+* **`time-series`**:
+
+  * `date_col`: Optional override of the top-level `date_col`.
+  * `extra_task_ids`: Additional task IDs used for filtering or grouping.
+  * `non_task_id_schema`: key-value pairs of non-task id column names and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here.
+
+* **`oracle-output`**:
+
+  * `output_type`: Boolean. Must be true if `pmf` or `cdf` output types exist. Can be false otherwise. If true, the dataset must include `output_type` and `output_type_id` columns. Defaults to `false`.
+  * `observable_unit`: Task IDs whose combination plus output type IDs, if applicable, uniquely define a row. This can be especially useful for [output types whose values are functionally dependent on other task IDs](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603. 
+  * `date_col`: Optional override of the top-level `date_col`.
 
 
-### Validations
+## Validations
 
-In addition to basic JSON validation against the schema described above, the following additional dynamic validations will be performed during `validate_config()`:
+In addition to JSON Schema validation, the following dynamic checks will be applied:
 
-- `time-series`: 
-    - The `extra_task_ids` property, if present, must not contain any columns that are already part of the `observable_unit`.
-    - Rows must be unique across the `observable_unit` and `date_col` columns.
-    - The `non_task_id_schema` property must not contain any task IDs.
-- `oracle-output`: 
-    - The `observable_unit` property must not contain any columns that are already part of the `extra_task_ids` property.
-    - The `observable_unit` property must not contain any task IDs.
+* `observable_unit` must only include task ID columns and `target_col`.
+
+* `time-series`:
+
+  * `extra_task_ids` must not overlap with `observable_unit`.
+  * Rows must be unique across `observable_unit`.
+  * `non_task_id_schema` must not define task ID columns.
+
+
+* `oracle-output`:
+
+  * `observable_unit` must only include task ID columns.
     
 ### Example `target-data.json` config files
-
-#### Flusight hub
-
-The Flusight hub (<https://github.com/cdcepi/FluSight-forecast-hub>) requires the following schema for each relevant datasets
-
-##### `model-output`
-
-This schema is defined by the `tasks.json` config and can therefore be used to define task ID columns in target data.
-
-```
-── <hub_connection/FileSystemDataset> ──
-
-• hub_name: "US CDC FluSight"
-• hub_path: cdcepi-flusight-forecast-hub/
-• file_format: "parquet(2454/2454)"
-• checks: FALSE
-• file_system: "S3FileSystem"
-• model_output_dir: "model-output/"
-• config_admin: hub-config/admin.json
-• config_tasks: hub-config/tasks.json
-
-── Connection schema 
-hub_connection with 2454 Parquet files
-9 columns
-reference_date: date32[day]
-target: string
-horizon: int32
-location: string
-target_end_date: date32[day]
-output_type: string
-output_type_id: string
-value: double
-model_id: string
-```
-
-##### `time-series`
-
-```
-target_timeseries with 1 csv file
-7 columns
-as_of: date32[day]
-target: string
-target_end_date: date32[day]
-location: string
-location_name: string
-observation: double
-weekly_rate: double
-```
-##### `oracle-output`
-
-```
-target_oracle_output with 1 csv file
-8 columns
-as_of: date32[day]
-target: string
-target_end_date: date32[day]
-location: string
-horizon: int32
-output_type: string
-output_type_id: string
-oracle_value: double
-```
-
-The proposed example [`target-data.json`](./2025-06-17-RFC-target-data-metadata/flusight-target-data.json) file for the Flusight hub would look like this:
-
-```json
-{
-    "target_data_metadata": {
-        "time-series": {
-            "observable_unit": [
-                "target",
-                "target_end_date",
-                "location"
-            ],
-            "non_task_id_schema": {
-                "as_of": "Date",
-                "location_name": "character",
-                "weekly_rate": "double"
-            }
-        },
-        "oracle-output": {
-            "observable_unit": [
-                "target",
-                "target_end_date",
-                "location",
-                "horizon"
-            ]
-        }
-    }
-}
-```
-_Note the `oracle-output` dataset contains an `as_of` column which is currently not allowed_
-
 
 #### Variant Nowcast hub
 
@@ -321,32 +241,129 @@ as_of: date32[day]
 
 The proposed example [`target-data.json`](./2025-06-17-RFC-target-data-metadata/nowcast-target-data.json) file for the Variant Nowcast Hub hub would look like this:
 
+For this hub the config is quite simple:
+
+1. The observable unit is the same for both dataset so can be set once at the root level
+2 There are no `output_type` columns in the `oracle-output` so the default of `false` is used
+
 ```json
 {
     "target_data_metadata": {
-        "time-series": {
-            "observable_unit": [
-                "location",
-                "clade",
-                "target_date",
-                "nowcast_date"
-
-            ],
-            "non_task_id_schema": {"as_of": "Date"}
-        },
-        "oracle-output": {
-            "observable_unit": [
-                "location",
-                "clade",
-                "target_date",
-                "nowcast_date"
-            ]
-        }
-
+        "observable_unit": [
+            "location",
+            "clade",
+            "target_date",
+            "nowcast_date"
+        ],
+        "versioned": true,
+        "date_col": "target_date"
     }
 }
 ```
-_Note the `oracle-output` dataset contains an `as_of` column which is currently not allowed_
+
+
+#### Flusight hub
+
+The Flusight hub (<https://github.com/cdcepi/FluSight-forecast-hub>) requires the following schema for each relevant datasets
+
+##### `model-output`
+
+This schema is defined by the `tasks.json` config and can therefore be used to define task ID columns in target data.
+
+```
+── <hub_connection/FileSystemDataset> ──
+
+• hub_name: "US CDC FluSight"
+• hub_path: cdcepi-flusight-forecast-hub/
+• file_format: "parquet(2454/2454)"
+• checks: FALSE
+• file_system: "S3FileSystem"
+• model_output_dir: "model-output/"
+• config_admin: hub-config/admin.json
+• config_tasks: hub-config/tasks.json
+
+── Connection schema 
+hub_connection with 2454 Parquet files
+9 columns
+reference_date: date32[day]
+target: string
+horizon: int32
+location: string
+target_end_date: date32[day]
+output_type: string
+output_type_id: string
+value: double
+model_id: string
+```
+
+##### `time-series`
+
+The timeseries data contains additional non task ID columns `location_name` and `weekly_rate`.  
+
+```
+target_timeseries with 1 csv file
+7 columns
+as_of: date32[day]
+target: string
+target_end_date: date32[day]
+location: string
+location_name: string
+observation: double
+weekly_rate: double
+```
+##### `oracle-output`
+
+The oracle output in this hub has an additional `horizon` column that is not present in the time-series data. This is because it contains [a `pmf` output type which functionally requires the horizon to be known](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603). 
+
+```
+target_oracle_output with 1 csv file
+8 columns
+as_of: date32[day]
+target: string
+target_end_date: date32[day]
+location: string
+horizon: int32
+output_type: string
+output_type_id: string
+oracle_value: double
+```
+
+The proposed example [`target-data.json`](./2025-06-17-RFC-target-data-metadata/flusight-target-data.json) file for the Flusight hub requires some additional configuring. Specifically:
+
+1. a `time-series` object is used to define the non-task ID columns in the time-series data.
+2. an `oracle-output` object is used to define the additional `horizon` column in the oracle output data.
+
+```json
+{
+    "target_data_metadata": {
+
+        "observable_unit": [
+            "target",
+            "target_end_date",
+            "location"
+        ],
+        "versioned": true,
+        "date_col": "target_end_date",
+        "time-series": {
+            "non_task_id_schema": {
+                "location_name": "character",
+                "weekly_rate": "double"
+            }
+        },
+        "oracle-output": {
+            "output_type": true,
+            "observable_unit": [
+                "target",
+                "target_end_date",
+                "location",
+                "horizon"
+            ]
+        }
+    }
+}
+```
+
+
 
 ### Other Options Considered
 

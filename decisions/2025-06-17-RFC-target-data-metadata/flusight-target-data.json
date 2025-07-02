@@ -1,18 +1,21 @@
 {
     "target_data_metadata": {
+
+        "observable_unit": [
+            "target",
+            "target_end_date",
+            "location"
+        ],
+        "versioned": true,
+        "date_col": "target_end_date",
         "time-series": {
-            "observable_unit": [
-                "target",
-                "target_end_date",
-                "location"
-            ],
             "non_task_id_schema": {
-                "as_of": "Date",
                 "location_name": "character",
                 "weekly_rate": "double"
             }
         },
         "oracle-output": {
+            "output_type": true,
             "observable_unit": [
                 "target",
                 "target_end_date",

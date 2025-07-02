@@ -68,7 +68,7 @@
                         "output_type": {
                             "type": "boolean",
                             "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
-                        },
+                            "default": false},
                         "observable_unit": {
                             "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Can be used to override default observable units in situations where some output types require additional task ID value to map onto target data.",
                             "type": "array",
