@@ -14,8 +14,6 @@ To address these problems, we propose introducing new metadata fields that allow
 
 In addition, hubs need a way to define the **observable unit** of a dataset—the set of columns whose values uniquely identify a single observation at a point in time. This is essential for verifying data integrity and preventing duplicates, especially in versioned or oracle-output data ([see RFC discussion](https://github.com/reichlab/decisions/blob/main/decisions/2025-02-27-rfc-time-series-target-data.md#validations)).
 
-I'm also proposing to allow an `as_of` column in oracle-output to support traceability. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
-
 ## Aims
 
 * Define a metadata structure, validation schema, and rules for deterministic schema creation for time-series target data.
@@ -141,7 +139,9 @@ The `target-data.json` file defines a `target_data_metadata` object with top-lev
 
 * `observable_unit`: An array of column names whose unique value combinations define the minimum observable unit. Must be task IDs or defined in the `date_col` property. Combinations must include the `date_col` (and `as_of` if versioned). `as_of` is never included in the observable unit as it is not a task ID but a versioning column. This property is required.
 * `date_col`: The default date column across time-series, oracle-output, and model-output datasets. Expected to be of type `Date`.
-* `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`.
+* `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
+
+I also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
 
 ### Target-Type Specific Configuration
 
