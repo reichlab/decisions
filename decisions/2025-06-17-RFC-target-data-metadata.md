@@ -55,7 +55,7 @@ The schema of this configuration file is defined in the following JSON Schema:
                         }
                     },
                 "date_col": {
-                    "description": "Default name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
+                    "description": "Name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
                     "type": ["string", "null"],
                     "default": null
                 },
