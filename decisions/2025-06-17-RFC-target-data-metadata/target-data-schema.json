@@ -54,11 +54,6 @@
                                 "enum": ["character", "double", "integer","logical", "Date"]
                             }
                         },
-                        "date_col": {
-                            "description": "Default name of the date column in time-series data. This is the column that stores the date on which observed data actually occured.",
-                            "type": ["string", "null"],
-                            "default": null
-                        },
                     },
                     "additionalProperties": false
                 },
@@ -76,11 +71,6 @@
                             "items": {
                                 "type": "string"
                             }
-                        },
-                        "date_col": {
-                            "description": "Default name of the date column in oracle-output data. This is the column that stores the date on which observed data actually occured.",
-                            "type": ["string", "null"],
-                            "default": null
                         },
                     },
                     "additionalProperties": false
