@@ -18,7 +18,7 @@
                         }
                     },
                 "date_col": {
-                    "description": "Default name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
+                    "description": "Name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
                     "type": ["string", "null"],
                     "default": null
                 },
@@ -41,6 +41,7 @@
                         "non_task_id_schema": {
                             "type": "object",
                             "uniqueItems": true,
+                            "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well.",
                             "examples": [
                                 {
                                     "location_name": "character"
@@ -50,8 +51,7 @@
                             ],
                             "additionalProperties": {
                                 "type": "string",
-                                "enum": ["character", "double", "integer","logical", "Date"],
-                                "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
+                                "enum": ["character", "double", "integer","logical", "Date"]
                             }
                         },
                         "date_col": {
