@@ -30,6 +30,30 @@ We will adopt a new configuration file named `target-data.json` to define the sc
 * List columns that correspond to task IDs (whose data types are already defined via `tasks.json`);
 * List non–task ID columns along with their data types.
 
+## Summary of `target-data.json` Structure
+
+The `target-data.json` file defines a `target_data_metadata` object with top-level properties that describe expectations across target datasets.
+
+### Top-Level Properties
+
+* `observable_unit`: An array of column names whose unique value combinations define the minimum observable unit. Must be task IDs and additionally always include the column defined in the `date_col` property. Unique combinations. If versioned, unique combinations will also take into account the values in the `as_of` column but is never included in the observable unit as it is not a task ID but a versioning column. This property is required.
+* `date_col`: The default date column across time-series, oracle-output, and model-output datasets. Expected to be of type `Date`.
+* `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
+
+I also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
+
+### Target-Type Specific Configuration
+
+* **`time-series`**:
+
+  * `extra_task_ids`: Additional task IDs used for filtering or grouping.
+  * `non_task_id_schema`: key-value pairs of non-task id column names and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here as it is expected to always be a date column.
+
+* **`oracle-output`**:
+
+  * `has_output_type_ids`: Boolean. Must be true if `pmf` or `cdf` output types exist. Can be false otherwise. If true, the dataset must include `output_type` and `output_type_id` columns. Defaults to `false`.
+  * `observable_unit`: Task IDs whose combination plus any output type IDs if present, uniquely define a row. This can be especially useful for [output types whose values are functionally dependent on other task IDs](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603. 
+  
 The schema of this configuration file is defined in the following JSON Schema:
 
 ### `target-data-schema.json`
@@ -69,6 +93,9 @@ The schema of this configuration file is defined in the following JSON Schema:
                     "properties": {
                         "extra_task_ids": {
                             "description": "Names of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.",
+                            "examples": [
+                                ["horizon"]
+                            ],
                             "type": ["array", "null"],
                             "uniqueItems": true,
                             "items": {
@@ -78,6 +105,7 @@ The schema of this configuration file is defined in the following JSON Schema:
                         "non_task_id_schema": {
                             "type": "object",
                             "uniqueItems": true,
+                            "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well.",
                             "examples": [
                                 {
                                     "location_name": "character"
@@ -87,14 +115,8 @@ The schema of this configuration file is defined in the following JSON Schema:
                             ],
                             "additionalProperties": {
                                 "type": "string",
-                                "enum": ["character", "double", "integer","logical", "Date"],
-                                "description": "Key-value pairs of non-task ID column names and data types found in time-series data. Include any columns in the time-series data that does not correspond exactly to a task ID. If an `as_of` column is included, it should be specified here as well."
+                                "enum": ["character", "double", "integer","logical", "Date"]
                             }
-                        },
-                        "date_col": {
-                            "description": "Default name of the date column in time-series data. This is the column that stores the date on which observed data actually occured.",
-                            "type": ["string", "null"],
-                            "default": null
                         },
                     },
                     "additionalProperties": false
@@ -102,7 +124,7 @@ The schema of this configuration file is defined in the following JSON Schema:
                 "oracle-output": {
                     "type": "object",
                     "properties": {
-                        "output_type": {
+                        "has_output_type_ids": {
                             "type": "boolean",
                             "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
                             "default": false},
@@ -114,13 +136,7 @@ The schema of this configuration file is defined in the following JSON Schema:
                                 "type": "string"
                             }
                         },
-                        "date_col": {
-                            "description": "Default name of the date column in oracle-output data. This is the column that stores the date on which observed data actually occured.",
-                            "type": ["string", "null"],
-                            "default": null
-                        },
                     },
-                    "required": ["output_type"],
                     "additionalProperties": false
                 }
             },
@@ -129,40 +145,15 @@ The schema of this configuration file is defined in the following JSON Schema:
         }
     }
 }
+
 ```
-
-## Summary of `target-data.json` Structure
-
-The `target-data.json` file defines a `target_data_metadata` object with top-level properties that describe expectations across target datasets.
-
-### Top-Level Properties
-
-* `observable_unit`: An array of column names whose unique value combinations define the minimum observable unit. Must be task IDs or defined in the `date_col` property. Combinations must include the `date_col` (and `as_of` if versioned). `as_of` is never included in the observable unit as it is not a task ID but a versioning column. This property is required.
-* `date_col`: The default date column across time-series, oracle-output, and model-output datasets. Expected to be of type `Date`.
-* `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
-
-I also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
-
-### Target-Type Specific Configuration
-
-* **`time-series`**:
-
-  * `date_col`: Optional override of the top-level `date_col`.
-  * `extra_task_ids`: Additional task IDs used for filtering or grouping.
-  * `non_task_id_schema`: key-value pairs of non-task id column names and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here.
-
-* **`oracle-output`**:
-
-  * `output_type`: Boolean. Must be true if `pmf` or `cdf` output types exist. Can be false otherwise. If true, the dataset must include `output_type` and `output_type_id` columns. Defaults to `false`.
-  * `observable_unit`: Task IDs whose combination plus output type IDs, if applicable, uniquely define a row. This can be especially useful for [output types whose values are functionally dependent on other task IDs](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603. 
-  * `date_col`: Optional override of the top-level `date_col`.
 
 
 ## Validations
 
 In addition to JSON Schema validation, the following dynamic checks will be applied:
 
-* `observable_unit` must only include task ID columns and `target_col`.
+* `observable_unit` must only include task ID columns and the `date_col` and the `target_col` unless `target_keys` are `NULL` which implies a single global target and no `target` column.
 
 * `time-series`:
 
@@ -173,7 +164,8 @@ In addition to JSON Schema validation, the following dynamic checks will be appl
 
 * `oracle-output`:
 
-  * `observable_unit` must only include task ID columns.
+  * `observable_unit` must only include task ID columns, the `date_col` and the `target_col` unless `target_keys` are `NULL` which implies a single global target and no `target` column.
+
     
 ### Example `target-data.json` config files
 
@@ -239,7 +231,7 @@ nowcast_date: date32[day]
 as_of: date32[day]
 ```
 
-The proposed example [`target-data.json`](./2025-06-17-RFC-target-data-metadata/nowcast-target-data.json) file for the Variant Nowcast Hub hub would look like this:
+The proposed example `target-data.json` file for the Variant Nowcast Hub hub would look like this:
 
 For this hub the config is quite simple:
 
@@ -328,7 +320,7 @@ output_type_id: string
 oracle_value: double
 ```
 
-The proposed example [`target-data.json`](./2025-06-17-RFC-target-data-metadata/flusight-target-data.json) file for the Flusight hub requires some additional configuring. Specifically:
+The proposed example `target-data.json` file for the Flusight hub requires some additional configuring. Specifically:
 
 1. a `time-series` object is used to define the non-task ID columns in the time-series data.
 2. an `oracle-output` object is used to define the additional `horizon` column in the oracle output data.
@@ -351,7 +343,7 @@ The proposed example [`target-data.json`](./2025-06-17-RFC-target-data-metadata/
             }
         },
         "oracle-output": {
-            "output_type": true,
+            "has_output_type_ids": true,
             "observable_unit": [
                 "target",
                 "target_end_date",
