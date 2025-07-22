@@ -32,6 +32,9 @@
                     "properties": {
                         "extra_task_ids": {
                             "description": "Names of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.",
+                            "examples": [
+                                ["horizon"]
+                            ],
                             "type": ["array", "null"],
                             "uniqueItems": true,
                             "items": {
