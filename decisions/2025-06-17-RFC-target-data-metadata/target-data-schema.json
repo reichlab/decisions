@@ -60,7 +60,7 @@
                 "oracle-output": {
                     "type": "object",
                     "properties": {
-                        "output_type": {
+                        "has_output_type_ids": {
                             "type": "boolean",
                             "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
                             "default": false},
