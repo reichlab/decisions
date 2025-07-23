@@ -40,7 +40,7 @@ Assume that a hub has the following task id variables:
 
 ## Decision
 
-We will stick with the current name, "non-compound task id set".
+We will stick with the current name, "non-compound task id set". Given that this name is only used in internal functions, avoids introducing new terminology, and will not introduce breaking changes, we feel it is best to not make any changes.
 
 ### Other Options Considered
 
