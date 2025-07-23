@@ -2,7 +2,9 @@
 
 ## Context
 
-The set of task ID variables not included in the compound task ID set are used in several hubverse package functions ([`hubEnsembles` helper `validate_compound_taskid_set()`](https://github.com/hubverse-org/hubEnsembles/blob/main/R/validate_ensemble_inputs.R#L164) and [`hubValidations` function `check_tbl_spl_non_compound_tid()](https://github.com/hubverse-org/hubValidations/blob/main/R/check_tbl_spl_non_compound_tid.R#L19)). This concept can be thought of as the set of task IDs that are allowed to vary within a single sample index value. Given its appearance across several packages, it's worth deciding on a formal, standard name.
+The set of task ID variables not included in the compound task ID set are used in several internal hubverse functions ([`hubEnsembles` helper `validate_compound_taskid_set()`](https://github.com/hubverse-org/hubEnsembles/blob/main/R/validate_ensemble_inputs.R#L164) and [`hubValidations` function `check_tbl_spl_non_compound_tid()](https://github.com/hubverse-org/hubValidations/blob/main/R/check_tbl_spl_non_compound_tid.R#L19)). This concept can be thought of as the set of task IDs that are allowed to vary within a single sample index value. Given its appearance across several packages, it's worth deciding on a formal, standard name.
+
+Additionally, it has been noted that some of the terminology around the compound task ID set, unique modeling tasks, etc is confusing to the wider community (see [this issue on sample terminology](https://github.com/hubverse-org/hubDocs/issues/169)).
 
 ### Aims
 
@@ -28,7 +30,8 @@ Assume that a hub has the following task id variables:
 - We collect trajectories across (horizon, target_date), within each reference_date/location/target combination
 
 **Example 2:**
-- Compound_taskid_set = [“reference_date”, “target”, “horizon”, “target_end_date”]
+- Compound_taskid_set = [“reference_date”, “target”, “horizon”]
+- Other task ids = [“location”, “target_date”]
 - We collect joint distributions across locations, separately within each reference_date/target/horizon/target_date combination
 
 **Example 3:**
@@ -37,12 +40,11 @@ Assume that a hub has the following task id variables:
 
 ## Decision
 
-This section describes our response to these forces. It is stated in full sentences, with active voice. "We will ..."
+We will stick with the current name, "non-compound task id set".
 
 ### Other Options Considered
 
-Possible names include:
-- non_compound_task_ids (current)
+Possible alternative names include:
 - task_id_vars_with_dep
 - joint_task_ids or jointly modeled task ids
 
@@ -56,4 +58,4 @@ Gives a formal and standard name to this set of variables. If we decide it shoul
 
 ## Projects
 
- - a list of links to project posters affected by this decision
+N/A
