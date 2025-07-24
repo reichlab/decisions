@@ -40,7 +40,7 @@ The `target-data.json` file defines a `target_data_metadata` object with top-lev
 * `date_col`: The default date column across time-series, oracle-output, and model-output datasets. Expected to be of type `Date`.
 * `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
 
-I also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
+I am also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
 
 ### Target-Type Specific Configuration
 
