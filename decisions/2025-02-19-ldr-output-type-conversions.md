@@ -27,7 +27,7 @@ We considered starting with a case that included output type IDs which depend on
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 

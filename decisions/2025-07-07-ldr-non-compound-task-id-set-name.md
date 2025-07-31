@@ -50,7 +50,7 @@ Possible alternative names include:
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 
