@@ -46,7 +46,6 @@ I am also proposing to allow an `as_of` column in `oracle-output` to support tra
 
 * **`time-series`**:
 
-  * `extra_task_ids`: Additional task IDs used for filtering or grouping.
   * `non_task_id_schema`: key-value pairs of non-task id column names and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here as it is expected to always be a date column.
 
 * **`oracle-output`**:
@@ -91,17 +90,6 @@ The schema of this configuration file is defined in the following JSON Schema:
                 "time-series": {
                     "type": "object",
                     "properties": {
-                        "extra_task_ids": {
-                            "description": "Names of task IDs that are not part of the observable unit but are present in the time-series data. These task IDs may be used for additional context or filtering.",
-                            "examples": [
-                                ["horizon"]
-                            ],
-                            "type": ["array", "null"],
-                            "uniqueItems": true,
-                            "items": {
-                                "type": "string"
-                            }
-                        },
                         "non_task_id_schema": {
                             "type": "object",
                             "uniqueItems": true,
@@ -156,15 +144,14 @@ In addition to JSON Schema validation, the following dynamic checks will be appl
 * `observable_unit` must only include task ID columns and the `date_col` and the `target_col` unless `target_keys` are `NULL` which implies a single global target and no `target` column.
 
 * `time-series`:
-
-  * `extra_task_ids` must not overlap with `observable_unit`.
-  * Rows must be unique across `observable_unit`.
+  * Rows must be unique across `observable_unit` including `as_of` column if present.
   * `non_task_id_schema` must not define task ID columns.
 
 
 * `oracle-output`:
 
   * `observable_unit` must only include task ID columns, the `date_col` and the `target_col` unless `target_keys` are `NULL` which implies a single global target and no `target` column.
+  * Rows must be unique across `observable_unit` excluding `as_of` column if present.
 
     
 ### Example `target-data.json` config files
