@@ -52,7 +52,7 @@ I am also proposing to allow an `as_of` column in `oracle-output` to support tra
 
   * `has_output_type_ids`: Boolean. Must be true if `pmf` or `cdf` output types exist. Can be false otherwise. If true, the dataset must include `output_type` and `output_type_id` columns. Defaults to `false`.
   * `observable_unit`: Task IDs whose combination plus any output type IDs if present, uniquely define a row. This can be especially useful for [output types whose values are functionally dependent on other task IDs](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603.
-  * `versioned`: Boolean indicating whether `as_of` versioning is used. If true, oracle-output data must have a date `as_of` column indicating the version of each data point. Defaults to `false`. Note that atleast for now, oracle output data is expected to have only a single version of each unique combination of observable unit values in contrast to time-series which is allowed to have multiple. 
+  * `versioned`: Boolean indicating whether `as_of` versioning is used. If true, oracle-output data must have a date `as_of` column indicating the version of each data point. Defaults to `false`. Note that atleast for now, oracle output data is expected to have only a single version of each unique combination of observable unit values in contrast to time-series which is allowed to have multiple. This is to minimize confusion and reduce the risk of downloading multiple observed values and scoring on each of them.
   
 The schema of this configuration file is defined in the following JSON Schema:
 
