@@ -38,20 +38,21 @@ The `target-data.json` file defines a `target_data_metadata` object with top-lev
 
 * `observable_unit`: An array of column names whose unique value combinations define the minimum observable unit. Must only include the `date_col`, `target_col` (if present), and any other task ID columns. If versioned, unique combinations will also take into account the values in the `as_of` column but is never included in the observable unit as it is not a task ID but a versioning column. This property is required.
 * `date_col`: The default date column across time-series, oracle-output, and model-output datasets. Expected to be of type `Date`.
-* `versioned`: Boolean indicating whether `as_of` versioning is used. If true, datasets must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
 
-I am also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow us to link individual oracle value observations to the specific version of time-series data it was derived from. I propose we enforce that there should only be a single version of an observation in oracle output data so no filtering on `as_of` date is required to get a single version of available data.
+I am also proposing to allow an `as_of` column in `oracle-output` to support traceability if versioning is being used. it will allow hub administrators to link individual oracle value observations to the specific version of time-series data it was derived from. This however will be an optional column whose presence will be configured independently of the `as_of` in the time-series data.
 
 ### Target-Type Specific Configuration
 
 * **`time-series`**:
 
   * `non_task_id_schema`: key-value pairs of non-task id column names and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here as it is expected to always be a date column.
+  * `versioned`: Boolean indicating whether `as_of` versioning is used. If true, time-series data must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
 
 * **`oracle-output`**:
 
   * `has_output_type_ids`: Boolean. Must be true if `pmf` or `cdf` output types exist. Can be false otherwise. If true, the dataset must include `output_type` and `output_type_id` columns. Defaults to `false`.
-  * `observable_unit`: Task IDs whose combination plus any output type IDs if present, uniquely define a row. This can be especially useful for [output types whose values are functionally dependent on other task IDs](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603. 
+  * `observable_unit`: Task IDs whose combination plus any output type IDs if present, uniquely define a row. This can be especially useful for [output types whose values are functionally dependent on other task IDs](https://github.com/reichlab/flusight-dashboard/issues/20#issuecomment-2815550603.
+  * `versioned`: Boolean indicating whether `as_of` versioning is used. If true, oracle-output data must have a date `as_of` column indicating the version of each data point. Defaults to `false`. Note that atleast for now, oracle output data is expected to have only a single version of each unique combination of observable unit values in contrast to time-series which is allowed to have multiple. 
   
 The schema of this configuration file is defined in the following JSON Schema:
 
@@ -76,16 +77,11 @@ The schema of this configuration file is defined in the following JSON Schema:
                         "items": {
                             "type": "string"
                         }
-                    },
+                },
                 "date_col": {
                     "description": "Name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
                     "type": ["string", "null"],
                     "default": null
-                },
-                "versioned": {
-                    "description": "Indicates whether target data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
-                    "type": "boolean",
-                    "default": false
                 },
                 "time-series": {
                     "type": "object",
@@ -106,6 +102,11 @@ The schema of this configuration file is defined in the following JSON Schema:
                                 "enum": ["character", "double", "integer","logical", "Date"]
                             }
                         },
+                        "versioned": {
+                            "description": "Indicates whether time-series data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
+                            "type": "boolean",
+                            "default": false
+                        }
                     },
                     "additionalProperties": false
                 },
@@ -115,7 +116,8 @@ The schema of this configuration file is defined in the following JSON Schema:
                         "has_output_type_ids": {
                             "type": "boolean",
                             "description": "Indicates whether the oracle output data have an `output_type` and `output_type_id` column. These columns are necessary if hub includes `pmf` and `cdf` output types but optional otherwise.",
-                            "default": false},
+                            "default": false
+                        },
                         "observable_unit": {
                             "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Can be used to override default observable units in situations where some output types require additional task ID value to map onto target data.",
                             "type": "array",
@@ -124,6 +126,11 @@ The schema of this configuration file is defined in the following JSON Schema:
                                 "type": "string"
                             }
                         },
+                        "versioned": {
+                            "description": "Indicates whether oracle-output data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
+                            "type": "boolean",
+                            "default": false
+                        }
                     },
                     "additionalProperties": false
                 }
@@ -133,7 +140,6 @@ The schema of this configuration file is defined in the following JSON Schema:
         }
     }
 }
-
 ```
 
 
@@ -146,12 +152,13 @@ In addition to JSON Schema validation, the following dynamic checks will be appl
 * `time-series`:
   * Rows must be unique across `observable_unit` including `as_of` column if present.
   * `non_task_id_schema` must not define task ID columns.
+  * Rows must be unique across `observable_unit` **including `as_of` column** if present.
 
 
 * `oracle-output`:
 
   * `observable_unit` must only include task ID columns, the `date_col` and the `target_col` unless `target_keys` are `NULL` which implies a single global target and no `target` column.
-  * Rows must be unique across `observable_unit` excluding `as_of` column if present.
+  * Rows must be unique across `observable_unit` **excluding `as_of` column** if present.
 
     
 ### Example `target-data.json` config files
@@ -321,13 +328,13 @@ The proposed example `target-data.json` file for the Flusight hub requires some 
             "target_end_date",
             "location"
         ],
-        "versioned": true,
         "date_col": "target_end_date",
         "time-series": {
             "non_task_id_schema": {
                 "location_name": "character",
                 "weekly_rate": "double"
-            }
+            },
+            "versioned": true
         },
         "oracle-output": {
             "has_output_type_ids": true,
@@ -336,7 +343,8 @@ The proposed example `target-data.json` file for the Flusight hub requires some 
                 "target_end_date",
                 "location",
                 "horizon"
-            ]
+            ],
+            "versioned": true
         }
     }
 }
@@ -352,7 +360,7 @@ We considered including this metadata in the `tasks.json` config file but reject
 
 ## Status
 
-PROPOSED
+APPROVED
 
 ## Consequences
 
