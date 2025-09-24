@@ -45,7 +45,7 @@ I am also proposing to allow an `as_of` column in `oracle-output` to support tra
 
 * **`time-series`**:
 
-  * `non_task_id_schema`: key-value pairs of non-task id column names and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here as it is expected to always be a date column.
+  * `non_task_id_schema`: key-value pairs of non-task id column names that will be present in the time-series target data dataset and their R-data types, one of (`character`, `double`, `integer`, `logical`, `Date`). The `as_of` column does not need defining here as it is expected to always be a date column.
   * `versioned`: Boolean indicating whether `as_of` versioning is used. If true, time-series data must have a date `as_of` column indicating the version of each data point. Defaults to `false`. 
 
 * **`oracle-output`**:
