@@ -32,7 +32,7 @@ We will adopt a new configuration file named `target-data.json` to define the sc
 
 ## Summary of `target-data.json` Structure
 
-The `target-data.json` file defines a `target_data_metadata` object with top-level properties that describe expectations across target datasets.
+The `target-data.json` file contains top-level properties that describe expectations across target datasets.
 
 ### Top-Level Properties
 
@@ -251,7 +251,8 @@ The proposed example `target-data.json` file for the Variant Nowcast Hub hub wou
 For this hub the config is quite simple:
 
 1. The observable unit is the same for both dataset so can be set once at the root level
-2 There are no `output_type` columns in the `oracle-output` so the default of `false` is used
+2. There are no `output_type` columns in the `oracle-output` so the default of `false` is used
+3. Both datasets are versioned using an `as_of` column so this is indicated in each dataset config.
 
 ```json
 {
@@ -342,6 +343,8 @@ The proposed example `target-data.json` file for the Flusight hub requires some 
 
 1. a `time-series` object is used to define the non-task ID columns in the time-series data.
 2. an `oracle-output` object is used to define the additional `horizon` column in the oracle output data.
+
+We also need to indicate that both datasets are versioned using an `as_of` column and that the oracle output contains `output_type` columns.
 
 ```json
 {
