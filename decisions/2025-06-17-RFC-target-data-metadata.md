@@ -102,7 +102,7 @@ The schema of this configuration file is defined in the following JSON Schema:
                             "location_name": "character"
                         },
                         {
-                            "date": "Date"
+                            "population": "integer"
                         }
                     ],
                     "additionalProperties": {

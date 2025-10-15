@@ -41,7 +41,7 @@
                             "location_name": "character"
                         },
                         {
-                            "date": "Date"
+                            "population": "integer"
                         }
                     ],
                     "additionalProperties": {
