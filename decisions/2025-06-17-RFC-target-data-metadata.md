@@ -75,7 +75,7 @@ The schema of this configuration file is defined in the following JSON Schema:
             "format": "uri"
         },
         "observable_unit": {
-            "description": "Names of columns whose unique value combinations define the minimum observable unit across al target type data. Each combination of values must be unique across `as_of` data versions if applicable. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the general `date` column).",
+            "description": "Names of columns whose unique value combinations define the minimum observable unit across all target type data. Each combination of values must be unique across (and in time-series data also unique across `as_of` data versions if applicable). The majority are expected to correspond to task ID names but may include other columns as well (e.g. the `date_col` column).",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -83,12 +83,13 @@ The schema of this configuration file is defined in the following JSON Schema:
             }
         },
         "date_col": {
-            "description": "Name of the date column across hub data (time-series, oracle-output and model output). This is the column that stores the date on which observed data actually occured.",
-            "type": [
-                "string",
-                "null"
-            ],
-            "default": null
+            "description": "Name of the date column across hub data (time-series, oracle-output and ideally model output). This is the column that stores the date on which observed data actually occured.",
+            "type": "string"
+        },
+        "versioned": {
+            "description": "Indicates whether all target type datasets are versioned using `as_of` dates. If true, both time-series and oracle-output data are expected to have a date `as_of` column that indicates the version of each data point.",
+            "type": "boolean",
+            "default": false
         },
         "time-series": {
             "type": "object",
@@ -116,10 +117,21 @@ The schema of this configuration file is defined in the following JSON Schema:
                         ]
                     }
                 },
+                "observable_unit": {
+                    "description": "Names of columns whose unique value combinations define the minimum observable unit across time-series data. Each combination of values must be unique across `as_of` data versions if applicable. The majority are expected to correspond to task ID names but may include other columns as well (e.g. the `date_col` column). Use to override global setting.",
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": null
+                },
                 "versioned": {
-                    "description": "Indicates whether time-series data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
-                    "type": "boolean",
-                    "default": false
+                    "description": "Indicates whether time-series data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.  Use to override global setting.",
+                    "type": "boolean"
                 }
             },
             "additionalProperties": false
@@ -134,16 +146,19 @@ The schema of this configuration file is defined in the following JSON Schema:
                 },
                 "observable_unit": {
                     "description": "Names of task IDs whose unique value combinations define an observable unit in oracle output data. Each combination of values must be unique once combined with output type IDs. Can be used to override default observable unit in situations where some output types require additional task ID value to map onto target data.",
-                    "type": "array",
+                    "type": [
+                        "array",
+                        "null"
+                    ],
                     "uniqueItems": true,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "default": null
                 },
                 "versioned": {
-                    "description": "Indicates whether oracle-output data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point.",
-                    "type": "boolean",
-                    "default": false
+                    "description": "Indicates whether oracle-output data are versioned using `as_of` dates. If true, the data is expected to have a date `as_of` column that indicates the version of each data point. Use to override global setting.",
+                    "type": "boolean"
                 }
             },
             "additionalProperties": false
@@ -161,6 +176,7 @@ The schema of this configuration file is defined in the following JSON Schema:
     ],
     "additionalProperties": false
 }
+
 ```
 
 
