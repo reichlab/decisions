@@ -47,7 +47,7 @@ When a property is not specified at the dataset level (or is set to `null`), the
 
 * `observable_unit`: An array of column names whose unique value combinations define the minimum observable unit across all target datasets. Must only include the `date_col`, `target_col` (if present), and any other task ID columns. If versioned, unique combinations will also take into account the values in the `as_of` column, but `as_of` is never included in the observable unit itself as it is a versioning column, not a task ID. This property is required.
 
-* `date_col`: The date column name used across time-series, oracle-output, and model-output datasets. This column stores the date on which observed data actually occurred. Expected to be of type `Date`. This property is required.
+* `date_col`: The date column name used across time-series, oracle-output, and model-output (if present) datasets. This column stores the date on which observed data actually occurred. Expected to be of type `Date`. This property is required.
 
 * `versioned`: Boolean indicating whether all target type datasets use `as_of` versioning by default. If `true`, datasets are expected to have a date `as_of` column indicating the version of each data point. Defaults to `false`. Can be overridden at the dataset level.
 
