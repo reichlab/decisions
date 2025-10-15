@@ -22,7 +22,7 @@
             }
         },
         "date_col": {
-            "description": "Name of the date column across hub data (time-series, oracle-output and ideally model-output). This is the column that stores the date on which observed data actually occurred.",
+            "description": "Name of the date column across hub data (time-series, oracle-output and model-output (if present)). This is the column that stores the date on which observed data actually occurred.",
             "type": "string"
         },
         "versioned": {
