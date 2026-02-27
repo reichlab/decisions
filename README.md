@@ -42,11 +42,11 @@ New projects require a project poster. To create a project poster,
 
 
 1. create a new branch with your initials, the word "poster", and the project
-   name (e.g. (znk/poster/hub-docker-containers)
+   name (e.g. `ngr/poster/eval-metrics-expansion`)
 2. make a copy of [templates/poster-template.md](templates/poster-template.md)
-   into the a subfolder `posters/` with the format `<project>/<project>.md`
-   where `<project>` is the name of the project. You can place any supporting
-   files inside the `posters/<project>/` folder.
+   into the subfolder `project-posters/<project>/` with the filename
+   `<project>.md`, where `<project>` is the name of the project. You can place
+   any supporting files inside the `project-posters/<project>/` folder.
 3. follow the instructions in the template
 4. create a pull request with the format `[poster] project title`
 5. request a review from your collaborators with a timeline (suggestion of 1 week)
