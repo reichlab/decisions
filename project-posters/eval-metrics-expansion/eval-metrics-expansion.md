@@ -54,6 +54,35 @@ See the **mini-sprint breakdown** in "Ready to make it" below. Each sprint is se
 
 ### What do we already know?
 
+**The hubverse evaluation pipeline (4 repos):**
+
+```
+hubEvals (R pkg)
+  └── core scoring library; wraps scoringutils; exposes score_model_out()
+      ↓
+hubPredEvalsData (R pkg)
+  └── orchestrates scoring for a hub; reads predevals-config.yml;
+      outputs scores.csv files organized by target/eval_set/disaggregate_by
+      ↓
+hubPredEvalsData-docker
+  └── Docker container wrapping hubPredEvalsData::generate_eval_data();
+      used in hub CI/CD pipelines
+      ↓
+predevals (JavaScript)
+  └── client-side module that reads the scores CSV files and renders
+      interactive tables, heatmaps, and line plots
+```
+
+Repos:
+- [hubEvals](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals)
+- [hubPredEvalsData](https://github.com/hubverse-org/hubPredEvalsData)
+- [hubPredEvalsData-docker](https://github.com/hubverse-org/hubPredEvalsData-docker)
+- [predevals](https://github.com/hubverse-org/predevals)
+
+Documentation:
+- [User guide](https://docs.hubverse.io/en/latest/user-guide/dashboards.html#predevals-evaluation-optional)
+- [Developer guide (infrastructure)](https://docs.hubverse.io/en/latest/developer/dashboard-predevals.html)
+
 - `hubEvals::score_model_out()` (v0.1.0) already supports `transform`, `transform_append`, and `transform_label`—no hubEvals changes needed for the scale transform pipeline.
 - scoringutils dev branch has `as_forecast_multivariate_sample()`, `variogram_score_multivariate()`, and `variogram_score_multivariate_point()`.
 - hubPredEvalsData schema versioning is established (v0.1.0 → v1.0.0 → v1.0.1); v1.1.0 is the natural target for transform + variogram + config-driven enhancements.
@@ -84,55 +113,6 @@ The core complexity axis is:
 
 ---
 
-### Development standards
-
-Every issue follows a **two-phase workflow** before any code is written:
-
-#### Phase 1 — Issue refinement
-
-Before an implementer picks up an issue, the issue must be rewritten (if necessary) so that it is:
-
-- **Specific and testable**: describes a concrete, observable outcome rather than a vague intent. For example, not "fix the target-change bug" but "when a new target is selected, the metric dropdown resets to the first valid metric for that target and the disaggregate_by dropdown resets to 'overall'."
-- **Single-concern**: one responsibility per issue; split if needed.
-- **Unblocked**: all upstream dependencies are resolved.
-
-If the issue text isn't clear enough to write a test from, update it before starting implementation.
-
-#### Phase 2 — Test-Driven Development (TDD)
-
-1. **Write a failing test** that encodes the specific outcome from the refined issue.
-2. **Implement the minimum code** to make the test pass.
-3. **Refactor** with the test suite green.
-
-**Special cases where the TDD sequence is adapted:**
-
-| Case | Adapted sequence |
-|------|-----------------|
-| **Refactors** (#27, #28, #30) | Write *characterization tests* against the existing behaviour first → refactor → confirm tests still pass. No observable behaviour should change. |
-| **Rename** (#34) | Not TDD. Completion is verified by a grep/search confirming no old string remains. |
-| **Documentation** (Sprint E) | Not TDD. Acceptance criterion: a developer unfamiliar with the codebase can follow the guide and add a toy metric in a local dev environment (verified by peer walkthrough). |
-| **Docker integration** (docker#6) | Write the integration test against current oracle-fetching behaviour → migrate to hubData → confirm test still passes. |
-
-**Tooling by repo:**
-
-| Repo | Test framework | Notes |
-|------|---------------|-------|
-| hubEvals (R) | `testthat` via `devtools::test()` | Hand-computed expected values where possible (see PR #103 pattern) |
-| hubPredEvalsData (R) | `testthat` via `devtools::test()` | Integration tests using example hub data |
-| predevals (JS) | To be established in Sprint A [#22](https://github.com/hubverse-org/predevals/issues/22) | Unit test framework (e.g. Jest or Vitest) chosen during Sprint A setup |
-| hubPredEvalsData-docker | Integration tests in GitHub Actions | Compare CSV outputs between image versions (existing pattern) |
-
-**Universal Definition of Done** — every issue is closed only when:
-
-- [ ] The issue was refined to a specific, testable outcome *before* any code was written
-- [ ] A failing test encoding that outcome was written *before* the implementation (or the appropriate adapted sequence above was followed)
-- [ ] All existing tests continue to pass (`R CMD check` / CI green)
-- [ ] The change is documented (inline comments for non-obvious logic; function-level docs for new public API)
-- [ ] A PR is reviewed and approved by at least one other team member
-- [ ] The relevant GitHub issue is referenced in the PR and closed on merge
-
----
-
 ### Mini-Sprint A — UI-only polish (~2 weeks)
 *Scope: predevals JS/CSS only. No schema changes. No R package changes.*
 
@@ -150,17 +130,10 @@ If the issue text isn't clear enough to write a test from, update it before star
 
 **Deliverable**: New predevals release. No changes to hubPredEvalsData, hubEvals, or Docker.
 
-**Sprint A — Definition of Done:**
-- [ ] #22: Test harness chosen and one passing test for an existing function exists; all subsequent issues in this sprint add tests to it
-- [ ] #31: Issue refined to specify exact reset behaviour → failing test written → implemented. Test: selecting a new target resets metric and disaggregate_by to the first valid value for that target
-- [ ] #5: Issue refined to specify which state is preserved and when → failing test written → implemented. Test: model selection is unchanged after switching between table/heatmap/line views
-- [ ] #49: Issue refined to name the exact column and scroll behaviour → failing DOM test written → implemented. Test: first column has `position: sticky` and table body scrolls independently
-- [ ] #42: Issue refined per metric (which direction, what text) → failing tests written → implemented. Tests: each metric name has a registered direction; that direction renders correctly in headers and axis labels
-- [ ] #13: Issue refined with complete metric glossary entries → failing test written → implemented. Test: glossary panel present on load; toggles; every metric name used in the dashboard has a glossary entry
-- [ ] #50: Add `'visibility'` to `columnControl` array; test: each metric column header has a working hide/show toggle; `model_id` column is excluded from hiding
-- [ ] #30: Characterization tests written against *existing* metrics-list behaviour → refactored → tests still pass. No behaviour change
-- [ ] #34: Grep confirms zero occurrences of `predeval` (without trailing `s`) in `src/`
-- [ ] CI passes; new predevals release tagged
+**Sprint A — Acceptance criteria:**
+- All listed issues resolved and closed
+- JS test harness established (#22) with tests covering new functionality
+- CI passes; new predevals release tagged
 
 ---
 
@@ -179,46 +152,24 @@ If the issue text isn't clear enough to write a test from, update it before star
 
 **Deliverable**: hubPredEvalsData v1.0.2 schema, new predevals release, Docker rebuild.
 
-**Sprint B — Definition of Done:**
-- [ ] #28: Characterization tests written against existing rounding behaviour → refactored into shared helper → tests still pass. Must be merged before #48 is started
-- [ ] #48: Issue refined to specify which targets need non-default precision and what values are valid → failing tests written (R: schema rejects invalid `decimal_places`; JS: rendered table rounds to configured places) → implemented
-- [ ] #27: Characterization tests written against existing sorting behaviour → refactored into helper → tests still pass. Must be merged before #4 is started
-- [ ] #4: Issue refined to specify fallback behaviour when metric is absent → failing tests written (R: schema accepts/rejects new field; JS: initial sort matches config, falls back to alphabetical when field absent) → implemented
-- [ ] **Before starting #44**: confirm [hubPredEvalsData#21](https://github.com/hubverse-org/hubPredEvalsData/issues/21) is resolved; skip #44 in this sprint if not
-- [ ] #44 (if included): Issue refined to specify behaviour when `target_name` is missing from data → failing test written → implemented. Test uses fixture data with and without `target_name`
-- [ ] R `testthat` tests cover new schema properties end-to-end through `generate_eval_data()`, written before config.R is modified
-- [ ] Docker image rebuilt and integration test passes
+**Sprint B — Acceptance criteria:**
+- All listed issues resolved and closed (#44 only if [hubPredEvalsData#21](https://github.com/hubverse-org/hubPredEvalsData/issues/21) is resolved)
+- hubPredEvalsData schema v1.0.2 released; R tests pass
+- Docker image rebuilt and integration test passes
+- New predevals release tagged
 
 ---
 
 ### Mini-Sprint C — Scale transformation pipeline (~4 weeks)
 *Scope: hubPredEvalsData schema v1.1.0 additions + predevals JS for scale UI. hubEvals unchanged (transforms already implemented).*
 
-**hubPredEvalsData changes:**
-- Add `transform_defaults` (top-level) and per-target `transform` to `inst/schema/v1.1.0/config_schema.json`
-- Allowed transform functions: `log_shift`, `sqrt`, `log1p`, `log`, `log10`, `log2`
-- `append: true/false` — when true, scores.csv gains a `scale` column (`"natural"` or transform label)
-- Add `validate_config_transforms()` in `R/config.R`
-- Wire resolved transform config into `get_scores_for_output_type()` → `hubEvals::score_model_out(transform=..., transform_append=..., ...)`
+The detailed implementation plan for this sprint is in [hubPredEvalsData#34](https://github.com/hubverse-org/hubPredEvalsData/issues/34), which covers the schema design, config validation, R pipeline changes, and predevals JS behavior.
 
-**predevals JS changes:**
-- When the `scale` column is present in scores data, treat each (metric × scale) combination as a distinct metric: e.g., "wis (natural)" and "wis (log)" appear as separate items in dropdowns and as separate columns in tables
-- No separate filter/toggle; scales are just more metrics
-- Info banner when any transformed metrics are present
-- **Note**: Sprint A's table ergonomics work ([#49](https://github.com/hubverse-org/predevals/issues/49) fixed column) should land before or alongside this sprint, since adding scale variants doubles the number of metric columns
+**Summary**: Add `transform_defaults` (top-level) and per-target `transform` override to the hubPredEvalsData config schema. Wire the resolved transform config through to `hubEvals::score_model_out()`. When `append: true`, scores.csv gains a `scale` column and the predevals dashboard treats each (metric × scale) combination as a distinct item in dropdowns and table columns.
 
-**Deliverable**: hubPredEvalsData v1.1.0 schema, new predevals release, Docker rebuild. Resolves [hubPredEvalsData#34](https://github.com/hubverse-org/hubPredEvalsData/issues/34).
+**Note**: Sprint A's table ergonomics work ([#49](https://github.com/hubverse-org/predevals/issues/49) fixed column) should land before or alongside this sprint, since adding scale variants increases the number of metric columns.
 
-**Sprint C — Definition of Done:**
-- [ ] Each behaviour below has its failing test written and merged to a test branch *before* the corresponding R or JS implementation is written
-- [ ] R: `generate_eval_data()` with `transform_defaults: {function: log_shift, append: true}` produces `scores.csv` with both `scale = "natural"` and `scale = "log_shift"` rows
-- [ ] R: config with an invalid transform function name fails `validate_config_transforms()` with a clear error message
-- [ ] R: config applying a transform to a `pmf` target fails validation
-- [ ] R: per-target `transform: null` correctly overrides `transform_defaults` (hierarchical override)
-- [ ] JS: when `scale` column present, metric dropdown contains `"wis (natural)"` and `"wis (log_shift)"` as distinct entries
-- [ ] JS: table has one column per (metric × scale) combination
-- [ ] JS: info banner visible when transformed metrics are present; absent otherwise
-- [ ] Schema v1.1.0 is backward-compatible: all existing example configs validate against it without changes
+**Deliverable**: hubPredEvalsData v1.1.0 schema, new predevals release, Docker rebuild.
 
 ---
 
@@ -237,10 +188,10 @@ If the issue text isn't clear enough to write a test from, update it before star
 **Action**: Review and merge PR #103; track scoringutils#1114 for variogram score availability.
 
 **hubPredEvalsData changes** (extends v1.1.0 schema from Sprint C):
-- Add `joint_across` optional property to target config
+- Add `compound_taskid_set` optional property to target config
 - Add `"variogram_score"` as a recognized metric name for sample output types
 - `R/utils-metrics.R` — add `sample = "variogram_score"` case in `get_standard_metrics()`
-- `R/generate_eval_data.R` — extract and propagate `joint_across`; skip location-based disaggregation for sample metrics when `joint_across = "location"`
+- `R/generate_eval_data.R` — extract and propagate `compound_taskid_set`; skip location-based disaggregation for sample metrics when `compound_taskid_set = "location"`
 
 **predevals JS changes:**
 - No new chart types; variogram score appears as another column in the overall scores table
@@ -253,15 +204,12 @@ If the issue text isn't clear enough to write a test from, update it before star
 
 **Deliverable**: hubEvals new minor version, hubPredEvalsData v1.1.0 (with Sprint C changes), Docker rebuild (with hubData oracle fetching).
 
-**Sprint D — Definition of Done:**
-- [ ] Issues #99–#102 each refined and resolved via TDD before PR #103 is merged
-- [ ] PR #103: each open issue has a failing test written first; hand-computed expected values for CRPS and energy score are confirmed correct before the implementation is accepted
-- [ ] hubEvals: failing test for `score_model_out()` with `output_type = "sample"` returning the expected variogram score is written against energy score first (interim), then updated when scoringutils#1114 lands — written before implementation is touched
-- [ ] hubPredEvalsData: issue for sample output type support is refined to specify exact config fields and error conditions → failing R tests written → `utils-metrics.R` and `generate_eval_data.R` implemented. Tests: `get_standard_metrics("sample")` returns expected names; `generate_eval_data()` with `joint_across: location` produces correct `scores.csv`
-- [ ] hubPredEvalsData: failing validation test for the `joint_across` + `disaggregate_by` conflict written before `config.R` validation is modified
-- [ ] docker#6: integration test written against *current* oracle-fetching behaviour → hubData migration implemented → same test still passes
-- [ ] JS: issue refined to specify how missing variogram score column is handled in disaggregated views → failing test written → implemented
-- [ ] `R CMD check` passes for both hubEvals and hubPredEvalsData
+**Sprint D — Acceptance criteria:**
+- hubEvals PR #103 merged with issues #99–#102 resolved
+- hubPredEvalsData supports `sample` output type with `compound_taskid_set` config; validates against `disaggregate_by` conflicts
+- Variogram score appears in predevals dashboard (once scoringutils#1114 lands)
+- Docker image uses `hubData` for oracle fetching ([docker#6](https://github.com/hubverse-org/hubPredEvalsData-docker/issues/6))
+- `R CMD check` passes for both hubEvals and hubPredEvalsData
 
 ---
 
@@ -283,11 +231,10 @@ The existing guide covers infrastructure well (Docker setup, renv, build process
 
 **Deliverable**: New or extended hubDocs page; predevals minor release if glossary was deferred from Sprint A.
 
-**Sprint E — Definition of Done:**
-- [ ] The guide explicitly describes the issue-refinement + TDD workflow expected for each repo, including the special cases (refactors, renames, Docker)
-- [ ] The guide is validated by a walkthrough: a developer unfamiliar with the codebase reads it and successfully adds a toy metric in a local dev environment without asking for help
-- [ ] All metric names mentioned in the guide are present in the predevals JS glossary (#13)
-- [ ] hubDocs CI (link checks, build) passes
+**Sprint E — Acceptance criteria:**
+- A developer unfamiliar with the codebase can follow the guide to add a toy metric end-to-end without reading source across repos
+- All metric names in the guide are present in the predevals JS glossary (#13)
+- hubDocs CI passes
 
 ---
 
