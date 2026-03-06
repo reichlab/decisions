@@ -39,7 +39,7 @@ Extending the hubverse forecast evaluation ecosystem across four goals:
 
 - A first-time user reading the dashboard understands what WIS and other metrics mean, which direction is better, and which models are performing best, all without leaving the page.
 - A hub admin can configure log-scale evaluation in `predevals-config.yml` and see log-scaled metrics appear as distinct items alongside natural-scale metrics in all dropdowns and table columns.
-- A hub submitting sample-format ensemble forecasts can configure compound_taskid_set and view compound metrics (e.g., variogram score) in the dashboard.
+- A hub submitting multivariate forecasts can configure compound_taskid_set and view compound metrics (e.g., variogram score) in the dashboard.
 - A new developer can follow the hubDocs guide to add a hypothetical metric end-to-end without reading source code across repos.
 
 ### What are possible solutions?
