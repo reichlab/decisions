@@ -1,6 +1,6 @@
 # Project Poster: Expanding Hubverse Evaluation Metrics and Dashboard Support
 
-- Date: 2026-02-26
+- Date: 2026-03-23
 
 - Owner: Nicholas Reich
 
@@ -10,23 +10,26 @@
 
 ### What are we doing?
 
-Extending the hubverse forecast evaluation ecosystem across four goals:
+Extending the hubverse forecast evaluation ecosystem across five goals:
 
 1. **Dashboard UI improvements**: Fix known usability gaps in the predevals dashboard—table ergonomics for wider tables (column hiding, frozen model column), metric documentation, score direction indicators, and several priority bugs—without touching R packages or config schemas. Table readiness issues ([#49](https://github.com/hubverse-org/predevals/issues/49), [#50](https://github.com/hubverse-org/predevals/issues/50)) are critical prerequisites for the scaled-metrics work in goal 2. Additional polish issues: [#13](https://github.com/hubverse-org/predevals/issues/13), [#31](https://github.com/hubverse-org/predevals/issues/31), [#42](https://github.com/hubverse-org/predevals/issues/42), [#41](https://github.com/hubverse-org/predevals/issues/41), [#5](https://github.com/hubverse-org/predevals/issues/5).
 
 2. **Evaluation config schema updates**: Consolidate all hubPredEvalsData schema changes into a single v1.1.0 release, including: config-driven UI enhancements (per-target decimal precision, human-readable target names, configurable default sort column), and the scale transformation pipeline (wiring the already-implemented log/sqrt transform support in `hubEvals::score_model_out()` through the config schema and predevals UI). Issues: [predevals#48](https://github.com/hubverse-org/predevals/issues/48), [#44](https://github.com/hubverse-org/predevals/issues/44), [#4](https://github.com/hubverse-org/predevals/issues/4), [hubPredEvalsData#34](https://github.com/hubverse-org/hubPredEvalsData/issues/34).
 
-3. **Sample-based scoring with compound_taskid_set awareness**: Add `sample` output type support to hubEvals and build pipeline infrastructure for multivariate/compound metrics that require [`compound_taskid_set`](https://docs.hubverse.io/en/latest/user-guide/sample-output-type.html#compound-modeling-tasks) awareness. This enables the variogram score (`variogram_score_multivariate()` and `variogram_score_multivariate_point()`, recently added to scoringutils) as a metric evaluating spatial correlation structure across locations (or horizons, or more generally, across some subset of task-id variables), and lays groundwork for future compound metrics on sample forecasts. For background on this topic, see also [hubDocs PR #439](https://github.com/hubverse-org/hubDocs/pull/439) for incoming updates to compound modeling task documentation.
+3. **Sample-based scoring with compound_taskid_set awareness**: Add `sample` output type support to hubEvals and build pipeline infrastructure for multivariate/compound metrics that require [`compound_taskid_set`](https://docs.hubverse.io/en/latest/user-guide/sample-output-type.html#compound-modeling-tasks) awareness. This enables the variogram score (`variogram_score_multivariate()` and `variogram_score_multivariate_point()`, recently added to scoringutils) as a metric evaluating spatial correlation structure across locations (or horizons, or more generally, across some subset of task-id variables), and lays groundwork for future compound metrics on sample forecasts. For background on this topic, see also [hubDocs PR #439](https://github.com/hubverse-org/hubDocs/pull/439) for incoming updates to compound modeling task documentation. Note that as part of this sprint, we plan to evaluate complexity and feasibility of integrating compound-taskid-sets into the dashboard, considering that at least [one more complex hub](https://reichlab.io/variant-nowcast-hub-dashboard/eval.html) has already rolled their own evaluation pipelines that then plug into predevals to leverage existing UI tools.
 
-4. **Developer documentation**: A hubDocs guide explaining the full metric pipeline for future contributors, plus standardized end-user metric definitions in the dashboard.
+4. **Developer documentation**: A hubDocs guide explaining the full metric pipeline for future contributors, plus standardized end-user metric definitions in the dashboard. 
+
+5. **Formalize functional links between hubverse and scoringutils**: It [has been suggested](https://github.com/orgs/hubverse-org/discussions/40#discussioncomment-14882858) that we create a data connector utility between hubverse and scoringutils formats. This would enable analysts to more easily move between the two data formats without having to actually do scoring. The code for some of this is already written, just needs to be surfaced formally.
 
 ### Why are we doing this?
 
 - Increasing evaluation diversity was the most highly ranked priority in a recent survey of hubverse users. This project both surfaces existing metrics, adds new ones, and makes all evaluations more interpretable.
 - Many predevals usability gaps have been open for over a year; the dashboard is hard for non-expert users to interpret (no metric definitions, no "lower is better" cues, table ergonomics issues).
-- Infectious disease forecasts predict count data that spans orders of magnitude across locations. Log-scale evaluation provides fairer cross-location comparisons.
+- Infectious disease forecasts predict count data that spans orders of magnitude across locations. Log-scale evaluation provides a different take at model comparisons that aggregate across spatial scales.
 - The variogram score is a multivariate proper scoring rule capturing correlation across linked prediction tasks—something WIS cannot measure—and scoringutils now supports it natively.
 - The [existing developer guide](https://docs.hubverse.io/en/latest/developer/dashboard-predevals.html) covers infrastructure (Docker, build, testing) but not metric development workflow, making it hard for new contributors to add metrics end-to-end.
+- Improving interoperability between hubverse and scoringutils tool sets will help users.
 
 ### What are we _not_ trying to do?
 
@@ -39,8 +42,9 @@ Extending the hubverse forecast evaluation ecosystem across four goals:
 
 - A first-time user reading the dashboard understands what WIS and other metrics mean, which direction is better, and which models are performing best, all without leaving the page.
 - A hub admin can configure log-scale evaluation in `predevals-config.yml` and see log-scaled metrics appear as distinct items alongside natural-scale metrics in all dropdowns and table columns.
-- A hub submitting multivariate forecasts can configure compound_taskid_set and view compound metrics (e.g., variogram score) in the dashboard.
+- A hub submitting multivariate forecasts can configure compound_taskid_set and view compound metrics (e.g., variogram score) in the dashboard. (Depending on outcome of feasibility analysis.)
 - A new developer can follow the hubDocs guide to add a hypothetical metric end-to-end without reading source code across repos.
+- Users can move data between hubverse and scoringutils formats.
 
 ### What are possible solutions?
 
@@ -95,7 +99,7 @@ Documentation:
 - **Issue #44 (human-readable target names)**: ~~Is [hubPredEvalsData#21](https://github.com/hubverse-org/hubPredEvalsData/issues/21) resolved? If not, #44 has an unresolved upstream dependency.~~ **Resolved**: Issue #21 is not resolved so there is an upstream dependency.
 - **Issue #4 (default sort column)**: ~~Should this be configured in `predevals-config.yml` (schema change) or via a standalone predevals options object (JS only)?~~ **Resolved**: configure in `predevals-config.yml` as a schema change; included in Sprint B's v1.1.0 schema bump.
 - **Which scoringutils metrics are already surfaceable?** For quantile forecasts, any metric in `scoringutils::get_metrics(scoringutils::example_quantile)` is already available via the existing `get_standard_metrics()` pathway — no schema or code changes needed, just config. For sample forecasts, once PR #103 merges, CRPS/bias/DSS/energy score become available the same way. New scoringutils defaults propagate automatically.
-
+- **What happens when hubs have multiple output types for the same target?** Sometimes, who output types might enable multiple scores to be shown, or the same score to be calculated in different ways. How do we support this? or allow users to specify which output-type to use when calculating metrics? or just set defaults for prioritizing one output-type over another? This may already happen for example if we have quantile with output_type_id == 0.50 (median) forecasts and point forecasts - they both could be used to compute point forecast metrics. 
 
 ---
 
@@ -103,7 +107,7 @@ Documentation:
 
 ### Proposed solution
 
-Four mini-sprints ordered by implementation complexity: UI-only first, then schema additions, then new metric pipeline features. Each sprint is independently releasable.
+Five mini-sprints ordered by implementation complexity: UI-only first, then schema additions, then new metric pipeline features. Each sprint is independently releasable.
 
 The core complexity axis is:
 
@@ -125,12 +129,14 @@ Sprint A is split into two tiers. **A1** contains table readiness work that is a
 
 **A2 — UI polish (non-blocking)**
 
+In order of priority:
+
 | Issue | Change | Complexity |
 |-------|--------|-----------|
+| [#13](https://github.com/hubverse-org/predevals/issues/13) **priority** | Add metric definitions panel with abbreviations and direction indicators, shown by default and togglable | JS; metric glossary baked into predevals.js |
 | [#31](https://github.com/hubverse-org/predevals/issues/31) **priority** | Auto-update metric + disaggregate_by selectors when target changes | JS logic fix |
 | [#5](https://github.com/hubverse-org/predevals/issues/5) **priority** | Preserve model selection state when switching plots | JS state management |
 | [#42](https://github.com/hubverse-org/predevals/issues/42) **priority** | Add "lower is better" / "closer to nominal is better" cues to axes and table headers | JS + display logic |
-| [#13](https://github.com/hubverse-org/predevals/issues/13) | Add metric definitions panel with abbreviations and direction indicators, shown by default and togglable | JS; metric glossary baked into predevals.js |
 | [#34](https://github.com/hubverse-org/predevals/issues/34) | Rename all `predeval` → `predevals` references in source | JS cleanup (trivial) |
 | [#22](https://github.com/hubverse-org/predevals/issues/22) | Add unit tests for existing JS functionality; establishes test harness for TDD in subsequent sprints | JS testing infrastructure |
 
@@ -147,16 +153,23 @@ Sprint A is split into two tiers. **A1** contains table readiness work that is a
 ### Mini-Sprint B — Evaluation config schema updates (v1.1.0)
 *Scope: All hubPredEvalsData schema changes consolidated into a single v1.1.0 release + corresponding predevals JS + R pipeline changes. hubEvals unchanged (transforms already implemented).*
 
-This sprint consolidates config-driven UI enhancements and the scale transformation pipeline into a single schema bump, since schema updates are painful to coordinate across repos. The schema update checklist from the previous version bump is in [hubPredEvalsData#32](https://github.com/hubverse-org/hubPredEvalsData/issues/32).
+This sprint consolidates config-driven UI enhancements and the scale transformation pipeline. 
+It may be completed in a single schema bump, or may be spread out over several updates, depending on the pace of progress and level of coordination.
+Schema updates are painful to coordinate across repos, but with new Claude skills it may become easier and we may want a few separate use-cases to test out new releases. 
+The schema update checklist from the previous version bump is in [hubPredEvalsData#32](https://github.com/hubverse-org/hubPredEvalsData/issues/32).
+
+Current plan is to make concurrent progress on scale transformation pipeline and a few of the config-driven UI enhancements, making one schema bump when the scale transformation is ready.
 
 **Config-driven UI enhancements:**
 
+In order of priority:
+
 | Issue | Change | Where |
 |-------|--------|-------|
-| [predevals#28](https://github.com/hubverse-org/predevals/issues/28) | Refactor numeric rounding into a shared helper (prerequisite for #48) | predevals JS refactor |
-| [predevals#48](https://github.com/hubverse-org/predevals/issues/48) **priority** | Add `decimal_places` per-target in config schema; JS reads and applies it for table display | hubPredEvalsData schema + predevals JS |
 | [predevals#27](https://github.com/hubverse-org/predevals/issues/27) | Refactor score-sorting into a helper function (prerequisite for #4) | predevals JS refactor |
 | [predevals#4](https://github.com/hubverse-org/predevals/issues/4) **priority** | Add `default_sort_metric` to config/options; JS uses it for initial table sort (e.g., sort models by relative WIS ascending on first load rather than alphabetically) | hubPredEvalsData schema + predevals JS |
+| [predevals#28](https://github.com/hubverse-org/predevals/issues/28) | Refactor numeric rounding into a shared helper (prerequisite for #48) | predevals JS refactor |
+| [predevals#48](https://github.com/hubverse-org/predevals/issues/48) **priority** | Add `decimal_places` per-target in config schema; JS reads and applies it for table display | hubPredEvalsData schema + predevals JS |
 | [predevals#44](https://github.com/hubverse-org/predevals/issues/44) | Display `target_name` from `tasks.json` instead of `target_id` in dropdowns | hubPredEvalsData (depends on [#21](https://github.com/hubverse-org/hubPredEvalsData/issues/21)) + predevals JS |
 
 > ⚠️ Issue #44 depends on upstream hubPredEvalsData work ([#21](https://github.com/hubverse-org/hubPredEvalsData/issues/21)). Include only if that work is complete.
@@ -185,7 +198,14 @@ The detailed implementation plan is in [hubPredEvalsData#34](https://github.com/
 ### Mini-Sprint C — Sample-based scoring with compound_taskid_set
 *Scope: Merge near-complete hubEvals PR, then wire sample scoring + compound_taskid_set awareness through hubPredEvalsData and predevals.*
 
-This sprint builds pipeline support for sample-format output types that require [`compound_taskid_set`](https://docs.hubverse.io/en/latest/user-guide/sample-output-type.html#compound-modeling-tasks) awareness. The variogram score is the motivating use case, but the infrastructure enables any future compound/multivariate metric for sample forecasts. See also [hubDocs PR #439](https://github.com/hubverse-org/hubDocs/pull/439) for incoming updates to compound modeling task documentation.
+This sprint builds pipeline support for sample-format output types that require [`compound_taskid_set`](https://docs.hubverse.io/en/latest/user-guide/sample-output-type.html#compound-modeling-tasks) awareness. 
+The variogram score is the motivating use case, but the infrastructure enables any future compound/multivariate metric for sample forecasts. 
+See also [hubDocs PR #439](https://github.com/hubverse-org/hubDocs/pull/439) for incoming updates to compound modeling task documentation.
+
+However, we will begin by assessing the feasibility and challenges of adding support for univariate sample scores vs. multivariate sample scores.
+The first deliverable here will be to define a scope of which features to roll out and what the challenges will be with any of them. 
+Example complexities are how/whether to handle multivariate sample scoring and how to treat compound_taskid_sets in the config files. 
+Also, how/whether to handle clashes when/if multiple output_types can be used to compute the same score.
 
 **hubEvals changes — mostly done:**
 [PR #103](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals/pull/103) (branch `ak/sample-scoring/94`) is open and awaiting final review. It adds:
@@ -203,10 +223,6 @@ This sprint builds pipeline support for sample-format output types that require 
 - Add `"variogram_score"` as a recognized metric name for sample output types
 - `R/utils-metrics.R` — add `sample = "variogram_score"` case in `get_standard_metrics()`
 - `R/generate_eval_data.R` — extract and propagate `compound_taskid_set`; skip location-based disaggregation for compound metrics when `compound_taskid_set = "location"`
-
-**predevals JS changes:**
-- No new chart types; variogram score appears as another column in the overall scores table
-- Graceful handling of missing metric columns in disaggregated views (may already work)
 
 > ⚠️ **Scope constraint**: Compound metrics computed jointly across a dimension (e.g., variogram score across locations) are **not** disaggregable by that dimension. Document this in the config schema and validation error messages.
 
@@ -240,6 +256,7 @@ The existing guide covers infrastructure well (Docker setup, renv, build process
 - If not fully addressed in Sprint A, finalize a metric glossary embedded in predevals covering: WIS, ae_point, se_point, interval coverage, variogram score
 - Hub-level task variable definitions handled separately (via hub model-output README, not in predevals)
 
+
 **Deliverable**: New or extended hubDocs page; predevals minor release if glossary was deferred from Sprint A.
 
 **Sprint D — Acceptance criteria:**
@@ -249,15 +266,35 @@ The existing guide covers infrastructure well (Docker setup, renv, build process
 
 ---
 
+### Mini-Sprint E — hubverse ↔ scoringutils data connector
+*Scope: hubEvals (new exported functions) + documentation. No schema or dashboard changes.*
+
+Formalize the existing code that converts between hubverse and scoringutils data formats into a documented, exported utility. This lets analysts use scoringutils tools directly on hubverse data (and vice versa) without running the full scoring pipeline.
+
+| Step | Change | Where |
+|------|--------|-------|
+| 1 | Identify and consolidate existing internal conversion code (e.g., format transformations in `score_model_out()` and `transform_sample_model_out()`) into exported helper functions | hubEvals |
+| 2 | Export converter functions (e.g., `as_scoringutils()` / `as_hubverse()`) with documentation and input validation | hubEvals |
+| 3 | Add vignette or hubDocs section showing round-trip usage examples | hubEvals vignette or hubDocs |
+
+**Deliverable**: hubEvals minor release with exported converter functions; vignette or docs page.
+
+**Sprint E — Acceptance criteria:**
+- A user can convert a hubverse `model_out_tbl` to a scoringutils forecast object (and back) using documented exported functions
+- Round-trip conversion preserves data fidelity (test coverage)
+- `R CMD check` passes
+
+---
+
 ### Files to modify across all sprints
 
 | Repo | Files | Sprint |
 |------|-------|--------|
-| hubEvals | `R/validate.R`, `R/score_model_out.R`, new `R/transform_sample_model_out.R` | C |
+| hubEvals | `R/validate.R`, `R/score_model_out.R`, new `R/transform_sample_model_out.R`, new converter functions | C, E |
 | hubPredEvalsData | `inst/schema/v1.1.0/config_schema.json` (new), `R/config.R`, `R/utils-metrics.R`, `R/generate_eval_data.R` | B, C |
 | predevals | `src/predevals.js` and related source files | A, B, C |
 | hubPredEvalsData-docker | Dockerfile / entrypoint | B, C |
-| hubDocs | New developer + end-user guide page | D |
+| hubDocs | New developer + end-user guide page | D, E |
 
 ### Scale and scope
 
@@ -267,6 +304,7 @@ The existing guide covers infrastructure well (Docker setup, renv, build process
 Sprint A1 (table readiness)  ──► Sprint B (schema v1.1.0) ──► Sprint C (sample scoring)
 Sprint A2 (UI polish)        ──────────────────────────────────────────► release
 Sprint D  (docs)             ──────────────────────────────────────────► release
+Sprint E  (data connector)   ──────────────────────────────────────────► release
 ```
 
 > **Note**: Sprint D can begin early, but cannot fully close until Sprint C is complete. The worked example (item 5 in the content list) depends on Sprints B and C as concrete prior art.
