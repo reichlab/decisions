@@ -163,7 +163,7 @@ If viable, the `hubPredEvalsData-docker` repository could be retired, removing a
 
 ## Status
 
-Proposed
+APPROVED
 
 ## Consequences
 
