@@ -62,6 +62,7 @@ Each of these will trigger the full release chain documented in the issues above
  - Reduce the number of manual steps required to release and deploy dashboard tool changes
  - Enable schema/config changes to be rolled out without breaking existing dashboards during the transition window
  - Make the release process accessible to team members who did not build the infrastructure
+ - Simplify setting up remote staging and previews for dashboard changes
  - Ensure the upcoming eval-metrics-expansion schema changes can be deployed confidently
  - Maintain the security posture established in [prior decisions](./2024-12-13-rfc-hub-dashboard-orchestration.md)
 
