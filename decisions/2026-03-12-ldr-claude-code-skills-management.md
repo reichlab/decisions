@@ -6,12 +6,7 @@ The team has begun exploring [Claude Code skills](https://docs.anthropic.com/en/
 
 The [dashboard release and deployment RFC](./2026-03-10-RFC-dashboard-release-deployment.md) proposes five additional skills (`/dashboard-local-build`, `/dashboard-release`, `/dashboard-stage`, `/dashboard-debug`, `/dashboard-config-migrate`) to address knowledge concentration and manual deployment complexity. Several of these skills would need to be invoked from different repositories and coordinate work across multiple repos.
 
-As the team begins building more skills, we need to decide how to store, version control, and share them so that:
-
-- Team members can discover and use skills created by others
-- Skills are version controlled and changes are reviewable
-- Skills that work across multiple repositories have a sensible home
-- The approach is accessible to a team that is new to Claude Code skills
+As more skills are created, we need a way to store, version control, and share them so that team members can discover and use skills created by others, changes are reviewable, and cross-repo skills have a sensible home.
 
 ### Definitions
 
@@ -37,7 +32,7 @@ dashboard-release/
 **Skill scope**: Skills can be stored at different locations, which determines who can access them:
 
 | Scope | Location | Who has access |
-|-------|----------|---------------|
+|-------|----------|----------------|
 | **Personal** | `~/.claude/skills/<name>/SKILL.md` | Only the user who created it, across all their projects |
 | **Project** | `<repo>/.claude/skills/<name>/SKILL.md` | Anyone working in that repo (shared via git) |
 | **Plugin** | Packaged in a plugin repository | Anyone who installs the plugin |
@@ -83,33 +78,9 @@ hubverse-org/hubverse-claude-skills/
 └── README.md
 ```
 
-This structure is deliberately compatible with both distribution approaches discussed below — the `skills/` directory layout is the same whether skills are symlinked individually or loaded as a plugin.
+### Distribution: symlinked personal skills
 
-### Review and version control
-
-Changes to shared skills will follow the same process as code changes: pull requests with review. Changes to existing skills that alter their behaviour should be reviewed by someone who uses that skill. We will not adopt formal semantic versioning for the repository initially — git history and PR review are sufficient at this stage.
-
-### Documentation
-
-The repository README will serve as the primary documentation, including: a catalogue of available skills with brief descriptions, and installation instructions for getting the skills onto your machine. Projects that depend on specific shared skills (e.g., the dashboard repos) should note this in their `CLAUDE.md` or contributing guide so that new contributors know to install them.
-
-The [hubverse developer guide](https://docs.hubverse.io/en/latest/developer/index.html) should be updated to introduce Claude Code skills as part of the development workflow and direct contributors to the shared skills repository for the full catalogue and setup instructions.
-
-### When to use which scope
-
-| Situation | Where to put the skill |
-|-----------|----------------------|
-| Skill is specific to a single repo | `.claude/skills/` in that repo (committed to git) |
-| Skill is used across repos or by the broader team | `hubverse-claude-skills` shared repo |
-| Skill is personal, experimental, or unrelated to hubverse | `~/.claude/skills/` locally |
-
-### Distribution approach: to be decided
-
-How team members actually get shared skills onto their machines is the key open question. There are two viable approaches, and this RFC presents both for team discussion rather than prescribing one.
-
-#### Option A: Symlinked personal skills (simpler setup, manual maintenance)
-
-Team members clone the shared repository and create symlinks from their personal skills directory to individual skills in the repo:
+Team members will clone the shared repository and create symlinks from their personal skills directory to individual skills in the repo:
 
 ```bash
 # Clone the shared repo (one-time)
@@ -121,62 +92,40 @@ ln -s ~/hubverse-claude-skills/skills/dashboard-release ~/.claude/skills/dashboa
 # ... etc.
 ```
 
-**Advantages:**
+We chose this approach because it introduces no new concepts beyond what the team already knows — skills appear as personal skills and are invoked directly (e.g., `/hubverse-release`). It coexists naturally with unrelated personal skills in `~/.claude/skills/`, and updates are straightforward: `git pull` in the shared repo updates all linked skills in place.
 
-- No new concepts — skills appear as personal skills, invoked as `/hubverse-release` (no namespace prefix)
-- Coexists naturally with unrelated personal skills in `~/.claude/skills/` — each skill is an independent symlink, nothing is overwritten
-- Updates are automatic — since symlinks point into the cloned repo, running `git pull` updates all linked skills in place with no extra steps
-- Team members choose which shared skills to install
-- No plugin packaging overhead (no `plugin.json` manifest needed)
+The trade-offs are acceptable at the current team size: each team member must manually create symlinks for new skills, remember to pull updates, and broken symlinks from renamed or removed skills will need manual cleanup.
 
-**Disadvantages:**
+Should the number of skills or team members grow to the point where this manual maintenance becomes burdensome, the repository structure is designed to support migration to a Claude Code plugin with minimal changes (adding a `.claude-plugin/plugin.json` manifest and replacing symlinks with plugin configuration). See the [migration path](#migration-path-to-plugin) section below.
 
-- Each team member must manually create symlinks for each skill they want
-- When new skills are added to the shared repo, team members must manually add new symlinks
-- Team members must remember to `git pull` the shared repo to get updates
-- If a skill is renamed or removed in the shared repo, the symlink breaks silently
-- A setup script could reduce the manual work but adds something to maintain
+### When to use which scope
 
-#### Option B: Plugin (more setup overhead, easier ongoing maintenance)
+| Situation | Where to put the skill |
+|-----------|----------------------|
+| Skill is specific to a single repo | `.claude/skills/` in that repo (committed to git) |
+| Skill is used across repos or by the broader team | `hubverse-claude-skills` shared repo |
+| Skill is personal, experimental, or unrelated to hubverse | `~/.claude/skills/` locally |
 
-The shared repository is structured as a Claude Code plugin by adding a `.claude-plugin/plugin.json` manifest. Team members load it as a plugin:
+### Review and version control
 
-```bash
-# Clone the shared repo (one-time)
-git clone git@github.com:hubverse-org/hubverse-claude-skills.git ~/hubverse-claude-skills
+Changes to shared skills will follow the same process as code changes: pull requests with review. Changes to existing skills that alter their behaviour should be reviewed by someone who uses that skill. We will not adopt formal semantic versioning for the repository initially — git history and PR review are sufficient at this stage.
 
-# Load as a plugin (per session)
-claude --plugin-dir ~/hubverse-claude-skills
+### Documentation
 
-# Or configure for persistent loading in Claude Code settings
-```
+The repository README will serve as the primary documentation, including: a catalogue of available skills with brief descriptions, and installation instructions for getting the skills onto your machine. Projects that depend on specific shared skills (e.g., the dashboard repos) should note this in their `CLAUDE.md` or contributing guide so that new contributors know to install them.
 
-**Advantages:**
+The [hubverse developer guide](https://docs.hubverse.io/en/latest/developer/index.html) should be updated to introduce Claude Code skills as part of the development workflow and direct contributors to the shared skills repository for the full catalogue and setup instructions.
 
-- All skills in the repo are available at once — no per-skill setup
-- New skills added to the repo are automatically available after `git pull`
-- Removed or renamed skills are handled cleanly
-- The plugin manifest provides a standard place for metadata (description, version)
-- Opens a path to publishing on the Anthropic plugin marketplace in future if desired
+### Migration path to plugin
 
-**Disadvantages:**
-
-- Skills are namespaced (e.g., `/hubverse:hubverse-release` instead of `/hubverse-release`), which is more to type — though namespacing could be used to reduce prefixing in skill names (e.g., `hubverse-release` could become just `/hubverse:release`)
-- Requires understanding the plugin concept, which is an additional layer for a team new to Claude Code
-- Requires either passing `--plugin-dir` each session or configuring persistent plugin loading
-- Adds a `plugin.json` manifest file to maintain (though it is minimal)
-- Personal skills in `~/.claude/skills/` coexist without issue, but the two sets are invoked differently (personal skills without namespace, plugin skills with namespace)
-
-#### Migration path from A to B
-
-The shared repository structure is designed so that moving from Option A to Option B requires minimal changes:
+If the symlink approach becomes unwieldy, the shared repository can be converted to a Claude Code plugin with minimal changes:
 
 1. Add a `.claude-plugin/plugin.json` manifest to the repo (a small JSON file with name, description, and version)
-2. Review skill directory names and remove redundant prefixes that are now covered by the plugin namespace (e.g., rename `hubverse-release/` to `release/` so the command becomes `/hubverse:release` rather than `/hubverse:hubverse-release`)
+2. Review skill directory names and remove redundant prefixes now covered by the plugin namespace (e.g., rename `hubverse-release/` to `release/` so the command becomes `/hubverse:release` rather than `/hubverse:hubverse-release`)
 3. Team members remove their symlinks from `~/.claude/skills/`
-3. Team members configure the repo as a plugin instead
+4. Team members configure the repo as a plugin instead
 
-The `skills/` directory and `SKILL.md` files remain identical in both approaches. No skills need rewriting. The main adjustment for users is that skill invocation gains the namespace prefix (e.g., `/hubverse-release` becomes `/hubverse:hubverse-release`).
+The `skills/` directory and `SKILL.md` files remain identical in both approaches. No skills need rewriting. The main adjustment for users is that skill invocation gains a namespace prefix (e.g., `/hubverse-release` becomes `/hubverse:release`).
 
 ### Other Options Considered
 
@@ -186,7 +135,7 @@ The `skills/` directory and `SKILL.md` files remain identical in both approaches
 
 3. **Project-level skills in one "home" repo.** Place cross-project skills in `.claude/skills/` within one designated repo (e.g., the control room for dashboard skills). Not chosen because skills are only auto-discovered when working in that specific repo, it conflates the skill's lifecycle with the host repo's, and it does not handle skills that span project boundaries (like `/hubverse-release` which applies to any R package repo).
 
-4. **Publish to the Anthropic plugin marketplace.** Package skills as a plugin and publish for maximum discoverability. Not chosen as the initial approach because the overhead is not justified for a small team just getting started, and some skills encode internal processes. Could be revisited for skills with wider applicability once the team is more experienced.
+4. **Plugin from the start.** Package skills as a plugin immediately. Not chosen because it introduces additional concepts (plugin manifests, namespacing, plugin loading configuration) that add friction for a team just getting started with Claude Code skills. The symlink approach lets us start simply while preserving a clear migration path.
 
 ### Skill testing: a known gap
 
@@ -197,7 +146,7 @@ There is currently no official test framework, test runner, or dry-run mode for 
 - **Hooks**: Claude Code's `PreToolUse` and `PostToolUse` hooks can validate or block actions at runtime (e.g., preventing a skill from pushing to a protected branch), but this tests guardrails rather than the skill's logic.
 - **Headless mode**: The `claude -p` flag runs Claude non-interactively, but it does not support invoking skills by slash command name, limiting its usefulness for CI-based skill testing.
 
-This is a significant gap. Skills that automate multi-step processes with real side effects (creating branches, pushing code, making releases) carry risk if the instructions are wrong or ambiguous. Until better tooling exists, we will mitigate this through:
+Until better tooling exists, we will mitigate this through:
 
 1. **Thorough code review**: All new skills and changes to existing skills require careful review, treating skill instructions with the same scrutiny as production code. Reviewers should walk through the instructions mentally (or actually invoke the skill) to verify correctness.
 2. **Incremental development**: Start with simpler skills and build complexity gradually as the team gains experience.
@@ -215,15 +164,16 @@ Positive:
 - Shared skills are version controlled and changes are reviewable
 - Team members can discover available skills through the repository README
 - Cross-project skills have a natural home that is not tied to any single repo
-- The repository structure supports either distribution approach and migration between them
-- Personal skills unrelated to hubverse are unaffected regardless of distribution choice
+- The symlink approach requires no new concepts beyond cloning a repo and creating links
+- Personal skills unrelated to hubverse are unaffected
+- A clear migration path to a plugin exists if the approach needs to scale
 
 Negative:
 
 - An additional repository to maintain
-- Team members must clone the shared repo and perform setup (symlinks or plugin configuration)
-- The distribution question requires a follow-up decision from the team
-- No automated way to test skills — the team must rely on code review and manual testing, which requires discipline and will not catch all issues
+- Team members must clone the shared repo and create symlinks for each skill they want
+- When new skills are added, team members must manually add new symlinks
+- No automated way to test skills — the team must rely on code review and manual testing
 
 Neutral:
 
