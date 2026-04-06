@@ -76,7 +76,7 @@ predevals (JavaScript)
 ```
 
 Repos:
-- [hubEvals](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals)
+- [hubEvals](https://github.com/hubverse-org/hubEvals)
 - [hubPredEvalsData](https://github.com/hubverse-org/hubPredEvalsData)
 - [hubPredEvalsData-docker](https://github.com/hubverse-org/hubPredEvalsData-docker)
 - [predevals](https://github.com/hubverse-org/predevals)
@@ -182,7 +182,6 @@ The detailed implementation plan is in [hubPredEvalsData#34](https://github.com/
 |-------|--------|-------|
 | [predevals#30](https://github.com/hubverse-org/predevals/issues/30) | Refactor code for getting full metrics list (prerequisite for per-scale metric treatment) | predevals JS refactor |
 | [hubPredEvalsData#34](https://github.com/hubverse-org/hubPredEvalsData/issues/34) | Add `transform_defaults` (top-level) and per-target `transform` override to config schema; wire through to `hubEvals::score_model_out()` | hubPredEvalsData schema + R pipeline |
-| — | When `append: true`, scores.csv gains a `scale` column; predevals treats each (metric × scale) combination as a distinct item in dropdowns and table columns | predevals JS |
 
 **Deliverable**: hubPredEvalsData v1.1.0 schema, new predevals release, Docker rebuild.
 
@@ -208,13 +207,13 @@ Example complexities are how/whether to handle multivariate sample scoring and h
 Also, how/whether to handle clashes when/if multiple output_types can be used to compute the same score.
 
 **hubEvals changes — mostly done:**
-[PR #103](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals/pull/103) (branch `ak/sample-scoring/94`) is open and awaiting final review. It adds:
+[PR #103](https://github.com/hubverse-org/hubEvals/pull/103) (branch `ak/sample-scoring/94`) is open and awaiting final review. It adds:
 - `transform_sample_model_out()` — converts hubverse sample format to scoringutils-compatible objects
 - `"sample"` as a valid output type in `validate_output_type()`
 - Marginal scoring (CRPS, bias, DSS) and compound/multivariate scoring (energy score) via `compound_taskid_set`
 - Dynamically generates compound metric list from scoringutils — so variogram score will be picked up automatically once [scoringutils#1114](https://github.com/epiforecasts/scoringutils/issues/1114) lands and bumps the default metrics
 - Requires scoringutils ≥ 2.1.2.9000
-- Open issues on the branch: [#99](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals/issues/99) (NaN/Inf validation), [#100](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals/issues/100) (test updates), [#101](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals/issues/101) (compound_taskid_set validation), [#102](https://github.com/Infectious-Disease-Modeling-Hubs/hubEvals/issues/102) (test warnings)
+- Open issues on the branch: [#99](https://github.com/hubverse-org/hubEvals/issues/99) (NaN/Inf validation), [#100](https://github.com/hubverse-org/hubEvals/issues/100) (test updates), [#101](https://github.com/hubverse-org/hubEvals/issues/101) (compound_taskid_set validation), [#102](https://github.com/hubverse-org/hubEvals/issues/102) (test warnings)
 
 **Action**: Review and merge PR #103; track scoringutils#1114 for variogram score availability.
 
@@ -222,7 +221,7 @@ Also, how/whether to handle clashes when/if multiple output_types can be used to
 - Add `compound_taskid_set` optional property to target config
 - Add `"variogram_score"` as a recognized metric name for sample output types
 - `R/utils-metrics.R` — add `sample = "variogram_score"` case in `get_standard_metrics()`
-- `R/generate_eval_data.R` — extract and propagate `compound_taskid_set`; skip location-based disaggregation for compound metrics when `compound_taskid_set = "location"`
+- `R/generate_eval_data.R` — extract and propagate `compound_taskid_set`; ensure slignment between disaggregation levels and compound metric variables. E.g., if `location` is not in the `compound_taskid_set` this implies that forecasts are joint across locations which implies that we should skip location-based disaggregation for compound metrics.
 
 > ⚠️ **Scope constraint**: Compound metrics computed jointly across a dimension (e.g., variogram score across locations) are **not** disaggregable by that dimension. Document this in the config schema and validation error messages.
 
@@ -270,6 +269,8 @@ The existing guide covers infrastructure well (Docker setup, renv, build process
 *Scope: hubEvals (new exported functions) + documentation. No schema or dashboard changes.*
 
 Formalize the existing code that converts between hubverse and scoringutils data formats into a documented, exported utility. This lets analysts use scoringutils tools directly on hubverse data (and vice versa) without running the full scoring pipeline.
+
+As a separate later step, we might also consider adding subclasses of hubverse `model_out_tbl` objects that are specific to each output type, similar to how scoringutiles has objects defined for each output type. This would help align these ecosystems and would also possibly have downstream benefits for hubverse development.
 
 | Step | Change | Where |
 |------|--------|-------|
