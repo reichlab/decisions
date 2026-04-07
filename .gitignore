@@ -4,5 +4,7 @@
 .Ruserdata
 *.Rproj
 *arrow-issue.qmd
+
+*.DS_Store
 **/.obsidian/
 attic/*
