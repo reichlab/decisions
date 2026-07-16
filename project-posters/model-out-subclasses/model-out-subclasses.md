@@ -93,7 +93,7 @@ so existing `model_out_tbl` methods keep working and output-type specificity is 
 | mean | (vs median) | `forecast_point` | `output_type` column (data) |
 | median | (vs mean) | `forecast_point` | `output_type` column (data) |
 | pmf | ordinal vs nominal | `forecast_ordinal` / `forecast_nominal` | config: the ordered category set from `output_type_id.required` (the `output_type_id_order`) |
-| sample | marginal vs joint | `forecast_sample` / `forecast_sample_multivariate` | `compound_taskid_set` (config; partly inferable from data) |
+| sample | marginal vs joint | `forecast_sample` / `forecast_sample_multivariate` | `compound_taskid_set` (config) |
 | cdf | (no direct equivalent) | n/a | convert to quantile |
 
 The output-type-level class is always assignable from the data; the config-derived finer distinction (ordinal/nominal, marginal/joint) generally is not. Mean and median are the mirror case: two data-derivable output types share one scoringutils class (`forecast_point`), so they can sit as sibling subclasses under a shared `point` superclass in the class vector (e.g. `c("mean", "point", "model_out_tbl", ...)`), letting the common connector dispatch at `point` while the metric that makes sense (absolute error for median, squared error for mean) specialises at the leaf. This is the same layered-class-vector mechanism the design uses for the finer distinctions (see Granularity encoding below), with the shared layer below the leaf rather than a refinement token above it.
@@ -140,9 +140,9 @@ The caveats: a token is a bare, generic class name (`ordinal`), so dispatch reli
 
 The config-derived facts a typed object needs (the `output_type_id_order` for ordinal pmf, the `compound_taskid_set` for samples) are pulled by config-extraction utilities run against the hub and passed to the constructors as arguments, following the precedent of `score_model_out()`'s existing `output_type_id_order` and `compound_taskid_set` arguments. These utilities are already planned and useful well beyond this work: `hubValidations` extracts the compound task ID set internally (`get_round_compound_task_ids()`), and hubUtils [#283](https://github.com/hubverse-org/hubUtils/issues/283) (`get_output_type_id_order()`) and [#284](https://github.com/hubverse-org/hubUtils/issues/284) (`get_compound_taskid_set()`) propose exposing both from a hub config.
 
-Later enhancements: stamp the granular subclass and metadata at data-read time in `hubData` so the typed object arrives ready to use, and detect from data where possible (sample compound structure is partly inferable; the ordinal category order is not).
+Later enhancements: stamp the granular subclass and metadata at data-read time in `hubData` so the typed object arrives ready to use.
 
-One consideration to flag upfront: a hub can have rounds whose metadata differs (e.g. changed pmf categories), and so whose submitted outputs differ. Likely rare but possible, and both the extraction utilities and the class constructors will need to handle it (e.g. a `model_out_tbl` spanning mixed rounds) rather than assume a single config per hub.
+One consideration to flag upfront: a hub can have rounds whose metadata differs (e.g. changed pmf categories), and so whose submitted outputs differ. This is especially true for **scenario hubs**, where rounds can differ substantially, so per-round variation is expected rather than a rare edge case. Both the extraction utilities and the class constructors will need to handle it (e.g. a `model_out_tbl` spanning mixed rounds) rather than assume a single config per hub.
 
 ### Visualize the solution
 
