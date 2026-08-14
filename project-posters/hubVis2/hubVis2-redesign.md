@@ -226,15 +226,40 @@ geom_hub_interval(mapping = NULL,
                   position = "identity",
                   ...,
                   widths = c(0.5, 0.8, 0.95),
-                  source = c("auto", "quantile", "sample"), # control how intervals are derived
+                  source = c("auto", "quantile", "sample"), # control how intervals are derived, "auto" checks use "quantile" rows if present, if not fall back to calculating quantiles from "sample". 
                   na.rm = FALSE,
                   show.legend = NA,
                   inherit.aes = TRUE)
 
+geom_hub_median(mapping = NULL,
+                data = NULL,
+                position = "identity",
+                ...,
+                geom = c("line", "point"),
+                source = c("auto", "quantile", "sample"),
+                na.rm = FALSE,
+                show.legend = NA,
+                inherit.aes = TRUE)
+
+
+geom_hub_sample(mapping = NULL,
+                data = NULL,
+                position = "identity",
+                ...,
+                na.rm = FALSE,
+                show.legend = NA,
+                inherit.aes = TRUE)
+
+
+geom_hub_target(mapping = NULL,
+                data = NULL,
+                position = "identity",
+                ...,
+                na.rm = FALSE,
+                show.legend = NA,
+                inherit.aes = TRUE)
 
 ```
-
-
 
 #### Plotly functions
 
@@ -279,17 +304,17 @@ plotly_hub_facet(p,
 
 ```r
 # Static — note the separate data= argument, different contract than model_out_tbl
-ggplot(model_out_tbl, aes(x = target_end_date, colour = model_id)) +
-  geom_hub_interval() +
+ggplot(model_out_tbl, aes(x = target_end_date, colour = model_id, fill = model_id)) +
+  geom_hub_interval(widths = c(0.5, 0.8, 0.95, 0.99)) +
   geom_hub_target(data = target_data, mapping = aes(x = date, y = observation))
 
 # Force sample-derived intervals even if quantile rows are present
 ggplot(model_out_tbl, aes(x = target_end_date)) +
-  geom_hub_interval(stat = stat_hub_interval(source = "sample"))
+  geom_hub_interval(source = "sample")
 
 # Interactive — target_data overrides the inherited model_out_tbl
 plot_ly(data = model_out_tbl) |>
-  plotly_hub_interval() |>
+  plotly_hub_interval(widths = c(0.5, 0.8, 0.95, 0.99)) |>
   plotly_hub_target(data = target_data)
 
 ```
