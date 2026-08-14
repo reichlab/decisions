@@ -30,7 +30,8 @@ For example, the same call can render a different plot depending on which output
 types are present in the inputted data. 
 
 The goal is to provide a new package with functions that are easier to use 
-and maintain, based on the ggplot2 and plotly ecosystems.
+and maintain, based on the ggplot2 and plotly ecosystems and on the forthcoming
+subclass system associated with `model_out_tbl`.
 
 ### What are we _not_ trying to do?
 
@@ -45,22 +46,35 @@ We do not plan to:
   ggplot object depending on a parameter). Instead, the "static" version
   will use ggplot2 functions (`geom_`) with a `+` pipe style, and the 
   "interactive" version will use plotly functions with a "|>" pipe style.
+- supports additional output type. We will keep supporting the same
+  output type as previously supported with hubVis: median, quantile, sample
 
 
 ### How do we judge success?
 
-- hubVis2 generates the same plot as hubVis. No core functionality should 
-  disappear. 
+- hubVis2 generates the same kind of plots as hubVis, in term of aesthetics 
+  and functionality. No core functionality should disappear. 
 - hubVis2 output layers can be combined with ggplot2/plotly functions
 - The package has clear documentation and examples to show how to use 
   and/or transition to the new design
 - Existing `hubVis` users can continue to use `plot_step_ahead_model_output()`, 
-  but will not have any bug fixes or updates on that function. Clear documentation
-  and messaging should warn the users.
-- `hubverse` meta-package should slowly transition to point at hubVis2. 
-- The package has good test coverage on all the steps, including internal calculation (like
-  sample to quantile conversion) and plotting results (using `vdiffr` for 
-  static plots, structural tests for interactive plots).
+  but will not have any bug fixes or updates on that function. The function will
+  continue to be available ONLY in the `hubVis` package, no backward-compatibily
+  wrappy is expected in `hubVis2`. Clear documentation and messaging should warn 
+  the users.
+- `hubverse` meta-package should transition to point at hubVis2 in a two steps 
+  process. First, the hubverse package can install both `hubVis` and `hubVis2` 
+  with a message stating that we are moving from a one function system in `hubVis` 
+  to a multi-function system in `hubVis2` package and encourage users to switch 
+  to the new version as it should be easier to use. Once `hubVis2` has all the 
+  expected functionality and is stable for some time (no major bug issue and a stable
+  version), we can remove `hubVis` from the meta-package. 
+- The package has good test coverage on all the steps, including internal calculation 
+  (like sample to quantile conversion (the conversion in itself is tested in another
+  package, but the behavior of our stat function should still be tested as it also
+  format the data, see more informatin below.)) 
+  and plotting results (using `vdiffr` for static plots, structural tests for 
+  interactive plots).
 
 
 ### What are possible solutions?
@@ -87,12 +101,20 @@ notice.
   compatibility with the rest of the ggplot2 package:
   	- Four geoms: `geom_hub_interval()`, `geom_hub_median()`, 
   	  `geom_hub_sample()`, `geom_hub_target()`.
-  	- Custom `Stat` functions as necessary.
+  	- Custom `Stat` functions: `stat_hub_interval()` to pivot long quantiles 
+    rows into ymin/ymax pairs for each requested interval, and if necessary 
+    convert samples rows into quantiles (using hubUtils). `stat_hub_median()`
+    to extracts ("median" or `0.5` "quantile" output type) or calculates the 
+    median from "sample" output type (using hubUtils).
   	- `Stat` and `geom` constructor functions, along with their underlying 
   	  ggproto classes, will be exported as public objects.
 - delegate ribbon plotting to `ggdist::GeomLineribbon` as it already
   solves some issues: nested and ordered ribbon rendering, legend behavior,
-  for example.
+  for example. `geom_ribbon` from ggplot2 plots single filled band, whereas
+  `ggdist` allows multiple ribbons. We plan to first try using
+  `ggdist::GeomLineribbon` to plot multiple intervals. If it does not work
+  (unexpected issues) we can fall back to create a custom geoms based 
+  on `geom_ribbon()`.
 
 ##### Interactive plotting
 
@@ -133,8 +155,9 @@ We can use different `hubUtils` functions in our process:
 - ggplot2 released a major version (4.0) that impacts how geom 
   constructors are built. So we will need to restrict hubVis2 dependencies 
   to ggplot2 >= 4.0. 
-- `ggdist` can be used for ribbon plotting. The package already requires ggplot2 4.0, 
-  so no version conflict should appear.
+- `ggdist` can be used for ribbon plotting as it allows multiple ordered
+  nested ribbons. The package already requires ggplot2 4.0, so no version 
+  conflict should appear.
 
 ##### Interactive rendering
 
@@ -171,7 +194,8 @@ a single classed object. That decision might impact hubVis2.
   to show only the biggest interval, for example `.95`. This functionality
   is not included currently in the hubVis2 as it might be difficult to implement
   with the faceting and passing the information through multiple layers/functions. 
-  The users can update which interval(s) to plot.
+  `hubVis2` interval plotting function can returns a warning to the user about
+  overplotting and let the users update which interval(s) to plot.
 - No package-default coloring. We don't plan to have the `colour/fill` set to 
   `model_id` by default. The users must explicitly write it. It's closer to
   the ggplot2/plotly behavior.
@@ -194,7 +218,64 @@ matching plotly functions.
 | Observed/target data | `geom_hub_target()` | `plotly_hub_target()` |
 | Faceting | use ggplot2 `facet_` functions | `plotly_hub_facet()`, declared first in the pipe |
 
-##### Example of calls
+#### ggplot 2 functions
+
+```r
+geom_hub_interval(mapping = NULL,
+                  data = NULL,
+                  position = "identity",
+                  ...,
+                  widths = c(0.5, 0.8, 0.95),
+                  source = c("auto", "quantile", "sample"), # control how intervals are derived
+                  na.rm = FALSE,
+                  show.legend = NA,
+                  inherit.aes = TRUE)
+
+
+```
+
+
+
+#### Plotly functions
+
+```r
+plotly_hub_interval(p,
+                     data = NULL,
+                     ...,
+                     widths = c(0.5, 0.8, 0.95),
+                     source = c("auto", "quantile", "sample"), # 
+                     inherit = TRUE)
+
+plotly_hub_median(p,
+                   data = NULL,
+                   ...,
+                   type = c("line", "point"),
+                   source = c("auto", "quantile", "sample"),
+                   inherit = TRUE)
+
+plotly_hub_sample(p,
+                   data = NULL,
+                   ...,
+                   inherit = TRUE)
+
+plotly_hub_target(p,
+                   data = NULL,
+                   ...,
+                   inherit = TRUE)
+
+plotly_hub_facet(p,
+                  facet_by,
+                  data = NULL,
+                  nrow = NULL,
+                  ncol = NULL,
+                  shareX = TRUE,
+                  shareY = FALSE,
+                  ...,
+                  inherit = TRUE)
+```
+
+
+#### Example of calls
 
 ```r
 # Static — note the separate data= argument, different contract than model_out_tbl
