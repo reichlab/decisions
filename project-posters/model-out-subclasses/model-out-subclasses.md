@@ -4,7 +4,7 @@
 
 - Owner: Anna Krystalli
 
-- Team: Anna Krystalli, Nicholas Reich (input from Sam Abbott and Nikos Bosse, scoringutils)
+- Team: Anna Krystalli, Nicholas Reich, Li Shandross, Lucie Contamin (input from Sam Abbott and Nikos Bosse, scoringutils)
 
 - Status: draft
 
@@ -12,67 +12,63 @@
 
 ### What are we doing?
 
-Introduce a system of output-type-specific subclasses of the hubverse `model_out_tbl`, for example `quantile`, `sample`, `pmf`, `mean`, `median`. Each subclass is constructed from a `model_out_tbl` by an output-type coercion function (`as_quantile()`, `as_sample()`, ...) that:
-
-1. subsets to the rows of a single output type,
-2. validates the data for that output type,
-3. caches useful metadata (which fields, and how they are stored, is an open question for the team, see "What do we need to answer?"), and
-4. supports an informative `print` method built from that metadata.
-
-These typed objects give the hubverse a clean S3 dispatch surface, and the first concrete payoff is a formal, documented bridge to [scoringutils](https://epiforecasts.io/scoringutils/) (built in hubEvals, which already depends on scoringutils). Two complementary entry points:
-
-- **From a typed object:** a single `as_scoringutils_forecast()` generic dispatches on the hubverse subclass and routes to the matching `scoringutils::as_forecast_*()` constructor (an `ordinal` object to `as_forecast_ordinal()`, a `quantile` object to `as_forecast_quantile()`), so a user reaches the right scoringutils class in one call without naming it. This needs an output-type subclass to dispatch on, so it does not apply to a bare `model_out_tbl` (which may hold several output types).
-- **Straight from a `model_out_tbl`:** `model_out_tbl` methods added to each scoringutils `as_forecast_*()` function give a direct jump into a chosen scoringutils workflow, e.g. `as_forecast_quantile(my_model_out_tbl)`. The user names the target type by the function they call; that method constructs the corresponding hubverse subclass (subset, validate, attach metadata) and then converts.
-
-An `as_hubverse()` method converts scored output back. That same dispatch surface then drives downstream functionality (ensembling, visualisation) by output type without `switch(output_type, ...)` branching.
-
-This poster covers the class system and the connector layer built on it. Concrete downstream method implementations for ensembling and visualisation are a longer arc, noted here but scoped to follow-on work.
-
-### Why are we doing this?
-
-Two goals of comparable weight drive this, one internal to the hubverse and one outward to scoringutils:
-
-- **A typed class system to drive hubverse functionality by dispatch.** A proper output-type class layer is foundational hubverse infrastructure in its own right. The same subclass can flow from data read through scoring, ensembling, and visualisation, so each package selects methods by dispatch on a shared, typed vocabulary instead of re-deriving output-type handling with `switch(output_type, ...)` blocks. This is valuable independent of scoringutils.
-- **Seamless interoperability with scoringutils, and user-built evaluation workflows.** scoringutils is built around per-output-type classes and is designed (per [Sam Abbott](https://github.com/hubverse-org/hubEvals/issues/94#issuecomment-3891921846)) for users to write `as_forecast_*.<their_format>()` converters, score through the scoringutils workflow, then convert results back. Typed hubverse subclasses let a user take a `model_out_tbl`, coerce it straight into the right scoringutils object, and compose their own custom evaluations with the full scoringutils toolkit (including new features as they land), rather than being limited to what a single hubEvals wrapper exposes.
-- **The hubverse needs finer output-type distinctions than the column data carries.** Whether a pmf is ordinal or nominal, or whether samples are marginal or joint, determines which metrics and methods are valid. A typed object is the natural place to record and dispatch on these distinctions. (Today the hubverse has only a very limited model-output class system: the single `model_out_tbl` class, no output-type subclasses, no formal dispatch methods.)
-- **A more elegant internal pipeline (a welcome byproduct, not the driver).** `score_model_out()` stays exactly as it is, a deliberate, valued part of hubEvals that gives consumers such as dashboards one function to call. A class layer would simply make its internals more modular if and when refactored, dispatching into scoringutils' S3 generics rather than branching over `output_type`, with no change to the public API.
-
-### What are we _not_ trying to do?
-
-- Not changing the public interface or behaviour of `score_model_out()`; it continues to wrap the full workflow.
-- Not making the scoring layer depend on hub config (`tasks.json`). hubEvals operates on model outputs extracted from a hub, not on the hub itself ([context](https://github.com/hubverse-org/hubEvals/issues/94#issuecomment-3892376999)). Config-derived metadata is populated upstream or supplied by the caller, not read inside the scoring path.
-- Not reimplementing scoringutils classes, validation, or metrics. Subclass constructors stay lightweight around the scoringutils constructors, which already validate ([Sam Abbott](https://github.com/hubverse-org/hubEvals/issues/94#issuecomment-3892781599)).
-- Not adding a scoringutils dependency to hubUtils. The class system stays dependency-light in hubUtils; everything that touches scoringutils (the connectors, `as_hubverse()`) lives in hubEvals.
-- Not delivering the full downstream method set (ensembling, visualisation dispatch) in this project. We establish the class layer and the connector payoff; downstream methods follow.
-
-### How do we judge success?
-
-- A `model_out_tbl` can be coerced to an output-type subclass that holds only that type's rows, is validated, and prints a useful summary.
-- Hubverse functionality can select behaviour by dispatch on the subclass: a new output type (or finer distinction) is added as a class plus methods rather than a new `switch` branch, and the design records where each finer distinction (ordinal/nominal, marginal/joint) is sourced.
-- A user can take a hubverse `model_out_tbl`, coerce it into the appropriate scoringutils forecast object, apply scoringutils functionality directly, and bring results back, composing their own evaluation workflow without going through the single hubEvals wrapper.
-- A single `as_scoringutils_forecast()` generic dispatches on the hubverse subclass and routes to the correct `scoringutils::as_forecast_*()` constructor, so one call covers any output type.
-- A round trip (hubverse model output to scoringutils forecast object and scored output back to a hubverse-shaped result via `as_hubverse()`) preserves data fidelity, with test coverage.
-- (Optional, not a requirement for success) The existing `score_model_out()` pathway could be re-expressed on top of the class layer, with no change to its public behaviour, if and when an internal refactor is worthwhile.
-
-### What are possible solutions?
-
-The proposed approach is a class hierarchy layered on the existing base class, with coercion constructors and S3 methods that dispatch into scoringutils, and the finer-than-output-type granularity encoded as composable subclass tokens. See "Ready to make it" for the proposed structure and the alternative considered.
-
-## ✅ Validation
-
-### What do we already know?
-
-**The base class.** `model_out_tbl` already exists in hubUtils as a subclass of `tbl_df`. Subclasses extend its class vector, for example:
+Introduce output-type subclasses of the hubverse `model_out_tbl`: `quantile`, `cdf`, `pmf`, `sample`, `mean` and `median`. Each subclass holds model output of a single output type. Its class vector extends the existing `model_out_tbl` class, so everything that works on a `model_out_tbl` keeps working:
 
 ```r
 c("quantile", "model_out_tbl", "tbl_df", "tbl", "data.frame")
 ```
 
-so existing `model_out_tbl` methods keep working and output-type specificity is added on top.
+A subclass is constructed from a `model_out_tbl` by a coercion function, one per output type: `as_model_out_quantile()`, `as_model_out_pmf()`, `as_model_out_sample()` and so on. The constructor keeps the rows of that output type and validates them against what the output type requires (see Validation of a typed object below).
 
-**scoringutils is already S3 and wants to be dispatched into.** `score()` and `as_forecast_*()` are S3 generics ([score.R](https://github.com/epiforecasts/scoringutils/blob/main/R/score.R)). Sam Abbott confirmed a "mask" over the scoringutils API is feasible: hubverse-named classes that dispatch into the scoringutils generics, mostly as pass-throughs, following the `as_forecast_sample.<format>` pattern used by [epinowcast](https://github.com/epinowcast/epinowcast/blob/main/R/model-validation.R). A few scoringutils touch points (such as [`summarise_scores`](https://github.com/epiforecasts/scoringutils/blob/main/R/summarise_scores.R)) may need minor tweaks for the pattern to work cleanly.
+Two output types have an additional statistical type the output type alone does not express: a pmf is nominal or ordinal, and a sample is marginal or joint. The statistical type determines the valid metrics, ensembling methods and plots, and is declared in the hub config rather than carried by the data. The typed object records the statistical type as a second subclass, placed before the output type in the class vector, so that methods can dispatch on both:
 
-**The transform logic already exists.** hubEvals has internal transform functions per output type (`transform_quantile_model_out()`, `transform_pmf_model_out()`, `transform_point_model_out()`, `transform_sample_model_out()`) plus the marginal/compound sample work from [PR #103](https://github.com/hubverse-org/hubEvals/pull/103). This is the code the connectors and constructors consolidate, not new logic to invent.
+```r
+c("ordinal", "pmf", "model_out_tbl", "tbl_df", "tbl", "data.frame")
+c("joint", "sample", "model_out_tbl", "tbl_df", "tbl", "data.frame")
+```
+
+The subclasses are shared hubverse infrastructure. Scoring in hubEvals, ensembling in hubEnsembles and plotting in hubVis2 all have to treat each output type differently, and today each package does so with its own `switch(output_type, ...)` branches. With typed objects, each package instead supplies methods on the subclasses, and a new output type or statistical type is added as a class plus methods.
+
+The first consumer is a bridge to [scoringutils](https://epiforecasts.io/scoringutils/), built in hubEvals, which already depends on scoringutils. A typed object converts to the matching scoringutils forecast object in one call, `as_scoringutils_forecast()`, and scored output converts back with `as_hubverse()`. A user can also jump straight from a `model_out_tbl` into a chosen scoringutils workflow, for example `as_forecast_quantile(my_model_out_tbl)`, through `model_out_tbl` methods on the scoringutils constructors.
+
+This poster covers the class system in hubUtils and the scoringutils bridge in hubEvals. Ensembling and plotting methods on the new classes are follow-on work in hubEnsembles and hubVis2.
+
+### Why are we doing this?
+
+- **Dispatch instead of branching.** The hubverse has a single `model_out_tbl` class today, with no output-type subclasses and no formal methods, so every package re-derives output-type handling for itself. A typed object flows from data read through scoring, ensembling and plotting, and each package selects behaviour by dispatch on the same set of classes.
+- **The statistical type has to live somewhere.** It is declared in config, not carried by the data, and it decides which methods are valid. A typed object is the natural place to record and dispatch on it.
+- **Interoperability with scoringutils.** scoringutils is built around per-output-type classes and is designed for users to write `as_forecast_*.<their_format>()` converters, score, then convert back ([Sam Abbott](https://github.com/hubverse-org/hubEvals/issues/94#issuecomment-3891921846)). Typed hubverse objects let a user compose their own evaluation with the full scoringutils toolkit rather than only what `score_model_out()` exposes.
+- **A more modular scoring pipeline, as a byproduct.** `score_model_out()` stays as it is, the one function dashboards and other consumers call. The class layer would let its internals dispatch into scoringutils rather than branch over `output_type`, if and when that refactor is worthwhile, with no change to the public API.
+
+### What are we _not_ trying to do?
+
+- Not changing the public interface or behaviour of `score_model_out()`.
+- Not making the class layer or the scoring layer read hub config (`tasks.json`). hubEvals operates on model output extracted from a hub, not on the hub itself ([context](https://github.com/hubverse-org/hubEvals/issues/94#issuecomment-3892376999)). Config-derived values are passed in as arguments.
+- Not reimplementing scoringutils classes, validation or metrics. The connectors stay thin wrappers around the scoringutils constructors, which validate their own inputs ([Sam Abbott](https://github.com/hubverse-org/hubEvals/issues/94#issuecomment-3892781599)).
+- Not adding a scoringutils dependency to hubUtils. The class system stays dependency-light in hubUtils; everything that touches scoringutils lives in hubEvals.
+- Not delivering the ensembling and plotting methods. This project establishes the class layer and the first consumer; the downstream methods follow in their own packages.
+
+### How do we judge success?
+
+- A `model_out_tbl` can be coerced to an output-type subclass that holds only that type's rows and is validated for that type.
+- Hubverse packages can select behaviour by dispatch on the subclass, so a new output type or statistical type is added as a class plus methods rather than a new `switch` branch.
+- `as_scoringutils_forecast()` routes every typed subclass with a scoringutils equivalent to the correct scoringutils constructor, so a user can score with scoringutils directly without going through `score_model_out()`.
+- A round trip (`model_out_tbl` to scoringutils forecast object to scored output to `as_hubverse()`) preserves data fidelity, with test coverage.
+- Optional: `score_model_out()` can be re-expressed on the class layer with no change to its public behaviour.
+
+### What are possible solutions?
+
+A class hierarchy layered on the existing base class, with coercion constructors and S3 methods, and the statistical type of a pmf or sample encoded as a second subclass. See "Ready to make it" for the design and the alternative considered.
+
+## ✅ Validation
+
+### What do we already know?
+
+**The base class.** `model_out_tbl` already exists in hubUtils as a subclass of `tbl_df`. Subclasses extend its class vector, so existing `model_out_tbl` methods keep working.
+
+**scoringutils is already S3 and designed to be dispatched into.** `score()` and `as_forecast_*()` are S3 generics ([score.R](https://github.com/epiforecasts/scoringutils/blob/main/R/score.R)). Sam Abbott confirmed that a "mask" over the scoringutils API is feasible: hubverse-named classes that dispatch into the scoringutils generics, mostly as pass-throughs, following the `as_forecast_sample.<format>` pattern used by [epinowcast](https://github.com/epinowcast/epinowcast/blob/main/R/model-validation.R). A few scoringutils touch points (such as [`summarise_scores`](https://github.com/epiforecasts/scoringutils/blob/main/R/summarise_scores.R)) may need minor tweaks for the pattern to work cleanly.
+
+**The transform logic already exists.** hubEvals has one internal transform function per output type (`transform_quantile_model_out()`, `transform_pmf_model_out()`, `transform_point_model_out()`, `transform_sample_model_out()`) plus the marginal/joint sample work from [PR #103](https://github.com/hubverse-org/hubEvals/pull/103). These become the `as_scoringutils_forecast()` methods: one generic dispatching on the subclass replaces the per-type functions and the `switch` that selects between them.
 
 **The hubverse-to-scoringutils crosswalk** (from the [issue #94 plan](https://github.com/hubverse-org/hubEvals/issues/94)):
 
@@ -85,64 +81,97 @@ so existing `model_out_tbl` methods keep working and output-type specificity is 
 | modeling task (task ID combination) | forecast unit |
 | `compound_taskid_set` | inverse of `joint_across` |
 
-**Output types do not map one-to-one to scoringutils classes.** The mismatch runs both ways. Where the hubverse wants a finer distinction than the data carries (pmf, sample), it is config-driven and the extracted data cannot supply it on its own. Where the hubverse is already finer than scoringutils (mean and median both map to `forecast_point`), the distinction is in the data:
+**Output types and scoringutils classes do not map one to one, and neither side is consistently finer.** The hubverse is finer on point forecasts: mean and median both become `forecast_point`. scoringutils is finer on pmf and sample forecasts, where the statistical type decides the class. cdf has no scoringutils equivalent.
 
-| Hubverse output type | Finer distinction | scoringutils class | Source of the distinction |
-|---|---|---|---|
-| quantile | (none) | `forecast_quantile` | data |
-| mean | (vs median) | `forecast_point` | `output_type` column (data) |
-| median | (vs mean) | `forecast_point` | `output_type` column (data) |
-| pmf | ordinal vs nominal | `forecast_ordinal` / `forecast_nominal` | config: the ordered category set from `output_type_id.required` (the `output_type_id_order`) |
-| sample | marginal vs joint | `forecast_sample` / `forecast_sample_multivariate` | `compound_taskid_set` (config) |
-| cdf | (no direct equivalent) | n/a | convert to quantile |
-
-The output-type-level class is always assignable from the data; the config-derived finer distinction (ordinal/nominal, marginal/joint) generally is not. Mean and median are the mirror case: two data-derivable output types share one scoringutils class (`forecast_point`), so they can sit as sibling subclasses under a shared `point` superclass in the class vector (e.g. `c("mean", "point", "model_out_tbl", ...)`), letting the common connector dispatch at `point` while the metric that makes sense (absolute error for median, squared error for mean) specialises at the leaf. This is the same layered-class-vector mechanism the design uses for the finer distinctions (see Granularity encoding below), with the shared layer below the leaf rather than a refinement token above it.
+| Hubverse output type | scoringutils class | What decides the scoringutils class |
+|---|---|---|
+| quantile | `forecast_quantile` | nothing further |
+| mean | `forecast_point` | nothing further; the `output_type` column keeps mean and median apart on the way back |
+| median | `forecast_point` | as for mean |
+| pmf | `forecast_nominal` or `forecast_ordinal` | whether an `output_type_id_order` is supplied (config) |
+| sample | `forecast_sample` or `forecast_sample_multivariate` | the `compound_taskid_set` (config) |
+| cdf | none | n/a |
 
 ### What do we need to answer?
 
-**1. Constructor semantics when multiple output types are present.** Should `as_quantile()` silently subset, warn that other types were dropped, or error? Is there a companion that splits a mixed `model_out_tbl` into a list of typed objects, one per output type present?
+The questions in the first draft of this poster (constructor semantics for mixed input, what metadata to carry, and the name of the connector) were settled in review. The decisions are recorded under "Ready to make it". Still open:
 
-**2. What metadata should a typed object carry, and how durably? (open for team input)** The constructors can cache summaries in attributes for printing and for driving downstream methods, but *which* fields are genuinely useful is not yet clear and is exactly the kind of thing the team should weigh in on. Illustrative candidates only: task ID columns, output type ID levels (quantile levels, sample IDs, pmf categories), model IDs, number of models, modeling-task counts, and the config-derived refinement facts (`output_type_id_order` for ordinal pmf, `compound_taskid_set` for samples). Separately, the caching *mechanism* is a choice: attributes (fast, but dropped by many dplyr verbs) versus recompute on demand (always correct, slower) versus both with a reconstruction/validation helper. Worth settling early since it affects every method.
-
-**3. Naming and scope of the connector surface.** The connector has two parts: a generic that dispatches on the hubverse subclass and routes to the right `scoringutils::as_forecast_*()` constructor, plus `model_out_tbl` methods on each scoringutils `as_forecast_*()` for the direct-from-raw-data path. Name the generic `as_scoringutils_forecast()` (explicit and unambiguous) or the terser `as_forecast()` (cleaner, but easily confused with scoringutils' own `as_forecast_*` family)? Also confirm `as_hubverse()` for the return path, and which `summarise_scores`-style scoringutils touch points need upstream tweaks for the mask pattern.
+1. **Coarser compound task ID sets.** A hub's config declares the finest `compound_taskid_set` it accepts, and a coarser submission is valid. When a caller passes a coarser set than the data supports, should the constructor subset to the matching samples with a warning, or error and ask for a valid subset?
+2. **A strict validation layer.** Should the constructors offer `strict = TRUE`, running the value checks hubValidations applies on submission, for data that did not come through a hub (see "Validation of a typed object")? It means moving the reusable check utilities from hubValidations into hubUtils. Feedback welcome on whether the opt-in is worth that, or whether value checks on non-hub data are the user's responsibility.
+3. **scoringutils touch points.** Which scoringutils functions beyond `summarise_scores` need upstream tweaks for the mask pattern to work cleanly. To be established during implementation with the scoringutils maintainers.
 
 ## 👍 Ready to make it
 
 ### Proposed solution
 
-Define the output-type subclasses of `model_out_tbl`, their coercion constructors (`as_*()`, which subset to one output type, validate, and cache metadata), validators, and print methods in hubUtils, which is general and dependency-light. Build the scoringutils bridge (a single `as_scoringutils_forecast()` generic that routes to the matching `scoringutils::as_forecast_*()`, plus `as_hubverse()` for the return path) in hubEvals, which already depends on scoringutils, as thin wrappers over the scoringutils constructors and generics following the mask pattern. Downstream packages provide method implementations on these classes.
+The subclasses, constructors and print methods live in hubUtils. The scoringutils bridge lives in hubEvals, as thin wrappers over the scoringutils constructors and generics following the mask pattern. Downstream packages supply methods on the subclasses.
 
-Splitting the layers this way keeps scoringutils out of hubUtils and lets a typed object flow through scoring, ensembling, and visualisation. It also keeps the classes low enough for the later read-time enhancement described under Populating config-derived metadata.
+#### Constructors
 
-### Granularity encoding: composable subclass tokens
+One coercion function per output type, named `as_model_out_<output type>()`: `as_model_out_quantile()`, `as_model_out_cdf()`, `as_model_out_pmf()`, `as_model_out_sample()`, `as_model_out_mean()`, `as_model_out_median()`. Given a `model_out_tbl`:
 
-Where the hubverse needs a finer distinction than the output type (ordinal vs nominal pmf, marginal vs joint sample), the refinement is its own class token layered into the class vector, rather than a combined class name or an object attribute:
+- if only that output type is present, the constructor returns the typed object;
+- if other output types are present as well, it drops them with a warning;
+- if that output type is absent, it errors.
+
+There is no companion that splits a mixed `model_out_tbl` into a list of typed objects. If a helper that maps a single-type operation over every output type present proves useful later, it can be added then.
+
+#### Validation of a typed object
+
+By default a constructor checks only what its methods depend on: that the rows are of one output type, that `output_type_id` has the form the output type needs (numeric for quantile and cdf, categories for pmf), and that the data is consistent with any `output_type_id_order` or `compound_taskid_set` supplied. The consistency check is the one piece nothing upstream has done, since hubValidations only ever checks against the config's values. This keeps the constructors as light as the existing `validate_model_out_tbl()`, which checks columns and column types only.
+
+Checks on the values themselves (quantile levels in [0, 1] and values non-decreasing across levels within a modeling task, pmf probabilities summing to one) are not run by default. Data collected from a hub has already passed them on submission, and scoringutils repeats some of them in its own constructors. A `strict = TRUE` argument would run them for data that did not come through a hub. The checks exist in hubValidations today; the reusable parts would move to hubUtils and hubValidations would call them from there. Whether to include the strict layer is an open question. Hub-specific checks, such as which task ID values a hub accepts, stay with hubValidations in either case.
+
+#### Metadata
+
+A typed object carries only what its methods need. Quantile, cdf, mean and median need nothing beyond the output type. A pmf needs the `output_type_id_order` to be ordinal, and a sample needs the `compound_taskid_set` to be joint. Both are supplied to the constructor as arguments, and the constructor validates the data against them rather than inferring them from the data. No summary metadata (task ID columns, model counts and the like) is cached; the print method computes what it shows.
+
+#### Populating config-derived values
+
+The `output_type_id_order` and the `compound_taskid_set` are properties of a modeling task, not of a hub or a round. Two modeling tasks in one round can differ, and rounds can differ again, routinely so in scenario hubs. hubUtils will expose both values per modeling task, keyed by round and by the columns that tell a round's modeling tasks apart, with a simplified form that returns the single vector when every modeling task agrees. The design and its child issues are tracked in hubUtils [#310](https://github.com/hubverse-org/hubUtils/issues/310). Passing them as constructor arguments follows the precedent of `score_model_out()`'s existing `output_type_id_order` and `compound_taskid_set` arguments, and a caller working with model output not connected to a hub supplies them the same way.
+
+A `model_out_tbl` spanning modeling tasks or rounds with different values is routed to its modeling tasks through those keys and split by value, and each group becomes its own scoringutils object. scoringutils imposes that boundary in any case, since a `forecast_ordinal` carries one level set and a multivariate sample forecast one `joint_across`. Scores are per forecast unit, so the groups bind back together. This covers scenario hubs, where rounds differ, and hubs with several targets of one output type in a round that declare different values.
+
+**Stamping at read time in hubData.** `collect_hub()` already coerces collected data to a `model_out_tbl`, and it has the hub config to hand: a `hub_connection` carries `config_tasks`, and a filtered query keeps the connection it was built from. When the coercion succeeds, `collect_hub()` can take the round IDs present in the data, extract the config-derived values for those rounds only, and attach them to the object as attributes: the per-modeling-task values, the assignment of rows to modeling tasks, and the round ID variable where the rounds the data comes from share one. The subclass constructors read these attributes as defaults, so the caller passes nothing:
 
 ```r
-c("ordinal", "pmf", "model_out_tbl", "tbl_df", "tbl", "data.frame")   # an ordinal pmf
-c("joint", "sample", "model_out_tbl", "tbl_df", "tbl", "data.frame")  # a joint sample
+hub_con |>
+  dplyr::filter(output_type == "pmf", origin_date %in% c("2026-01-05", "2026-01-12")) |>
+  collect_hub() |>
+  as_model_out_pmf()   # ordinal: output_type_id_order read from the stamped attribute
 ```
 
-The tokens are `ordinal`/`nominal` (for `pmf`) and `marginal`/`joint` (for `sample`). Order is most-specific first, so the refinement (`ordinal`) precedes the output type (`pmf`): S3 dispatches first-match-first, which lets a method specialise at `ordinal`/`nominal` where the scoringutils target actually differs while a generic method at `pmf` still applies to both flavours by fall-through. The mean/median/`point` relationship uses the same mechanism with the shared layer below the leaf (see the crosswalk note above). This gives:
+A stamped attribute is a default the caller can override, not the record of truth. Where it is absent, because the data did not come through `collect_hub()`, coercion to `model_out_tbl` failed, or a dplyr operation dropped it, the constructor falls back to its arguments and asks for the value where it is needed. Stamping is a further consumer of the per-modeling-task extraction, not a dependency of it. Note that routing rows to a round relies on a round ID column in the data, so a hub whose rounds do not share a round ID variable, or that sets `round_id_from_variable` to false, cannot be stamped from the data alone.
 
-- pure S3 dispatch: the right method is selected by class, with no internal branching;
-- composable methods: written once at the output-type level and specialised at the token level only where it matters;
-- additive refinement: an object read without config is just `c("pmf", "model_out_tbl", ...)`, and the token is prepended once the `output_type_id_order` (pmf) / `compound_taskid_set` (sample) is known, with no renaming, so the base output-type class stays assignable from the data alone;
-- no class explosion: tokens compose onto the base types rather than multiplying into combined names.
+#### Statistical type as a second subclass
 
-The caveats: a token is a bare, generic class name (`ordinal`), so dispatch relies on the convention that it only ever co-occurs with its base type; and the config-derived token can only be added where config is available (most naturally at read time in `hubData`, see Populating config-derived metadata below).
+The statistical type is its own class, placed before the output type in the class vector:
 
-#### Alternatives considered
+```r
+c("nominal", "pmf", "model_out_tbl", ...)   # as_model_out_pmf(x)
+c("ordinal", "pmf", "model_out_tbl", ...)   # as_model_out_pmf(x, output_type_id_order = c("low", "med", "high"))
+c("marginal", "sample", "model_out_tbl", ...)  # as_model_out_sample(x)
+c("joint", "sample", "model_out_tbl", ...)     # as_model_out_sample(x, compound_taskid_set = c("location", "target_end_date"))
+```
 
-**Attributes instead of subclass tokens (rejected).** Keep one class per output type and carry the finer distinction as an object attribute (e.g. an `output_type_id_order` or `compound_taskid_set` attribute), with methods branching internally on the attribute. It has the appeal of fewer classes and a single place to record metadata, but we rejected it because dispatch is not pure (every method that cares about the distinction has to branch on an attribute by hand) and attributes are fragile under dplyr operations (silently dropped, so the object needs re-validation or reconstruction after manipulation, the same failure mode scoringutils' own forecast objects have). The token model keeps the one property this option was built around, the base output-type class being assignable from data, while giving pure dispatch.
+Without an `output_type_id_order` a pmf is nominal; without a `compound_taskid_set` a sample is marginal. No further argument is needed on the scoringutils side: `as_scoringutils_forecast()` dispatches on that class and calls the matching scoringutils constructor.
 
-### Populating config-derived metadata
+```r
+as_scoringutils_forecast(as_model_out_pmf(x))                             # forecast_nominal
+as_scoringutils_forecast(as_model_out_pmf(x, output_type_id_order = ord)) # forecast_ordinal
+as_scoringutils_forecast(as_model_out_sample(x))                          # forecast_sample
+as_scoringutils_forecast(as_model_out_sample(x, compound_taskid_set = s)) # forecast_sample_multivariate
+```
 
-The config-derived facts a typed object needs (the `output_type_id_order` for ordinal pmf, the `compound_taskid_set` for samples) are pulled by config-extraction utilities run against the hub and passed to the constructors as arguments, following the precedent of `score_model_out()`'s existing `output_type_id_order` and `compound_taskid_set` arguments. These utilities are already planned and useful well beyond this work: `hubValidations` extracts the compound task ID set internally (`get_round_compound_task_ids()`), and hubUtils [#283](https://github.com/hubverse-org/hubUtils/issues/283) (`get_output_type_id_order()`) and [#284](https://github.com/hubverse-org/hubUtils/issues/284) (`get_compound_taskid_set()`) propose exposing both from a hub config.
+Mean and median run the other way: two hubverse types share one scoringutils class. They sit as sibling subclasses under a shared `point` class, `c("mean", "point", "model_out_tbl", ...)`, so the connector is written once at `point` while a metric can specialise at `mean` or `median`. On the return path nothing is lost, because the `output_type` column travels with the data as part of the scoringutils forecast unit.
 
-Later enhancements: stamp the granular subclass and metadata at data-read time in `hubData` so the typed object arrives ready to use.
+S3 dispatches on the first matching class, so a method written at `pmf` applies to both nominal and ordinal objects, and a method at `ordinal` overrides it only where the statistical type matters. The class is added in front of the output type rather than replacing it, so an object constructed without config is a valid `pmf` and becomes an `ordinal` `pmf` once the order is known.
 
-One consideration to flag upfront: a hub can have rounds whose metadata differs (e.g. changed pmf categories), and so whose submitted outputs differ. This is especially true for **scenario hubs**, where rounds can differ substantially, so per-round variation is expected rather than a rare edge case. Both the extraction utilities and the class constructors will need to handle it (e.g. a `model_out_tbl` spanning mixed rounds) rather than assume a single config per hub.
+Note that the statistical type is a bare class name (`ordinal`), so dispatch relies on the convention that it only ever appears together with its output type.
+
+#### Alternative considered
+
+**Attributes instead of subclasses (rejected).** Keep one class per output type and carry the statistical type as an object attribute, with methods branching on the attribute internally. Fewer classes, but every method that cares about the statistical type has to branch by hand, and attributes are silently dropped by many dplyr verbs, so the object needs re-validation after any manipulation. That is the failure mode scoringutils' own forecast objects have. Subclasses give pure dispatch and survive manipulation as part of the class vector.
 
 ### Visualize the solution
 
@@ -151,69 +180,66 @@ Indicative layering (names illustrative):
 ```
 hubUtils  (general, dependency-light: no scoringutils dependency)
   ├── class defs: model_out_tbl  (base, exists)
-  │     └── quantile / sample / pmf / mean / median / cdf  (new subclasses)
-  │           + refinement tokens prepended where config is known:
-  │             ordinal|nominal (pmf), marginal|joint (sample)
-  │           + shared superclass where useful: point (parent of mean, median)
-  ├── constructors: as_quantile(), as_sample(), ...
-  │     (subset to one output type, validate, cache metadata, print method)
-  └── validators
+  │     └── quantile / cdf / pmf / sample / mean / median  (new subclasses)
+  │           + statistical type classes: nominal|ordinal (pmf), marginal|joint (sample)
+  │           + shared class: point (parent of mean, median)
+  ├── constructors: as_model_out_quantile(), as_model_out_pmf(), ...
+  │     (subset to one output type, validate, set class)
+  └── print methods
 
 hubEvals  (depends on scoringutils)
   ├── connectors:
   │     as_scoringutils_forecast()   generic on a typed subclass -> scoringutils::as_forecast_*()
-  │     as_forecast_*.model_out_tbl  direct jump from a raw model_out_tbl into a chosen scoringutils fn
+  │     as_forecast_*.model_out_tbl  direct jump from a model_out_tbl into a chosen scoringutils fn
   │     as_hubverse()                scored output back to hubverse shape
-  └── score.*()  dispatch on subclass -> as_scoringutils_forecast() -> scoringutils::score() -> as_hubverse()
-      score_model_out()  public convenience wrapper, behaviour unchanged
+  └── score_model_out()  public wrapper, behaviour unchanged
 
-later / optional enhancements
-  ├── hubData: on read (with config), stamp the granular subclass + metadata
-  │     (output_type_id_order, compound_taskid_set) so typed objects arrive ready
-  └── hubEnsembles / hubVis: ensemble.*(), autoplot.*() dispatch on the same subclasses
+later
+  ├── hubData: on read (with config), set the statistical type class and config-derived values
+  └── hubEnsembles / hubVis2: methods on the same subclasses
 ```
 
-Constructor sketch:
+Constructor and connector sketch:
 
 ```r
-as_quantile <- function(model_out_tbl, ...) {
-  x <- dplyr::filter(model_out_tbl, output_type == "quantile")  # subset to one type
-  # validate (delegate distributional checks to the scoringutils constructor;
-  #           add hubverse-specific structural checks)
-  # cache metadata as attributes (candidate fields, to be decided with the team):
-  #   task_id_cols, output_type_id levels, model_ids, n modeling tasks
-  # set class: c("quantile", class(model_out_tbl))
+as_model_out_pmf <- function(model_out_tbl, output_type_id_order = NULL, ...) {
+  x <- keep_output_type(model_out_tbl, "pmf")  # warn and drop others; error if none
+  # validate: categories within output_type_id_order if supplied;
+  #           value checks (probabilities sum to one) only with strict = TRUE
+  stat_type <- if (is.null(output_type_id_order)) "nominal" else "ordinal"
+  class(x) <- c(stat_type, "pmf", class(model_out_tbl))
   x
 }
 
-# entry point 1: hubverse generic, dispatches on the output-type subclass and
-# routes to the matching scoringutils constructor. Needs a typed object.
+# entry point 1: hubverse generic, dispatches on the output type or statistical type class
 as_scoringutils_forecast <- function(x, ...) UseMethod("as_scoringutils_forecast")
 
-as_scoringutils_forecast.quantile <- function(x, ...) {
+as_scoringutils_forecast.nominal <- function(x, ...) {
   # hand scoringutils a declassed tibble so it dispatches to its own method,
-  # not back into as_forecast_quantile.model_out_tbl below
-  scoringutils::as_forecast_quantile(tibble::as_tibble(x), ...)
+  # not back into as_forecast_nominal.model_out_tbl below
+  scoringutils::as_forecast_nominal(tibble::as_tibble(x), ...)
 }
 as_scoringutils_forecast.ordinal <- function(x, ...) {
   scoringutils::as_forecast_ordinal(tibble::as_tibble(x), ...)
 }
-# ... one method per subclass / refinement token
+as_scoringutils_forecast.point <- function(x, ...) {
+  scoringutils::as_forecast_point(tibble::as_tibble(x), ...)
+}
+# ... one method per output type or statistical type class with a scoringutils equivalent
 
-# entry point 2: model_out_tbl methods on scoringutils' own as_forecast_*() fns,
-# for a direct jump from raw hubverse data into a chosen scoringutils workflow.
-# The user picks the type via the function called; the method builds the
-# corresponding subclass, then routes through entry point 1.
+# entry point 2: model_out_tbl methods on scoringutils' own as_forecast_*() fns.
+# The user picks the type by the function called; the method builds the
+# subclass, then routes through entry point 1.
 as_forecast_quantile.model_out_tbl <- function(data, ...) {
-  as_scoringutils_forecast(as_quantile(data), ...)
+  as_scoringutils_forecast(as_model_out_quantile(data), ...)
 }
 # ... one model_out_tbl method per scoringutils as_forecast_*() fn
 ```
 
 ### Scale and scope
 
-- **Team:** Anna Krystalli (owner), Nicholas Reich; coordination with scoringutils maintainers (Sam Abbott, Nikos Bosse), who have signalled support for the masking/dispatch pattern.
-- **Repos touched:** hubUtils (new subclasses, constructors, validators, print methods; stays dependency-light, no scoringutils); hubEvals (the `as_scoringutils_forecast()` / `as_hubverse()` connectors, and optionally re-expressing scoring on the class layer with no public API change); later hubData (read-time stamping), hubEnsembles and hubVis (downstream dispatch).
-- **Phasing:** (1) class definitions + constructors + validation + print in hubUtils; (2) the `as_scoringutils_forecast()` / `as_hubverse()` connectors in hubEvals with round-trip tests (the issue #113 / Sprint E deliverable); (3) optionally re-express the hubEvals scoring path on the class layer behind the unchanged public API; (4, later) read-time stamping in hubData and downstream method dispatch.
-- **Dependency:** the config-extraction utilities (hubUtils [#283](https://github.com/hubverse-org/hubUtils/issues/283), [#284](https://github.com/hubverse-org/hubUtils/issues/284)) gate read-time population of the config-derived tokens (phase 4); phases 1 and 2 do not depend on them.
-- This is a meaningful refactor of foundational classes rather than a contained feature, so sequencing against other ecosystem work matters; phases 1 and 2 are independently useful and releasable.
+- **Team:** Anna Krystalli (owner), Nicholas Reich, Li Shandross, Lucie Contamin; coordination with scoringutils maintainers (Sam Abbott, Nikos Bosse), who have signalled support for the mask pattern.
+- **Repos touched:** hubUtils, hubEvals; later hubData, hubEnsembles and hubVis2 (see the layering above).
+- **Phasing:** (1) subclasses, constructors, validation and print in hubUtils; (2) the connectors in hubEvals with round-trip tests (the issue #113 / Sprint E deliverable); (3) optionally re-express the hubEvals scoring path on the class layer behind the unchanged public API; (4, later) read-time stamping in hubData and methods in hubEnsembles and hubVis2.
+- **Dependency:** the per-modeling-task extraction of config-derived values (hubUtils [#310](https://github.com/hubverse-org/hubUtils/issues/310)) gates read-time population in phase 4. Phases 1 and 2 take the values as arguments and do not depend on it.
+- This is a change to foundational classes rather than a contained feature, so sequencing against other ecosystem work matters. Phases 1 and 2 are independently useful and releasable.
