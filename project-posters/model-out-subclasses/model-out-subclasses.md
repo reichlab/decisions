@@ -58,7 +58,7 @@ This poster covers the class system in hubUtils and the scoringutils bridge in h
 
 ### What are possible solutions?
 
-A class hierarchy layered on the existing base class, with coercion constructors and S3 methods, and the statistical type of a pmf or sample encoded as a second subclass. See "Ready to make it" for the design and the alternative considered.
+A class hierarchy layered on the existing base class, with coercion constructors and S3 methods, and the statistical type of a pmf or sample encoded as a second subclass. See "Ready to make it" for the design and the alternatives considered.
 
 ## ✅ Validation
 
@@ -96,9 +96,8 @@ A class hierarchy layered on the existing base class, with coercion constructors
 
 The questions in the first draft of this poster (constructor semantics for mixed input, what metadata to carry, and the name of the connector) were settled in review. The decisions are recorded under "Ready to make it". Still open:
 
-1. **Coarser compound task ID sets.** A hub's config declares the finest `compound_taskid_set` it accepts, and a coarser submission is valid. When a caller passes a coarser set than the data supports, should the constructor subset to the matching samples with a warning, or error and ask for a valid subset?
-2. **A strict validation layer.** Should the constructors offer `strict = TRUE`, running the value checks hubValidations applies on submission, for data that did not come through a hub (see "Validation of a typed object")? It means moving the reusable check utilities from hubValidations into hubUtils. Feedback welcome on whether the opt-in is worth that, or whether value checks on non-hub data are the user's responsibility.
-3. **scoringutils touch points.** Which scoringutils functions beyond `summarise_scores` need upstream tweaks for the mask pattern to work cleanly. To be established during implementation with the scoringutils maintainers.
+1. **Samples finer than the supplied `compound_taskid_set`.** Samples that are coarser than the supplied set (joint across more task IDs than the set requires) are valid at that set. Samples that are finer are not: they lack the dependence the set declares, so they cannot be scored as joint at that set and must be rejected. Should the constructor drop those samples with a warning, or error and ask the caller to subset to the models that support the set?
+2. **scoringutils touch points.** Which scoringutils functions beyond `summarise_scores` need upstream tweaks for the mask pattern to work cleanly. To be established during implementation with the scoringutils maintainers.
 
 ## 👍 Ready to make it
 
@@ -118,13 +117,13 @@ There is no companion that splits a mixed `model_out_tbl` into a list of typed o
 
 #### Validation of a typed object
 
-By default a constructor checks only what its methods depend on: that the rows are of one output type, that `output_type_id` has the form the output type needs (numeric for quantile and cdf, categories for pmf), and that the data is consistent with any `output_type_id_order` or `compound_taskid_set` supplied. The consistency check is the one piece nothing upstream has done, since hubValidations only ever checks against the config's values. This keeps the constructors as light as the existing `validate_model_out_tbl()`, which checks columns and column types only.
+A constructor checks only what its methods depend on: that the rows are of one output type, that `output_type_id` has the form the output type needs (numeric for quantile and cdf, categories for pmf), and that the data is consistent with any `output_type_id_order` or `compound_taskid_set` supplied. The consistency check is the one piece nothing upstream has done, since hubValidations only ever checks against the config's values. This keeps the constructors as light as the existing `validate_model_out_tbl()`, which checks columns and column types only.
 
-Checks on the values themselves (quantile levels in [0, 1] and values non-decreasing across levels within a modeling task, pmf probabilities summing to one) are not run by default. Data collected from a hub has already passed them on submission, and scoringutils repeats some of them in its own constructors. A `strict = TRUE` argument would run them for data that did not come through a hub. The checks exist in hubValidations today; the reusable parts would move to hubUtils and hubValidations would call them from there. Whether to include the strict layer is an open question. Hub-specific checks, such as which task ID values a hub accepts, stay with hubValidations in either case.
+Checks on the values themselves (quantile levels in [0, 1] and values non-decreasing across levels within a modeling task, pmf probabilities summing to one) are not run. Data collected from a hub passed these checks on submission. Submission validation cannot guarantee that the data given to a constructor is complete, for example that every quantile level or every pmf category is still present after the data has been subset. The constructors do not check completeness either. They expect any data they are given to be correct and complete, whatever its source, and that is the user's responsibility. Note that hubValidations checks submission files against a hub and has no mechanism for checking a `model_out_tbl` object, so there is currently no tool a user can run for this.
 
 #### Metadata
 
-A typed object carries only what its methods need. Quantile, cdf, mean and median need nothing beyond the output type. A pmf needs the `output_type_id_order` to be ordinal, and a sample needs the `compound_taskid_set` to be joint. Both are supplied to the constructor as arguments, and the constructor validates the data against them rather than inferring them from the data. No summary metadata (task ID columns, model counts and the like) is cached; the print method computes what it shows.
+A typed object carries only what its methods need. Quantile, cdf, mean and median need nothing beyond the output type. A pmf needs the `output_type_id_order` to be ordinal, and a sample needs the `compound_taskid_set` to be joint. Both are supplied to the constructor as arguments, and the constructor validates the data against them rather than inferring them from the data. Note that the `compound_taskid_set` cannot currently be detected from a `model_out_tbl`. Sample IDs are only unique within a submission file and are reused between rounds, so detection would first need the data split by round, and that needs the round ID from the hub config (hubEvals [#101](https://github.com/hubverse-org/hubEvals/issues/101)). No summary metadata (task ID columns, model counts and the like) is cached; the print method computes what it shows.
 
 #### Populating config-derived values
 
@@ -142,6 +141,8 @@ hub_con |>
 ```
 
 A stamped attribute is a default the caller can override, not the record of truth. Where it is absent, because the data did not come through `collect_hub()`, coercion to `model_out_tbl` failed, or a dplyr operation dropped it, the constructor falls back to its arguments and asks for the value where it is needed. Stamping is a further consumer of the per-modeling-task extraction, not a dependency of it. Note that routing rows to a round relies on a round ID column in the data, so a hub whose rounds do not share a round ID variable, or that sets `round_id_from_variable` to false, cannot be stamped from the data alone.
+
+A stamped `compound_taskid_set` is only as accurate as the config it was read from. A set that omits the round ID variable declares samples joint across rounds. Sample IDs are reused between rounds, so scoring combined rounds with that set groups unrelated samples into one joint draw without an error. hubAdmin [#159](https://github.com/hubverse-org/hubAdmin/issues/159) proposes that config validation rejects such a set.
 
 #### Statistical type as a second subclass
 
@@ -169,7 +170,9 @@ S3 dispatches on the first matching class, so a method written at `pmf` applies 
 
 Note that the statistical type is a bare class name (`ordinal`), so dispatch relies on the convention that it only ever appears together with its output type.
 
-#### Alternative considered
+#### Alternatives considered
+
+**A `strict = TRUE` validation layer (rejected).** An opt-in constructor argument that runs the value checks hubValidations applies on submission, plus a completeness check, on the `model_out_tbl` object. We decided not to include it. The value checks duplicate scoringutils, which already errors on quantile levels outside [0, 1], on pmf forecasts that are missing a category, and on pmf probabilities that do not sum to one. A check at construction also cannot guarantee completeness afterwards, because a typed object can be subset after it was checked and keeps its class. It would also mean moving the reusable check utilities from hubValidations into hubUtils.
 
 **Attributes instead of subclasses (rejected).** Keep one class per output type and carry the statistical type as an object attribute, with methods branching on the attribute internally. Fewer classes, but every method that cares about the statistical type has to branch by hand, and attributes are silently dropped by many dplyr verbs, so the object needs re-validation after any manipulation. That is the failure mode scoringutils' own forecast objects have. Subclasses give pure dispatch and survive manipulation as part of the class vector.
 
@@ -204,8 +207,7 @@ Constructor and connector sketch:
 ```r
 as_model_out_pmf <- function(model_out_tbl, output_type_id_order = NULL, ...) {
   x <- keep_output_type(model_out_tbl, "pmf")  # warn and drop others; error if none
-  # validate: categories within output_type_id_order if supplied;
-  #           value checks (probabilities sum to one) only with strict = TRUE
+  # validate: categories within output_type_id_order if supplied
   stat_type <- if (is.null(output_type_id_order)) "nominal" else "ordinal"
   class(x) <- c(stat_type, "pmf", class(model_out_tbl))
   x
