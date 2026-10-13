@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 440" width="1060" height="440" role="img" aria-label="Hub config files feed extract_metadata() in hubAdmin; a record definition in LinkML generates a JSON Schema and a JSON-LD context at build time, which write_metadata() uses to validate and emit the JSON-LD record; the record is rendered as a data dictionary page." font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" fill="#1f2328">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <polygon points="0,0 10,5 0,10" fill="#1f2328"/>
+    </marker>
+  </defs>
+
+  <rect width="1060" height="440" fill="#ffffff"/>
+
+  <!-- Hub config group -->
+  <rect x="20" y="40" width="220" height="250" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="130" y="60" text-anchor="middle" font-weight="600" font-size="13">Hub config</text>
+  <text x="130" y="76" text-anchor="middle" fill="#57606a" font-size="11">hand-written JSON Schema</text>
+  <g stroke="#1f2328" fill="#ffffff">
+    <rect x="40" y="90" width="180" height="30" rx="4"/>
+    <rect x="40" y="128" width="180" height="30" rx="4"/>
+    <rect x="40" y="166" width="180" height="30" rx="4"/>
+    <rect x="40" y="204" width="180" height="30" rx="4"/>
+    <rect x="40" y="242" width="180" height="30" rx="4" stroke="#0969da" stroke-width="2"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="130" y="109">admin.json</text>
+    <text x="130" y="147">tasks.json</text>
+    <text x="130" y="185">target-data.json</text>
+    <text x="130" y="223">model-metadata/</text>
+    <text x="130" y="261" fill="#0969da" font-weight="600">hub-metadata.json (new)</text>
+  </g>
+
+  <!-- hubAdmin runtime group -->
+  <rect x="300" y="40" width="500" height="120" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="550" y="60" text-anchor="middle" font-weight="600" font-size="13">hubAdmin (R, at runtime)</text>
+  <rect x="320" y="85" width="150" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="395" y="109" text-anchor="middle">extract_metadata()</text>
+  <rect x="600" y="85" width="190" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="695" y="109" text-anchor="middle">write_metadata()</text>
+
+  <!-- Record and outputs -->
+  <rect x="880" y="85" width="150" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="955" y="109" text-anchor="middle">JSON-LD record</text>
+  <rect x="915" y="185" width="130" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="980" y="204" text-anchor="middle">data dictionary</text>
+  <text x="980" y="218" text-anchor="middle">page (Step 3)</text>
+
+  <!-- Record standard (LinkML) group -->
+  <rect x="300" y="200" width="500" height="220" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="550" y="220" text-anchor="middle" font-weight="600" font-size="13">Record standard (LinkML, at build time)</text>
+  <rect x="320" y="300" width="150" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="395" y="317" text-anchor="middle">record definition</text>
+  <text x="395" y="331" text-anchor="middle">(LinkML YAML)</text>
+  <rect x="560" y="240" width="140" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="630" y="264" text-anchor="middle">JSON Schema</text>
+  <rect x="560" y="305" width="140" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="630" y="329" text-anchor="middle">JSON-LD @context</text>
+  <rect x="560" y="370" width="140" height="40" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="630" y="394" text-anchor="middle">standard docs</text>
+
+  <!-- Arrows -->
+  <g fill="none" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow)">
+    <!-- config -> extract -->
+    <line x1="240" y1="105" x2="320" y2="105"/>
+    <!-- extract -> write -->
+    <line x1="470" y1="105" x2="600" y2="105"/>
+    <!-- write -> record -->
+    <line x1="790" y1="105" x2="880" y2="105"/>
+    <!-- record -> page -->
+    <path d="M 895 125 V 205 H 915"/>
+    <!-- model -> generated files (fan-out) -->
+    <path d="M 470 320 H 515 V 260 H 560"/>
+    <path d="M 515 320 H 560"/>
+    <path d="M 515 320 V 390 H 560"/>
+    <!-- generated files -> write (build time to runtime) -->
+    <path d="M 700 260 H 730 V 125"/>
+    <path d="M 700 325 H 770 V 125"/>
+  </g>
+  <!-- trunk segments drawn without arrowheads so the fan-out reads as one bus -->
+  <g fill="none" stroke="#1f2328" stroke-width="1.5">
+    <line x1="515" y1="260" x2="515" y2="390"/>
+  </g>
+
+  <!-- Arrow labels -->
+  <g fill="#57606a" font-size="11">
+    <text x="280" y="98" text-anchor="middle">reads</text>
+    <text x="535" y="98" text-anchor="middle">pre-filled record</text>
+    <text x="835" y="98" text-anchor="middle">emits</text>
+    <text x="888" y="200" text-anchor="end">renders</text>
+    <text x="520" y="253" text-anchor="middle">generates</text>
+    <text x="725" y="180" text-anchor="end">validates against</text>
+    <text x="775" y="180" text-anchor="start">attaches</text>
+  </g>
+</svg>

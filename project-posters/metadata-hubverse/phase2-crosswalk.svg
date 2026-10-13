@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 220" width="930" height="220" role="img" aria-label="hub-metadata.json declares that location uses FIPS state codes; that scheme selects the hubverse FIPS-to-GeoNames crosswalk, which extract_metadata() applies so that each code in the JSON-LD record becomes a linked GeoNames place." font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" fill="#1f2328">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <polygon points="0,0 10,5 0,10" fill="#1f2328"/>
+    </marker>
+  </defs>
+  <rect width="930" height="220" fill="#ffffff"/>
+
+  <!-- hub-metadata.json -->
+  <rect x="20" y="90" width="220" height="70" rx="4" fill="#ffffff" stroke="#0969da" stroke-width="2"/>
+  <text x="130" y="110" text-anchor="middle" font-weight="600" fill="#0969da">hub-metadata.json</text>
+  <text x="130" y="130" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11">location:</text>
+  <text x="130" y="146" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11">scheme: FIPS state codes</text>
+  <text x="130" y="180" text-anchor="middle" fill="#57606a" font-size="11">suggested from the values,</text>
+  <text x="130" y="195" text-anchor="middle" fill="#57606a" font-size="11">confirmed by the admin</text>
+
+  <!-- crosswalk -->
+  <rect x="360" y="20" width="220" height="50" rx="4" fill="#f6f8fa" stroke="#1f2328"/>
+  <text x="470" y="40" text-anchor="middle" font-weight="600">hubverse crosswalk</text>
+  <text x="470" y="57" text-anchor="middle">FIPS state code to GeoNames place</text>
+
+  <!-- extractor -->
+  <rect x="360" y="100" width="220" height="50" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="470" y="130" text-anchor="middle">extract_metadata()</text>
+
+  <!-- record -->
+  <rect x="690" y="70" width="240" height="110" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="810" y="92" text-anchor="middle" font-weight="600">JSON-LD record</text>
+  <text x="810" y="114" text-anchor="middle" fill="#57606a" font-size="11">the value "06" becomes</text>
+  <text x="702" y="138" font-family="Menlo, Consolas, monospace" font-size="11">{ "@id": "geonames.org/5332921",</text>
+  <text x="702" y="156" font-family="Menlo, Consolas, monospace" font-size="11">  "name": "California" }</text>
+
+  <!-- arrows -->
+  <g fill="none" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow)">
+    <line x1="240" y1="125" x2="360" y2="125"/>
+    <line x1="470" y1="70" x2="470" y2="100"/>
+    <line x1="580" y1="125" x2="690" y2="125"/>
+  </g>
+  <g fill="#57606a" font-size="11">
+    <text x="300" y="117" text-anchor="middle">declares scheme</text>
+    <text x="478" y="89" text-anchor="start">selected by scheme</text>
+    <text x="635" y="117" text-anchor="middle">resolves each code</text>
+  </g>
+</svg>
