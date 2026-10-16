@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 230" width="900" height="230" role="img" aria-label="Two hubs name their hospitalization target value differently, but both records carry the same MIDAS ontology term as that value's propertyID, so a cross-hub query for that term finds both." font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" fill="#1f2328">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <polygon points="0,0 10,5 0,10" fill="#1f2328"/>
+    </marker>
+  </defs>
+  <rect width="900" height="230" fill="#ffffff"/>
+
+  <!-- hub A -->
+  <rect x="20" y="30" width="330" height="64" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="32" y="50" font-weight="600">FluSight record</text>
+  <text x="32" y="68" font-family="Menlo, Consolas, monospace" font-size="11">target value: "wk inc flu hosp"</text>
+  <text x="32" y="84" font-family="Menlo, Consolas, monospace" font-size="11">propertyID: midas:IncidentHospitalizations</text>
+
+  <!-- hub B -->
+  <rect x="20" y="136" width="330" height="64" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="32" y="156" font-weight="600">RSV hub record</text>
+  <text x="32" y="174" font-family="Menlo, Consolas, monospace" font-size="11">target value: "inc hosp"</text>
+  <text x="32" y="190" font-family="Menlo, Consolas, monospace" font-size="11">propertyID: midas:IncidentHospitalizations</text>
+
+  <!-- shared term -->
+  <rect x="430" y="85" width="220" height="60" rx="30" fill="#f6f8fa" stroke="#1f2328"/>
+  <text x="540" y="109" text-anchor="middle" font-weight="600">MIDAS ontology term</text>
+  <text x="540" y="127" text-anchor="middle">incident hospitalizations</text>
+
+  <!-- query -->
+  <rect x="715" y="85" width="175" height="60" rx="4" fill="#ffffff" stroke="#1f2328"/>
+  <text x="802" y="109" text-anchor="middle" font-weight="600">cross-hub query</text>
+  <text x="802" y="127" text-anchor="middle">who forecasts this?</text>
+
+  <!-- arrows -->
+  <g fill="none" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow)">
+    <path d="M 350 62 H 380 V 105 H 430"/>
+    <path d="M 350 168 H 380 V 125 H 430"/>
+    <line x1="715" y1="115" x2="650" y2="115"/>
+  </g>
+  <g fill="#57606a" font-size="11">
+    <text x="388" y="88" text-anchor="start">same term</text>
+    <text x="388" y="150" text-anchor="start">same term</text>
+    <text x="683" y="108" text-anchor="middle">finds both</text>
+  </g>
+</svg>
