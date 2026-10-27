@@ -6,7 +6,7 @@
 
 - Team: Anna Krystalli, Nicholas Reich, Li Shandross, Lucie Contamin (input from Sam Abbott and Nikos Bosse, scoringutils)
 
-- Status: draft
+- Status: accepted
 
 ## ❓ Problem space
 
@@ -94,10 +94,9 @@ A class hierarchy layered on the existing base class, with coercion constructors
 
 ### What do we need to answer?
 
-The questions in the first draft of this poster (constructor semantics for mixed input, what metadata to carry, and the name of the connector) were settled in review. The decisions are recorded under "Ready to make it". Still open:
+The questions raised in earlier drafts of this poster (constructor semantics for mixed input, what metadata to carry, the name of the connector, and the handling of samples finer than the supplied `compound_taskid_set`) were settled in review. The decisions are recorded under "Ready to make it". Still open:
 
-1. **Samples finer than the supplied `compound_taskid_set`.** Samples that are coarser than the supplied set (joint across more task IDs than the set requires) are valid at that set. Samples that are finer are not: they lack the dependence the set declares, so they cannot be scored as joint at that set and must be rejected. Should the constructor drop those samples with a warning, or error and ask the caller to subset to the models that support the set?
-2. **scoringutils touch points.** Which scoringutils functions beyond `summarise_scores` need upstream tweaks for the mask pattern to work cleanly. To be established during implementation with the scoringutils maintainers.
+- **scoringutils touch points.** Which scoringutils functions beyond `summarise_scores` need upstream tweaks for the mask pattern to work cleanly. To be established during implementation with the scoringutils maintainers.
 
 ## 👍 Ready to make it
 
@@ -120,6 +119,8 @@ There is no companion that splits a mixed `model_out_tbl` into a list of typed o
 A constructor checks only what its methods depend on: that the rows are of one output type, that `output_type_id` has the form the output type needs (numeric for quantile and cdf, categories for pmf), and that the data is consistent with any `output_type_id_order` or `compound_taskid_set` supplied. The consistency check is the one piece nothing upstream has done, since hubValidations only ever checks against the config's values. This keeps the constructors as light as the existing `validate_model_out_tbl()`, which checks columns and column types only.
 
 Checks on the values themselves (quantile levels in [0, 1] and values non-decreasing across levels within a modeling task, pmf probabilities summing to one) are not run. Data collected from a hub passed these checks on submission. Submission validation cannot guarantee that the data given to a constructor is complete, for example that every quantile level or every pmf category is still present after the data has been subset. The constructors do not check completeness either. They expect any data they are given to be correct and complete, whatever its source, and that is the user's responsibility. Note that hubValidations checks submission files against a hub and has no mechanism for checking a `model_out_tbl` object, so there is currently no tool a user can run for this.
+
+**Samples finer than the supplied `compound_taskid_set` are an error.** For example, take task IDs `reference_date`, `location`, `horizon` and `target`, and a `compound_taskid_set` of `reference_date`, `location` and `target`. Each sample is then a trajectory across horizons for one location. Samples that also span several locations are coarser than that set. They are valid at it, because one location's slice of such a sample is still a trajectory across horizons. Samples drawn independently for each horizon are finer. Scoring them as trajectories pairs up unrelated draws, so the scores are meaningless. hubValidations rejects finer samples on submission, so data collected from a hub and checked against the hub's own set never contains them. Finer samples arise when the caller supplies a coarser set than the hub's, for example `reference_date` and `target` to score jointly across locations, or passes data that did not come from a hub. The constructor then errors, as hubEvals does today, and the caller subsets to the models whose samples support the set.
 
 #### Metadata
 
